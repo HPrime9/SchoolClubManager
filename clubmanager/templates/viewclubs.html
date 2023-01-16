@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+{% import 'bootstrap/wtf.html' as wtf %}
+
+{% block head %}
+<title>♠ Manager</title>
+<link rel='stylesheet' href='/static/css/styleves.css'>
+
+<style>
+    body {
+        background: url( {{ url_for('static', filename='img/hero-bg.jpg')}} ) top center;
+    }
+</style>
+
+{% endblock %}
+
+{% block body %}
+
+<body>
+    <header id='header' class='fixed-top d-flex align-items-center'>
+        <div class="container d-flex align-items-center justify-content-between">
+            <div class='logo'>
+                <h2><a href='/'>Club Manager</a></h2>
+            </div>
+            <nav class='navbar navbar-expand-lg bg-body'>
+                <div class='container-fluid'>
+                    <div class='collapse navbar-collapse' id='navbarText'>
+                        <ul class="nav justify-content-end">
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button"
+                                    aria-expanded="false">My Clubs</a>
+                                <ul class="dropdown-menu">
+                                    <a class="dropdown-item" href="/myclubs">Dashboard</a>
+                                    <a class="dropdown-item" href="/club/basicinformation">Create a club</a>
+                                </ul>
+                            </li>
+                            <a class="nav-link" href='/viewclubs'>View Clubs</a>
+                            <a class="nav-link" href="{{ url_for('logout') }}">Logout</a>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+        </div>
+    </header>
+    <section class="d-flex align-items-center" id="hero">
+        <div class='container position-relative'>
+            <div class='row justify-content-center'>
+                <div class='col-xl-7 col-lg-9 text-center'>
+                    <h1>These are the clubs available at {{ School }}</h1>
+                </div>
+            </div>
+            {% if not truthy %}
+            <div class='row icon-boxes'>
+                {% for club in ClubCatalogue %}
+                <div class='col-md-6 col-lg-3 d-flex align-items-stretch mb-5 mb-lg-0'>
+                    <div class='card border-success sc' style='width: 21rem;'>
+                        <div class='card-body'>
+                            <h3 class='card-title' id='cardtitle'>{{ club.ClubName }}</h3>
+                            <p class='card-text'>{{ club.ClubDescription }}</p>
+                            <a href="/club/{{ club.ClubId }}"><button class='btn btn-primary'>Explore</button></a>
+
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% else %}
+        <div>There are no clubs at your school</div>
+        {% endif %}
+        </div>
+    </section>
+    <main class='container mainsize'>
+    </main>
+    <footer>
+        <!-- <div>
+            <h5 class='credits'>Creator: Hetav Patel</h5>
+            <h5 class='credits'>Email: 866639@pdsb.net</h5>
+        </div> -->
+    </footer>
+</body>
+{% endblock %}

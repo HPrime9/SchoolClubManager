@@ -1,0 +1,145 @@
+{% extends 'base.html' %}
+{% import 'bootstrap/wtf.html' as wtf %}
+
+{% block head %}
+<title>♠ Manager</title>
+<link rel='stylesheet' href='/static/css/styleves.css'>
+
+{% endblock %}
+
+{% block body %}
+
+<body class='container form'>
+    <header id='header' class='fixed-top d-flex align-items-center'>
+        <div class="container d-flex align-items-center justify-content-between">
+            <div class='logo'>
+                <h2><a href='/'>Club Manager</a></h2>
+            </div>
+            <nav class='navbar navbar-expand-lg bg-body'>
+                <div class='container-fluid'>
+                    <div class='collapse navbar-collapse' id='navbarText'>
+                        <ul class="nav justify-content-end">
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button"
+                                    aria-expanded="false">My Clubs</a>
+                                <ul class="dropdown-menu">
+                                    <a class="dropdown-item" href="/myclubs">Dashboard</a>
+                                    <a class="dropdown-item" href="/club/basicinformation">Create a club</a>
+                                </ul>
+                            </li>
+                            <a class="nav-link" href='/viewclubs'>View Clubs</a>
+                            <a class="nav-link" href="{{ url_for('logout') }}">Logout</a>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+        </div>
+    </header>
+    <br><br><br><br>
+    <main>
+        <br>
+        <div class='row'>
+            <div class='col-2'>
+                <label class='exampleFormControlInput1'>General
+                    Questions</label>
+            </div>
+            <div class='col-10'>
+                <button id='addgeneralquestion' class='btn btn-success' type='button'>Add general
+                    question</button>
+            </div>
+        </div>
+        <br>
+        {% if questions_to_display %}
+        <div class='row table table-striped'>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Question Order</th>
+                        <th>General Question</th>
+                        <th>Length Of Response</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for question in questions_to_display %}
+                    {% if not question.RoleId %}
+                    <tr>
+                        {% if question.OrderNumber != None %}
+                        <td>{{ question.OrderNumber }}</td>
+                        {% endif %}
+                        {% if question.Question != None %}
+                        <td>{{ question.Question }}</td>
+                        {% endif %}
+                        {% if question.LengthOfResponse != None %}
+                        <td>
+                            {{ question.LengthOfResponse}}
+                        </td>
+                        {% endif %}
+                        {% if question.OrderNumber != None and question.Question != None and question.LengthOfResponse %}
+                        <td>
+                            <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                                data-bs-target="#staticBackdrop{{ question.QuestionId }}">Update</button>
+                            <a href='/delete/{{ question.ClubId }}/{{ question.QuestionId }}'><button
+                                    class='btn btn-danger'>Delete</button></a>
+                        </td>
+                        {% endif %}
+                    </tr>
+                    <div class="modal fade" id="staticBackdrop{{ question.QuestionId }}" data-bs-backdrop="static" data-bs-keyboard="false"
+                        tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                        <div style='background-color: rgb(77, 171, 169)'  class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h1 class="modal-title fs-5" id="staticBackdropLabel">Update General Question</h1>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <form action='/update/{{ question.QuestionId }}/generalquestion'
+                                        method='POST'>
+                                        <div class='row'>
+                                            <label>Enter General Question</label>
+                                            <input type='text' class='form-control' name='GeneralQuestions'
+                                                value='{{ question.Question }}'>
+                                        </div>
+                                        <br>
+                                        <div class='row'>
+                                            <label>Maximum character length for the response?</label>
+                                            <input type='number' class='form-control'
+                                                name='GeneralQuestionsLengthOfResponse'
+                                                value='{{ question.LengthOfResponse }}'>
+                                        </div>
+                                        <br>
+                                        <div class='row'>
+                                            <label>Enter Order Number</label>
+                                            <input type='text' class='form-control' name='GeneralQuestionOrderNumbers'
+                                                value='{{ question.OrderNumber }}'>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary"
+                                                data-bs-dismiss="modal">Cancel</button>
+                                            <input type='submit' value='Update' class="btn btn-primary">
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+                        {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% endif %}
+        <form action='/club/{{ updClubInfo.ClubId }}/generalquestions' method='POST'>
+            {{ form.hidden_tag() }}
+            <div class='row' id='generalquestions'>
+            </div>
+            <input class='btn btn-primary' type='submit' value='Save'>
+        </form>
+    </main>
+    <script src='/static/js/main.js'></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN"
+        crossorigin="anonymous"></script>
+
+</body>
+{% endblock %}

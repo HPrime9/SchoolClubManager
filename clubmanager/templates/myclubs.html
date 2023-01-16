@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+{% import 'bootstrap/wtf.html' as wtf %}
+
+{% block head %}
+<title>♠ Manager</title>
+<link rel='stylesheet' href='/static/css/styleves.css'>
+<link rel='stylesheet' href='/static/css/styles.css'>
+{% endblock %}
+
+{% block body %}
+<body id='myclubbody' class="fixed-top d-flex align-items-center">
+    <header id='header' class='fixed-top d-flex align-items-center'>
+        <div class="container d-flex align-items-center justify-content-between">
+            <div class='logo'>
+                <h2><a href='/'>Club Manager</a></h2>
+            </div>
+            <nav class='navbar navbar-expand-lg bg-body'>
+                <div class='container-fluid'>
+                    <div class='collapse navbar-collapse' id='navbarText'>
+                        <ul class="nav justify-content-end">
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button"
+                                    aria-expanded="false">My Clubs</a>
+                                <ul class="dropdown-menu">
+                                    <a class="dropdown-item" href="/myclubs">Dashboard</a>
+                                    <a class="dropdown-item" href="/club/basicinformation">Create a club</a>
+                                </ul>
+                            </li>
+                            <a class="nav-link" href='/viewclubs'>View Clubs</a>
+                            {% if not truthy %}
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button"
+                                    aria-expanded="false">Applicants</a>
+                                <ul class="dropdown-menu">
+                                    {% for club in userClubCatalogue %}
+                                    <a class="dropdown-item" href="/responseoverview/{{ club.ClubId }}">{{ club.ClubName
+                                        }}</a>
+                                    {% endfor %}
+                                </ul>
+                            </li>
+                            {% endif %}
+                            <a class="nav-link" href="{{ url_for('logout') }}">Logout</a>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+        </div>
+    </header>
+    <main id='main' class='main'>
+        <br><br>
+            <div class='page-title'>
+                <h1>Hello, {{ name }}, View your clubs below!</h1>
+            </div>
+            <section class="section dashboard">
+                <div class='row'>
+                    <div class="col-lg-8">
+                        <div class='row'>
+                            {% if not truthy %}
+                            {% for club in userClubCatalogue %}
+                            <div class="col-xxl-4 col-md-6">
+                                <div class='card border-success sc' style='width: 21rem;'>
+                                    <div class='card-body'>
+                                        <h3 class='card-title' id='cardtitle'>{{ club.ClubName }}</h3>
+                                        <p class='card-text'>{{ club.ClubDescription }}</p>
+                                        <a href="/update/{{ club.ClubId }}"><button
+                                                class='btn btn-primary'>Update</button></a>
+                                        <a href="/delete/{{ club.ClubId }}"><button
+                                                class='btn btn-danger'>Delete</button></a>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                            {% else %}
+                            <div>
+                                You do not have any clubs! You can create one by hovering over my clubs.
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                    </div>
+                </div>
+            </section>
+    </main>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN"
+        crossorigin="anonymous"></script>
+    <script src='/static/js/mainves.js'></script>
+</body>
+{% endblock %}

@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+{% import 'bootstrap/wtf.html' as wtf %}
+
+{% block head %}
+<title>♠ Manager</title>
+{% endblock %}
+
+{% block body %}
+<body class='form'>
+    <main>
+        <form class='container formcolor' action='/register' method='POST'>
+            <h1>Register</h1>
+            {{ form.hidden_tag() }}
+            <div class='row g-3'>
+                <div class='col'>
+                    {{ wtf.form_field(form.FirstName) }}
+                </div>
+                <div class='col'>
+                    {{ wtf.form_field(form.LastName) }}
+                </div>
+            </div>
+            <div class='row g-3'>
+                {{ wtf.form_field(form.Username) }}
+            </div>
+            <div class='row g-3'>
+                <div class='col'>
+                    <label id='stunum'>Student Number</label>
+                    <input type='number' class='form-control' id='stunum' name='StudentNum'>
+                </div>
+            </div>
+            <div class='row g-3'>
+                {{ wtf.form_field(form.Email) }}
+            </div>
+            <div class='row g-3'>
+                {{ wtf.form_field(form.Password) }}
+            </div>
+            <div class='row g-3'>
+                <div class='col'>
+                    <label>Select Grade</label>
+                    <select class='form-select' name="Grade">
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                        <option value="6">6</option>
+                        <option value="7">7</option>
+                        <option value="8">8</option>
+                        <option value="9">9</option>
+                        <option value="10">10</option>
+                        <option value="11">11</option>
+                        <option value="12">12</option>
+                    </select>
+                </div>
+
+                <div class='col'>
+                    <label>Select School</label>
+                    <select class='form-select' name="School">
+                        <option value="Turner Fenton Secondary School">Turner Fenton Secondary School</option>
+                        <option value="Roberta Bondar Public School">Roberta Bondar Public School</option>
+                        <option value="T. L. Kennedy Secondary School">T. L. Kennedy Secondary School</option>
+                    </select>
+                </div>
+            </div>
+            <br>
+            <input class='btn btn-primary' type='submit' value='Register'>
+        </form>
+    </main>
+</body>
+{% endblock %}

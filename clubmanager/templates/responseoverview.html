@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% import 'bootstrap/wtf.html' as wtf %}
+
+{% block head %}
+<title>Club Manager</title>
+<link rel='stylesheet' href='/static/css/styles.css'>
+{% endblock %}
+
+{% block body %}
+<body>
+    <header>
+        <nav>
+
+        </nav>
+    </header>
+    <main class='container'>
+        <div class='row'>
+            {% if club_to_display_responses %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>Student Number</th>
+                        <th>Grade</th>
+                        <th>View Application</th>
+                        <th>Make notes</th>
+                        <th>Role applying for</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for response in club_to_display_responses %}
+                    {% if response.Status == 'submitted' %}
+                    <tr>
+                        <td>{{ response.StudentNum }}</td>
+                        <td>{{ response.Grade }}</td>
+                        <td><a>Full Application</a></td>
+                        <td><textarea></textarea></td>
+                        <td><input type='checkbox'><label>{{ roles_to_display[i] }}</label></td>
+                        <td><input type='submit' value='Send Results'></td>
+                    </tr>
+                    {% endif %}
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <h1>No responses have been recorded yet!</h1>
+            {% endif %}
+        </div>
+    </main>
+</body>
+{% endblock %}

@@ -1,0 +1,125 @@
+{% extends 'base.html' %}
+
+{% block head %}
+
+<title>{{ club_to_display.ClubName }}</title>
+<link rel='stylesheet' href='/static/css/styleves.css'>
+<link rel='stylesheet' href='/static/css/styleportfol.css'>
+{% endblock %}
+
+{% block body %}
+
+<body id='top' class='clubpage container-fluid'>
+    <div class='row'>
+        <header id='header' class='fixed-top d-flex align-items-center'>
+            <div class="container d-flex align-items-center justify-content-between">
+                <div class='logo'>
+                    <h2><span id='logospacing'></span><a href='/'>Club Manager</a></h2>
+                </div>
+                <nav class='navbar navbar-expand-lg bg-body'>
+                    <div class='container-fluid'>
+                        <div class='collapse navbar-collapse' id='navbarText'>
+                            <ul class="nav justify-content-end">
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button"
+                                        aria-expanded="false">My Clubs</a>
+                                    <ul class="dropdown-menu">
+                                        <a class="dropdown-item" href="/myclubs">Dashboard</a>
+                                        <a class="dropdown-item" href="/club/basicinformation">Create a club</a>
+                                    </ul>
+                                </li>
+                                <a class="nav-link" href='/viewclubs'>View Clubs</a>
+                                <a class="nav-link" href="{{ url_for('logout') }}">Logout</a>
+                            </ul>
+                        </div>
+                    </div>
+                </nav>
+            </div>
+        </header>
+        <header id='header-side'>
+            <div class="n-flex flex-column">
+                <div class='profile'>
+                    <br><br><br>
+                    <h1 class='text-light'>Page Navigation</h1>
+                </div>
+                <nav id='navbar2' class="nav-menu navbar2">
+                    <ul>
+                        <a class='nav-link2 scrollto'>Top</a>
+                        <a class='nav-link2 scrollto'>Announcements</a>
+                        <a class='nav-link2 scrollto'>Application</a>
+                        <a class='nav-link2 scrollto'>Contact</a>
+                    </ul>
+                </nav>
+            </div>
+        </header>
+    </div>
+    <main>
+        <div class='row'>
+            <div class='col'>
+                <h1 id='clubname' style='text-align:center; margin: 80px auto;'>{{ club_to_display.ClubName }}</h1>
+            </div>
+        </div>
+        <hr>
+        
+        <div class='row'>
+            <div class='col-5'>
+                <h2>Description</h2>
+                <p>{{ club_to_display.ClubDescription }}</p>
+            </div>
+            <div class='col' style='margin: 80px auto;'>
+                <h5>Application Start Date</h5>
+                <p>{{ club_to_display.AppStartDate }}</p>
+                <h5>Application End Date</h5>
+                <p>{{ club_to_display.AppEndDate }}</p>
+            </div>
+            
+        </div>
+
+        <div class='row'>
+            <div class='col'>
+
+            </div>
+            <div class='col-5'>
+                <h2 id='announcements'>Announcements</h2>
+                <br>
+                {% if Announcements %}
+                <div>
+                    {% for announcement in Announcements %}
+                    <h1>{{ announcement.Header }}</h1>
+                    <p>{{ announcement.Message }}</p>
+                    {% endfor %}
+
+                </div>
+                {% else %}
+                {% endif %}
+            </div>
+            <div class='col'>
+            </div>
+        </div>
+
+        <div class='row'>
+            <div class='col'>
+
+            </div>
+            <div class='col'>
+                <h2 id='application'>Application</h2>
+                <button class='btn btn-info'><a href='/application/{{ club_to_display.ClubId }}'>Click to Apply</a></button>
+            <div class='col'>
+
+            </div>
+        </div>
+        <div class='row'>
+            <div class='col'>
+
+            </div>
+            <div class='col-5'>
+                <h4 id='contact'>Contact</h4>
+                <p>{{ club_to_display.ClubContactEmail }}</p>
+            </div>
+            <div class='col'>
+
+            </div>
+        </div>
+    </main>
+</body>
+{% endblock %}

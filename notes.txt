@@ -1,0 +1,25 @@
+cd C:\Users\Hetav\Documents\'ClubManager'
+sqlite3
+.open clubmanager.db (ATTACH DATABASE 'clubmanager.db' as 'clubmanager';)
+.database
+.tables 
+.show
+.header on
+.mode column
+
+
+
+==========
+
+CREATE TABLE COMPANY(
+   ID INT PRIMARY KEY     NOT NULL,
+   NAME           TEXT    NOT NULL,
+   AGE            INT     NOT NULL,
+   ADDRESS        CHAR(50),
+   SALARY         REAL
+);
+
+
+INSERT INTO COMPANY (ID,NAME,AGE,ADDRESS,SALARY) VALUES (1, 'Paul', 32, 'California', 20000.00 );
+
+SELECT * FROM COMPANY;

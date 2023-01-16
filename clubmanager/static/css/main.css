@@ -1,0 +1,65 @@
+.form {
+    background-color: rgb(111, 161, 199);
+}
+
+.form label, .form h1 {
+    color: rgb(223, 239, 248);
+}
+
+#logospacing {
+    padding: 20px;
+}
+
+.sc {
+    margin: 9px;
+}
+
+.mainsize {
+    width: 77rem;
+}
+
+#myclubbody {
+    background-color: #1F3F49;
+    color: #B3C100;
+}
+
+.viewclubs {
+    background-color: #1F3F49;
+}
+
+#announcements, #announce {
+    display: inline;
+}
+
+.flex-column, #inline {
+    display: inline;
+}
+
+.col-5 {
+    margin: 80px auto;
+}
+
+.vnav {
+    position: fixed;
+}
+
+.nav {
+    margin: 20px auto;
+}
+
+a {
+    text-decoration: none;
+}
+
+.clubpage {
+    background-color: #CCFFFF;
+}
+
+.navclubpg {
+    background-color: rgb(29, 194, 178);
+}
+
+#theseareclubs {
+    text-align: center;
+    color: rgb(207, 197, 197);
+}

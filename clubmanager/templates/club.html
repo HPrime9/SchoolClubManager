@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+{% import 'bootstrap/wtf.html' as wtf %}
+
+{% block head %}
+<title>♠ Manager</title>
+<link rel='stylesheet' href='/static/css/styleves.css'>
+{% endblock %}
+
+{% block body %}
+
+<body class='container form'>
+    <header id='header' class='fixed-top d-flex align-items-center'>
+        <div class="container d-flex align-items-center justify-content-between">
+            <div class='logo'>
+                <h2><a href='/'>Club Manager</a></h2>
+            </div>
+            <nav class='navbar navbar-expand-lg bg-body'>
+                <div class='container-fluid'>
+                    <div class='collapse navbar-collapse' id='navbarText'>
+                            <a class="nav-link" href="{{ url_for('logout') }}">Logout</a>
+                    </div>
+                </div>
+            </nav>
+        </div>
+    </header>
+    <br><br><br><br>
+    <main>
+        <div class='row'>
+            <nav>
+                <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                    <button class="nav-link active" id="nav-generaldetails-tab" data-bs-toggle="tab"
+                        data-bs-target="#nav-generaldetails" type="button"><a href='/club/basicinformation'>Basic
+                            Information</a></button>
+                    <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button"
+                        aria-expanded="false">Application</a>
+                    <ul class="dropdown-menu">
+
+                        <button class="dropdown-item" id="nav-generalquestions-tab" data-bs-toggle="tab"
+                            data-bs-target="#nav-generalquestions" type="button" disabled><a>Create General
+                                Questions</a></button>
+                        <button class="dropdown-item" id="nav-role-tab" data-bs-toggle="tab" data-bs-target="#nav-role"
+                            type='button' disabled><a>Create Roles</a></button>
+                    </ul>
+                    <button class="nav-link" id="nav-announcements-tab" data-bs-toggle="tab"
+                        data-bs-target="#nav-announcements" type='button' disabled>Announcements</button>
+                    <button class="nav-link" id="nav-disabled-tab" data-bs-target="#nav-disabled" type="button"
+                        disabled>Coming Soon!</button>
+                </div>
+            </nav>
+            <div class="tab-content" id="nav-tabContent">
+                <div class="tab-pane fade show active" id="nav-generaldetails">
+                    <h1>Create your club</h1>
+                    <form class='formcolor' action='/club/basicinformation' method='POST'>
+                        {{ form.hidden_tag() }}
+                        <div class='mb-3'>
+                            <label for='l1' class='exampleFormControlInput1'>Club Name</label>
+                            <input id='l1' class='form-control' type='text' name='ClubName'>
+                        </div>
+                        <div class='mb-3'>
+                            <label for='l2' class='exampleFormControlInput1'>Club Description</label>
+                            <input id='l2' class='form-control' type='text' name='ClubDescription'>
+                        </div>
+                        <div class='row g-3'>
+                            <div class='col'>
+                                <label for='l3' class='exampleFormControlInput1'>Application End Date</label>
+                                <input id='l3' class='form-control' type='date' name='AppStartDate'>
+                            </div>
+                            <div class='col'>
+                                <label for='l4' class='exampleFormControlInput1'>Application End Date</label>
+                                <input id='l4' class='form-control' type='date' name='AppEndDate'>
+                            </div>
+                        </div>
+                        <br>
+                        <div class='mb-3'>
+                            <label for='l5' class='exampleFormControlInput1'>Club Contact Email</label>
+                            <input id='l5' class='form-control' type='email' name='ClubContactEmail'>
+                        </div>
+                        <input class='btn btn-primary' type='submit' value='Save'>
+                </div>
+                </form>
+            </div>
+            <div class="tab-pane fade" id="nav-announcements">
+                <div class='row'>
+                    <div class='col-3'>
+                        <h1>Announcements</h1>
+                        <p>Create a club first</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN"
+        crossorigin="anonymous"></script>
+
+</body>
+{% endblock %}
