@@ -74,12 +74,13 @@ def club_application_save(ClubId):
 def response(ClubId):
     roles_to_display = []
     club_to_display_responses = QuestionAnswer.query.filter(QuestionAnswer.ClubId == str(ClubId)).all()
-    for RoleId in club_to_display_responses:
+    for row in club_to_display_responses:
+        name_role = ClubRole.query.filter(ClubRole.RoleId==row.RoleId)
         try:
-            role = ClubRole.query.filter(ClubRole.RoleId==str(RoleId.RoleId)).first()
-            roles_to_display.append(role.Role)
+            for row in name_role:
+                roles_to_display.append(row.Role)
         except:
-            print('error')
+            print('error2')
     return render_template('responseoverview.html', club_to_display_responses=club_to_display_responses, roles_to_display=roles_to_display)
 
 selectedrole_id = ''

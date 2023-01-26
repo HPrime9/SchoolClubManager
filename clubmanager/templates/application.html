@@ -45,7 +45,7 @@
                     <button class="nav-link" id="nav-selectrole-tab" data-bs-toggle="tab"
                         data-bs-target="#nav-selectrole" type='button' style='color: rgb(59, 84, 154)'>Select
                         Role</button>
-                    {% if SelectedRole != None %}
+                    {% if SelectedRole != None and SelectedRole != '' %}
                     <button class="nav-link" id="nav-rolespecificquestionsanswers-tab" data-bs-toggle="tab"
                         data-bs-target="#nav-rolespecificquestionsanswers" type='button'
                         style='color: rgb(59, 84, 154)'>{{ SelectedRole }}</button>
@@ -78,8 +78,7 @@
                     {% if SelectedRole != None %}
                     {% for i in range(length_rolespecificquestions_to_display) %}
                     <div class='mb-3'>
-                        <label for='l1' class='exampleFormControlInput1'>{{ rolespecificquestions_to_display[i]
-                            }}</label>
+                        <label for='l1' class='exampleFormControlInput1'>{{ rolespecificquestions_to_display[i] }}</label>
                         <textarea id='l1' class='form-control' type='text' maxlength='' rows='5' name='{{ rolespecificquestions_id[i] }}RoleSpecificQuestionAnswers'
                             placeholder='Enter Answer'></textarea>
                     </div>
