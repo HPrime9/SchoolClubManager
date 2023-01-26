@@ -80,7 +80,7 @@
                     <div class='mb-3'>
                         <label for='l1' class='exampleFormControlInput1'>{{ rolespecificquestions_to_display[i]
                             }}</label>
-                        <textarea id='l1' class='form-control' type='text' maxlength='' rows='5' name='RoleSpecificQuestionAnswers'
+                        <textarea id='l1' class='form-control' type='text' maxlength='' rows='5' name='{{ rolespecificquestions_id[i] }}RoleSpecificQuestionAnswers'
                             placeholder='Enter Answer'></textarea>
                     </div>
                     {% endfor %}

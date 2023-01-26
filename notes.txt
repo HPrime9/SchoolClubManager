@@ -1,4 +1,4 @@
-cd C:\Users\Hetav\Documents\'ClubManager'
+cd C:\Users\Hetav\Documents\SchoolClubManager
 sqlite3
 .open clubmanager.db (ATTACH DATABASE 'clubmanager.db' as 'clubmanager';)
 .database

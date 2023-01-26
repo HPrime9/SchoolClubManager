@@ -38,14 +38,14 @@ def club_application(ClubId):
             print('error')
         rolespecificquestions_to_display, rolespecificquestions_id = rolespecificquestions(str(selectedrole_id))
         length_rolespecificquestions_to_display = len(rolespecificquestions_to_display)
-    return render_template('application.html', RoleId=RoleId, generalquestions_id=generalquestions_id, form=form, length_rolespecificquestions_to_display=length_rolespecificquestions_to_display, rolespecificquestions_to_display=rolespecificquestions_to_display, length_general=length_general, length_role=length_role, SelectedRole=applicant_role, ClubId=ClubId, role_options=role_options, role_descriptions=role_descriptions, generalquestions=general_questions)
+    return render_template('application.html', RoleId=RoleId, generalquestions_id=generalquestions_id, rolespecificquestions_id=rolespecificquestions_id, form=form, length_rolespecificquestions_to_display=length_rolespecificquestions_to_display, rolespecificquestions_to_display=rolespecificquestions_to_display, length_general=length_general, length_role=length_role, SelectedRole=applicant_role, ClubId=ClubId, role_options=role_options, role_descriptions=role_descriptions, generalquestions=general_questions)
 
 
 @app.route('/application/<uuid:ClubId>/save', methods=['POST'])
 @login_required
 def club_application_save(ClubId):
     global selectedrole_id
-    form = ClubApplicationForm
+    form = ClubApplicationForm()
     if form.validate_on_submit:
         if request.method == 'POST':
             general_questions, generalquestions_id = generalquestions(ClubId)
@@ -64,7 +64,7 @@ def club_application_save(ClubId):
                 answer_rolespecificquestion = request.form[str(rolespecificquestions_id[i]) + 'RoleSpecificQuestionAnswers']
                 roleid = ClubRole.query.filter_by(RoleId=rolespecificquestions_id[i]).first()
                 if answer_rolespecificquestion.strip != '':
-                    new_application_save = QuestionAnswer(AnswerId=generate_UUID(), StudentNum=current_user.StudentNum, ClubId=str(ClubId), Grade=current_user.Grade, Status=status, RoleId=str(roleid.RoleId), QuestionId=rolespecificquestions_id[i], Answer=answer_rolespecificquestion)
+                    new_application_save = QuestionAnswer(AnswerId=generate_UUID(), StudentNum=current_user.StudentNum, ClubId=str(ClubId), Grade=current_user.Grade, Status=status, RoleId=str(selectedrole_id), QuestionId=rolespecificquestions_id[i], Answer=answer_rolespecificquestion)
                     db.session.add(new_application_save)
                     db.session.commit()
             return redirect(url_for('my_clubs'))
