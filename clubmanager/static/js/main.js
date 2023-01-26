@@ -50,8 +50,8 @@ function AddGeneralQuestion() {
     `)
 }
 
-function OnAddRoleSpecificQuestion(button) {
-    AddRoleSpecificQuestionparent.insertAdjacentHTML('beforebegin', `
+function OnAddRoleSpecificQuestion() {
+    AddRoleSpecificQuestionparent.insertAdjacentHTML('afterbegin', `
     <div class='row mb-2'>
         <div class='col-4'>
             <label>Enter a question</label>

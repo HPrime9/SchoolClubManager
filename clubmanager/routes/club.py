@@ -99,9 +99,7 @@ def create_role(ClubId):
                 if Role[i].strip() != '' and RoleDescription[i].strip() != '':
                     roleid = generate_UUID()
                     new_role_and_description = ClubRole(RoleId=roleid, ClubId=str(ClubId), Role=Role[i], RoleDescription=RoleDescription[i]) 
-                    new_row = ApplicationQuestions(QuestionId=generate_UUID(), ClubId=str(ClubId), RoleId=roleid)
                     db.session.add(new_role_and_description)
-                    db.session.add(new_row)
                     try:
                         db.session.commit()
                     except:
@@ -112,38 +110,29 @@ def create_role(ClubId):
     else:
         return 'invalid information'
 
-@app.route('/club/<uuid:RoleId>/rolespecificquestions', methods=['GET', 'POST'])
+@app.route('/club/<uuid:ClubId>/<uuid:RoleId>/rolespecificquestions', methods=['GET', 'POST'])
 @login_required
-def create_rolespecificquestion(RoleId):
+def create_rolespecificquestion(ClubId, RoleId):
     form = RoleSpecificQuestionForm()
     role_specific_questions_to_display, ids = rolespecificquestions(RoleId)
-    info_to_display = ApplicationQuestions.query.filter(ApplicationQuestions.RoleId==str(RoleId)).all()
-    CreateRoleSpecificQuestions = ApplicationQuestions.query.filter(ApplicationQuestions.RoleId==str(RoleId)).first()
+    info_to_display = ApplicationQuestions.query.filter(ApplicationQuestions.RoleId==str(RoleId))
     RoleSpecificQuestion = request.form.getlist('RoleSpecificQuestion')
     ResponseLength = request.form.getlist('LengthOfResponse')
     OrderNumber = request.form.getlist('RoleSpecificQuestionOrderNumber')
     length = len(role_specific_questions_to_display)
     if form.validate_on_submit:
         if request.method == 'POST' and len(RoleSpecificQuestion) >= 1:
-            if RoleSpecificQuestion[0].strip() != '' and ResponseLength[0].strip() != '' and OrderNumber[0].strip() != '':
-                CreateRoleSpecificQuestions.Question = RoleSpecificQuestion[0]
-                CreateRoleSpecificQuestions.LengthOfResponse = ResponseLength[0]
-                CreateRoleSpecificQuestions.OrderNumber = OrderNumber[0]
-                try:
-                    db.session.commit()
-                except:
-                    return 'there was problem adding role and question'
-            for i in range(1, len(RoleSpecificQuestion)):
+            for i in range(len(RoleSpecificQuestion)):
                 if RoleSpecificQuestion[i].strip() != '' and ResponseLength[i].strip() != '' and OrderNumber[i].strip() != '':
-                    new_rolespecificquestion = ApplicationQuestions(QuestionId=generate_UUID(), ClubId=CreateRoleSpecificQuestions.ClubId, RoleId=str(RoleId), OrderNumber=OrderNumber[i], Question=RoleSpecificQuestion[i], LengthOfResponse=ResponseLength[i])
+                    new_rolespecificquestion = ApplicationQuestions(QuestionId=generate_UUID(), ClubId=str(ClubId), RoleId=str(RoleId), OrderNumber=OrderNumber[i], Question=RoleSpecificQuestion[i], LengthOfResponse=ResponseLength[i])
                     db.session.add(new_rolespecificquestion)
                     try:
                         db.session.commit()
                     except:
                         return 'there was problem adding role and question'
-            return redirect(url_for('update_club', Id=CreateRoleSpecificQuestions.ClubId))
+            return redirect(url_for('update_club', Id=ClubId))
         else:
-            return render_template('rolespecificquestions.html', form=form, length=length, RoleId=RoleId, role_specific_questions_to_display=info_to_display)
+            return render_template('rolespecificquestions.html', form=form, length=length, RoleId=RoleId, ClubId=ClubId, role_specific_questions_to_display=info_to_display)
     else:
         return 'invalid information'
 

@@ -1,3 +1,1 @@
 # SchoolClubManager
-
-Test

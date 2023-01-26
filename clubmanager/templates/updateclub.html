@@ -55,7 +55,7 @@
                         aria-expanded="false" style='color: rgb(59, 84, 154)'>Create Role Specific Questions</a>
                     <ul class="dropdown-menu">
                         {% for i in range(length) %}
-                        <a class="dropdown-item" style='color: rgb(59, 84, 154)' href='/club/{{ rolesId[i] }}/rolespecificquestions'>{{ roles[i] }}</a>
+                        <a class="dropdown-item" style='color: rgb(59, 84, 154)' href='/club/{{ updClubInfo.ClubId }}/{{ rolesId[i] }}/rolespecificquestions'>{{ roles[i] }}</a>
                         {% endfor %}
                     </ul>
                     {% endif %}

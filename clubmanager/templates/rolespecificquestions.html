@@ -125,7 +125,10 @@
             </table>
         </div>
         {% endif %}
-        <form action='/club/{{ RoleId }}/rolespecificquestions' id='insertrolespecificquestionshere' method='POST'>
+        <form action='/club/{{ ClubId }}/{{ RoleId }}/rolespecificquestions' method='POST'>
+            {{ form.hidden_tag() }}
+            <div class='row' id='insertrolespecificquestionshere'>
+            </div>
             <input class='btn btn-primary' type='submit' value='Save'>
         </form>
     </main>
