@@ -45,11 +45,11 @@ def club_application(ClubId):
         if not row.RoleId:
             general_question_answers.append(row.Answer)
 
-        test = select(QuestionAnswer).where(QuestionAnswer.StudentNum == current_user.StudentNum, QuestionAnswer.RoleId!=None)
-        testing2 = QuestionAnswer.query.filter(QuestionAnswer.StudentNum==current_user.StudentNum, QuestionAnswer.RoleId!=None).first()
-        testing = db.session.execute(test)
-        if testing and not selectedrole_id:
-            selectedrole_id = str(testing2.RoleId)
+        roleexists = select(QuestionAnswer).where(QuestionAnswer.StudentNum == current_user.StudentNum, QuestionAnswer.RoleId!=None)
+        getroleidexists = QuestionAnswer.query.filter(QuestionAnswer.StudentNum==current_user.StudentNum, QuestionAnswer.RoleId!=None).first()
+        roleexistsexecute = db.session.execute(roleexists)
+        if roleexistsexecute and not selectedrole_id:
+            selectedrole_id = str(getroleidexists.RoleId)
             rolespecificanswers = QuestionAnswer.query.filter(QuestionAnswer.RoleId==str(selectedrole_id))
             for row2 in rolespecificanswers:
                 role_specific_question_answers.append(row2.Answer)
