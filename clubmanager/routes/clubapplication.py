@@ -36,6 +36,7 @@ def club_application(ClubId):
     check_application_state = QuestionAnswer.query.filter(QuestionAnswer.StudentNum==str(current_user.StudentNum)).all()
     application_state = ''
     application_status_checked = ''
+    rolespecificquestions_id = ''
     for row in check_application_state:
         if row.Status == 'submitted':
             application_state = 'disabled'
@@ -43,17 +44,27 @@ def club_application(ClubId):
     for row in generalanswers:
         if not row.RoleId:
             general_question_answers.append(row.Answer)
-    if selectedrole_id != 'None':
-        row = ClubRole.query.filter(ClubRole.RoleId==str(selectedrole_id)).first()
-        rolespecificanswers = QuestionAnswer.query.filter(QuestionAnswer.RoleId==str(selectedrole_id))
-        for row2 in rolespecificanswers:
-            role_specific_question_answers.append(row2.Answer)
-        try:
-            applicant_role = row.Role
-        except:
-            print('error')
-        rolespecificquestions_to_display, rolespecificquestions_id = rolespecificquestions(str(selectedrole_id))
-        length_rolespecificquestions_to_display = len(rolespecificquestions_to_display)
+
+        test = select(QuestionAnswer).where(QuestionAnswer.StudentNum == current_user.StudentNum, QuestionAnswer.RoleId!=None)
+        testing2 = QuestionAnswer.query.filter(QuestionAnswer.StudentNum==current_user.StudentNum, QuestionAnswer.RoleId!=None).first()
+        testing = db.session.execute(test)
+        if testing and not selectedrole_id:
+            selectedrole_id = str(testing2.RoleId)
+            rolespecificanswers = QuestionAnswer.query.filter(QuestionAnswer.RoleId==str(selectedrole_id))
+            for row2 in rolespecificanswers:
+                role_specific_question_answers.append(row2.Answer)
+        else:
+            row = ClubRole.query.filter(ClubRole.RoleId==str(selectedrole_id)).first()
+            rolespecificanswers = QuestionAnswer.query.filter(QuestionAnswer.RoleId==str(selectedrole_id))
+            for row2 in rolespecificanswers:
+                role_specific_question_answers.append(row2.Answer)
+            try:
+                applicant_role = row.Role
+            except:
+                print('error')
+            rolespecificquestions_to_display, rolespecificquestions_id = rolespecificquestions(str(selectedrole_id))
+            length_rolespecificquestions_to_display = len(rolespecificquestions_to_display)
+    
     return render_template('application.html', RoleId=RoleId, application_status_checked=application_status_checked, generalquestions_id=generalquestions_id, application_state=application_state, role_specific_question_answers=role_specific_question_answers, general_question_answers=general_question_answers, rolespecificquestions_id=rolespecificquestions_id, form=form, length_rolespecificquestions_to_display=length_rolespecificquestions_to_display, rolespecificquestions_to_display=rolespecificquestions_to_display, length_general=length_general, length_role=length_role, SelectedRole=applicant_role, ClubId=ClubId, role_options=role_options, role_descriptions=role_descriptions, generalquestions=general_questions)
 
 
