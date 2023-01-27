@@ -4,7 +4,7 @@ from flask_wtf import FlaskForm
 from wtforms import StringField
 from wtforms.validators import InputRequired, Length
 from flask_login import login_required, current_user
-
+from sqlalchemy import select
 
 # import custom models
 from clubmanager import app, db
@@ -73,20 +73,40 @@ def club_application_save(ClubId):
             for i in range(len(general_questions)):
                 answer_generalquestion = request.form[str(generalquestions_id[i]) + 'GeneralQuestionAnswers']
                 if answer_generalquestion.strip != '':
-                    checkifinfoneedstobeupdated = QuestionAnswer.query.filter(QuestionAnswer.StudentNum == current_user.StudentNum)
-                    for row in checkifinfoneedstobeupdated:
-                        if row.QuestionId == str(generalquestions_id[i]):
-                            print('update')
-                    new_application_save = QuestionAnswer(AnswerId=generate_UUID(), StudentNum=current_user.StudentNum, ClubId=str(ClubId), Grade=current_user.Grade, Status=status, QuestionId=generalquestions_id[i], Answer=answer_generalquestion)
-                    db.session.add(new_application_save)
-                    db.session.commit()
+                    generalquestiontobeupdated = select(QuestionAnswer).where(QuestionAnswer.StudentNum == current_user.StudentNum, QuestionAnswer.QuestionId == str(generalquestions_id[i]))
+                    generalquestionupdate = QuestionAnswer.query.filter_by(StudentNum=current_user.StudentNum, QuestionId=str(generalquestions_id[i])).first_or_404()
+                    rowgeneral = db.session.execute(generalquestiontobeupdated)
+                    if rowgeneral:
+                        generalquestionupdate.Answer = answer_generalquestion
+                        try:
+                            db.session.commit()
+                        except:
+                            return 'error'
+                    else:
+                        new_application_save = QuestionAnswer(AnswerId=generate_UUID(), StudentNum=current_user.StudentNum, ClubId=str(ClubId), Grade=current_user.Grade, Status=status, QuestionId=generalquestions_id[i], Answer=answer_generalquestion)
+                        db.session.add(new_application_save)
+                        db.session.commit()
+                        try:
+                            db.session.commit()
+                        except:
+                            return 'there was problem updating'
             for i in range(len(rolespecificquestions_to_display)):
                 answer_rolespecificquestion = request.form[str(rolespecificquestions_id[i]) + 'RoleSpecificQuestionAnswers']
                 roleid = ClubRole.query.filter_by(RoleId=rolespecificquestions_id[i]).first()
                 if answer_rolespecificquestion.strip != '':
-                    new_application_save = QuestionAnswer(AnswerId=generate_UUID(), StudentNum=current_user.StudentNum, ClubId=str(ClubId), Grade=current_user.Grade, Status=status, RoleId=str(selectedrole_id), QuestionId=rolespecificquestions_id[i], Answer=answer_rolespecificquestion)
-                    db.session.add(new_application_save)
-                    db.session.commit()
+                    rolespecificquestiontobeupdated = select(QuestionAnswer).where(QuestionAnswer.StudentNum == current_user.StudentNum, QuestionAnswer.QuestionId == str(rolespecificquestions_id[i]))
+                    rolespecificquestionupdate = QuestionAnswer.query.filter_by(StudentNum=current_user.StudentNum, QuestionId=str(rolespecificquestions_id[i])).first_or_404()
+                    rowrolespecfic = db.session.execute(rolespecificquestiontobeupdated)
+                    if rowrolespecfic:
+                        rolespecificquestionupdate.Answer = answer_rolespecificquestion
+                        try:
+                            db.session.commit()
+                        except:
+                            return 'error'
+                    else:
+                        new_application_save = QuestionAnswer(AnswerId=generate_UUID(), StudentNum=current_user.StudentNum, ClubId=str(ClubId), Grade=current_user.Grade, Status=status, RoleId=str(selectedrole_id), QuestionId=rolespecificquestions_id[i], Answer=answer_rolespecificquestion)
+                        db.session.add(new_application_save)
+                        db.session.commit()
             return redirect(url_for('my_clubs'))
 
 @app.route('/responseoverview/<uuid:ClubId>')
