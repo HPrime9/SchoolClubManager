@@ -53,7 +53,7 @@
                 </div>
                 <form action='/application/{{ ClubId }}/save' method='POST'>
                 <input type="checkbox" class="form-check-input" id='showsubmitapplication' name="SubmitApplication"
-                    value="submitapplication">
+                    value="submitapplication" {{ application_status_checked }} {{ application_state }}>
                 <label class="form-check-label">Submit application to the club</label>
             </nav>
             <div class="tab-content" id="nav-tabContent">
@@ -65,12 +65,14 @@
                         <div class='mb-3'>
                             <label for='l1' class='exampleFormControlInput1'>{{ generalquestions[i] }}</label>
                             <textarea id='l1' class='form-control' type='text' maxlength='' rows='5' name='{{ generalquestions_id[i] }}GeneralQuestionAnswers'
-                                placeholder='Enter Answer'>{{ general_question_answers[i] }}</textarea>
+                                placeholder='Enter Answer' {{ application_state }}>{{ general_question_answers[i] }}</textarea>
                         </div>
                         {% endfor %}
+                        {% if application_state != 'disabled' %}
                         <div class='col'>
                             <input class='btn btn-primary' type='submit' value='Save Draft' id='submitapplicationbutton1'>
                         </div>
+                        {% endif %}
                 </div>
                 {% endif %}
                 <div class="tab-pane fade" id="nav-rolespecificquestionsanswers">
@@ -80,13 +82,15 @@
                     <div class='mb-3'>
                         <label for='l1' class='exampleFormControlInput1'>{{ rolespecificquestions_to_display[i] }}</label>
                         <textarea id='l1' class='form-control' type='text' maxlength='' rows='5' name='{{ rolespecificquestions_id[i] }}RoleSpecificQuestionAnswers'
-                            placeholder='Enter Answer'>{{ role_specific_question_answers[i] }}</textarea>
+                            placeholder='Enter Answer' {{ application_state }}>{{ role_specific_question_answers[i] }}</textarea>
                     </div>
                     {% endfor %}
                     {% endif %}
+                    {% if application_state != 'disabled' %}
                     <div class='col'>
                         <input class='btn btn-primary' type='submit' value='Save Draft' id='submitapplicationbutton2'>
                     </div>
+                    {% endif %}
                 </div>
             </div>
             </form>
@@ -106,16 +110,18 @@
                             <tbody>
                                 {% for i in range(length_role) %}
                                 <tr>
-                                    <td><input name="SelectRole" type="radio" value="{{ RoleId[i] }}"> {{
+                                    <td><input name="SelectRole" type="radio" value="{{ RoleId[i] }}" {{ application_state }}> {{
                                         role_options[i] }}</td>
                                     <td>{{ role_descriptions[i] }}</td> 
                                 </tr>
                                 {% endfor %}
                             </tbody>
                         </table>
+                        {% if application_state != 'disabled' %}
                         <div class='col'>
                             <input class='btn btn-primary' type='submit' value='Save'>
                         </div>
+                        {% endif %}
                         {% endif %}
                     </form>
                 </div>
