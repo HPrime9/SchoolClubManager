@@ -30,15 +30,24 @@ def club_application(ClubId):
     rolespecificquestions_to_display = []
     length_rolespecificquestions_to_display = 0
     applicant_role = ''
+    general_question_answers = []
+    role_specific_question_answers = []
+    generalanswers = QuestionAnswer.query.filter(QuestionAnswer.ClubId==str(ClubId))
+    for row in generalanswers:
+        if not row.RoleId:
+            general_question_answers.append(row.Answer)
     if selectedrole_id != 'None':
         row = ClubRole.query.filter(ClubRole.RoleId==str(selectedrole_id)).first()
+        rolespecificanswers = QuestionAnswer.query.filter(QuestionAnswer.RoleId==str(selectedrole_id))
+        for row2 in rolespecificanswers:
+            role_specific_question_answers.append(row2.Answer)
         try:
             applicant_role = row.Role
         except:
             print('error')
         rolespecificquestions_to_display, rolespecificquestions_id = rolespecificquestions(str(selectedrole_id))
         length_rolespecificquestions_to_display = len(rolespecificquestions_to_display)
-    return render_template('application.html', RoleId=RoleId, generalquestions_id=generalquestions_id, rolespecificquestions_id=rolespecificquestions_id, form=form, length_rolespecificquestions_to_display=length_rolespecificquestions_to_display, rolespecificquestions_to_display=rolespecificquestions_to_display, length_general=length_general, length_role=length_role, SelectedRole=applicant_role, ClubId=ClubId, role_options=role_options, role_descriptions=role_descriptions, generalquestions=general_questions)
+    return render_template('application.html', RoleId=RoleId, generalquestions_id=generalquestions_id, role_specific_question_answers=role_specific_question_answers, general_question_answers=general_question_answers, rolespecificquestions_id=rolespecificquestions_id, form=form, length_rolespecificquestions_to_display=length_rolespecificquestions_to_display, rolespecificquestions_to_display=rolespecificquestions_to_display, length_general=length_general, length_role=length_role, SelectedRole=applicant_role, ClubId=ClubId, role_options=role_options, role_descriptions=role_descriptions, generalquestions=general_questions)
 
 
 @app.route('/application/<uuid:ClubId>/save', methods=['POST'])
@@ -50,12 +59,12 @@ def club_application_save(ClubId):
         if request.method == 'POST':
             general_questions, generalquestions_id = generalquestions(ClubId)
             rolespecificquestions_to_display, rolespecificquestions_id = rolespecificquestions(str(selectedrole_id))
+            if request.form.get('SubmitApplication') == 'submitapplication':
+                status = 'submitted'
+            else:
+                status = 'draft'
             for i in range(len(general_questions)):
                 answer_generalquestion = request.form[str(generalquestions_id[i]) + 'GeneralQuestionAnswers']
-                if request.form.get('SubmitApplication') == 'submitapplication':
-                    status = 'submitted'
-                else:
-                    status = 'draft'
                 if answer_generalquestion.strip != '':
                     new_application_save = QuestionAnswer(AnswerId=generate_UUID(), StudentNum=current_user.StudentNum, ClubId=str(ClubId), Grade=current_user.Grade, Status=status, QuestionId=generalquestions_id[i], Answer=answer_generalquestion)
                     db.session.add(new_application_save)

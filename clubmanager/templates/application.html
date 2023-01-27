@@ -65,7 +65,7 @@
                         <div class='mb-3'>
                             <label for='l1' class='exampleFormControlInput1'>{{ generalquestions[i] }}</label>
                             <textarea id='l1' class='form-control' type='text' maxlength='' rows='5' name='{{ generalquestions_id[i] }}GeneralQuestionAnswers'
-                                placeholder='Enter Answer'></textarea>
+                                placeholder='Enter Answer'>{{ general_question_answers[i] }}</textarea>
                         </div>
                         {% endfor %}
                         <div class='col'>
@@ -80,7 +80,7 @@
                     <div class='mb-3'>
                         <label for='l1' class='exampleFormControlInput1'>{{ rolespecificquestions_to_display[i] }}</label>
                         <textarea id='l1' class='form-control' type='text' maxlength='' rows='5' name='{{ rolespecificquestions_id[i] }}RoleSpecificQuestionAnswers'
-                            placeholder='Enter Answer'></textarea>
+                            placeholder='Enter Answer'>{{ role_specific_question_answers[i] }}</textarea>
                     </div>
                     {% endfor %}
                     {% endif %}
@@ -108,7 +108,7 @@
                                 <tr>
                                     <td><input name="SelectRole" type="radio" value="{{ RoleId[i] }}"> {{
                                         role_options[i] }}</td>
-                                    <td>{{ role_descriptions[i] }}</td>
+                                    <td>{{ role_descriptions[i] }}</td> 
                                 </tr>
                                 {% endfor %}
                             </tbody>
