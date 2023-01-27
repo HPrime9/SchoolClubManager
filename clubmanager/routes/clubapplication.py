@@ -65,7 +65,13 @@ def club_application(ClubId):
             rolespecificquestions_to_display, rolespecificquestions_id = rolespecificquestions(str(selectedrole_id))
             length_rolespecificquestions_to_display = len(rolespecificquestions_to_display)
     
-    return render_template('application.html', RoleId=RoleId, application_status_checked=application_status_checked, generalquestions_id=generalquestions_id, application_state=application_state, role_specific_question_answers=role_specific_question_answers, general_question_answers=general_question_answers, rolespecificquestions_id=rolespecificquestions_id, form=form, length_rolespecificquestions_to_display=length_rolespecificquestions_to_display, rolespecificquestions_to_display=rolespecificquestions_to_display, length_general=length_general, length_role=length_role, SelectedRole=applicant_role, ClubId=ClubId, role_options=role_options, role_descriptions=role_descriptions, generalquestions=general_questions)
+    return render_template('application.html', RoleId=RoleId, application_status_checked=application_status_checked, \
+        generalquestions_id=generalquestions_id, application_state=application_state, role_specific_question_answers=role_specific_question_answers, \
+            general_question_answers=general_question_answers, rolespecificquestions_id=rolespecificquestions_id, form=form, \
+                length_rolespecificquestions_to_display=length_rolespecificquestions_to_display, \
+                    rolespecificquestions_to_display=rolespecificquestions_to_display, length_general=length_general, length_role=length_role, \
+                        SelectedRole=applicant_role, ClubId=ClubId, role_options=role_options, role_descriptions=role_descriptions, \
+                            generalquestions=general_questions)
 
 
 @app.route('/application/<uuid:ClubId>/save', methods=['POST'])
@@ -89,6 +95,7 @@ def club_application_save(ClubId):
                     rowgeneral = db.session.execute(generalquestiontobeupdated)
                     if rowgeneral:
                         generalquestionupdate.Answer = answer_generalquestion
+                        generalquestionupdate.Status = status
                         try:
                             db.session.commit()
                         except:
@@ -110,6 +117,7 @@ def club_application_save(ClubId):
                     rowrolespecfic = db.session.execute(rolespecificquestiontobeupdated)
                     if rowrolespecfic:
                         rolespecificquestionupdate.Answer = answer_rolespecificquestion
+                        rolespecificquestionupdate.Status = status
                         try:
                             db.session.commit()
                         except:
@@ -126,12 +134,13 @@ def response(ClubId):
     roles_to_display = []
     club_to_display_responses = QuestionAnswer.query.filter(QuestionAnswer.ClubId == str(ClubId)).all()
     for row in club_to_display_responses:
-        name_role = ClubRole.query.filter(ClubRole.RoleId==row.RoleId)
-        try:
-            for row in name_role:
-                roles_to_display.append(row.Role)
-        except:
-            print('error2')
+        if row.Status != 'draft':
+            name_role = ClubRole.query.filter(ClubRole.RoleId==str(row.RoleId)).first()
+            try:
+                for row in name_role:
+                    roles_to_display.append(row.Role)
+            except:
+                print('error2')
     return render_template('responseoverview.html', club_to_display_responses=club_to_display_responses, roles_to_display=roles_to_display)
 
 selectedrole_id = ''
