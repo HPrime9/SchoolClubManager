@@ -48,7 +48,7 @@ def club_application(ClubId):
         roleexists = select(QuestionAnswer).where(QuestionAnswer.StudentNum == current_user.StudentNum, QuestionAnswer.RoleId!=None)
         getroleidexists = QuestionAnswer.query.filter(QuestionAnswer.StudentNum==current_user.StudentNum, QuestionAnswer.RoleId!=None).first()
         roleexistsexecute = db.session.execute(roleexists)
-        if roleexistsexecute and not selectedrole_id:
+        if getroleidexists and roleexistsexecute and not selectedrole_id:
             selectedrole_id = str(getroleidexists.RoleId)
             rolespecificanswers = QuestionAnswer.query.filter(QuestionAnswer.RoleId==str(selectedrole_id))
             for row2 in rolespecificanswers:
@@ -70,7 +70,7 @@ def club_application(ClubId):
             general_question_answers=general_question_answers, rolespecificquestions_id=rolespecificquestions_id, form=form, \
                 length_rolespecificquestions_to_display=length_rolespecificquestions_to_display, \
                     rolespecificquestions_to_display=rolespecificquestions_to_display, length_general=length_general, length_role=length_role, \
-                        SelectedRole=applicant_role, ClubId=ClubId, role_options=role_options, role_descriptions=role_descriptions, \
+                        SelectedRole=applicant_role, ClubId=str(ClubId), role_options=role_options, role_descriptions=role_descriptions, \
                             generalquestions=general_questions)
 
 
@@ -91,9 +91,9 @@ def club_application_save(ClubId):
                 answer_generalquestion = request.form[str(generalquestions_id[i]) + 'GeneralQuestionAnswers']
                 if answer_generalquestion.strip != '':
                     generalquestiontobeupdated = select(QuestionAnswer).where(QuestionAnswer.StudentNum == current_user.StudentNum, QuestionAnswer.QuestionId == str(generalquestions_id[i]))
-                    generalquestionupdate = QuestionAnswer.query.filter_by(StudentNum=current_user.StudentNum, QuestionId=str(generalquestions_id[i])).first_or_404()
+                    generalquestionupdate = QuestionAnswer.query.filter_by(StudentNum=current_user.StudentNum, QuestionId=str(generalquestions_id[i])).first()
                     rowgeneral = db.session.execute(generalquestiontobeupdated)
-                    if rowgeneral:
+                    if rowgeneral and generalquestionupdate:
                         generalquestionupdate.Answer = answer_generalquestion
                         generalquestionupdate.Status = status
                         try:
@@ -113,9 +113,9 @@ def club_application_save(ClubId):
                 roleid = ClubRole.query.filter_by(RoleId=rolespecificquestions_id[i]).first()
                 if answer_rolespecificquestion.strip != '':
                     rolespecificquestiontobeupdated = select(QuestionAnswer).where(QuestionAnswer.StudentNum == current_user.StudentNum, QuestionAnswer.QuestionId == str(rolespecificquestions_id[i]))
-                    rolespecificquestionupdate = QuestionAnswer.query.filter_by(StudentNum=current_user.StudentNum, QuestionId=str(rolespecificquestions_id[i])).first_or_404()
+                    rolespecificquestionupdate = QuestionAnswer.query.filter_by(StudentNum=current_user.StudentNum, QuestionId=str(rolespecificquestions_id[i])).first()
                     rowrolespecfic = db.session.execute(rolespecificquestiontobeupdated)
-                    if rowrolespecfic:
+                    if rowrolespecfic and rolespecificquestionupdate:
                         rolespecificquestionupdate.Answer = answer_rolespecificquestion
                         rolespecificquestionupdate.Status = status
                         try:

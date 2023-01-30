@@ -23,3 +23,5 @@ CREATE TABLE COMPANY(
 INSERT INTO COMPANY (ID,NAME,AGE,ADDRESS,SALARY) VALUES (1, 'Paul', 32, 'California', 20000.00 );
 
 SELECT * FROM COMPANY;
+
+clubmanager/routes/clubapplication.py
