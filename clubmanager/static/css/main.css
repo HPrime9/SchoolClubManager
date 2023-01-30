@@ -7,7 +7,7 @@
 }
 
 #logospacing {
-    padding: 20px;
+    padding: 60px;
 }
 
 .sc {
@@ -51,10 +51,6 @@ a {
     text-decoration: none;
 }
 
-.clubpage {
-    background-color: #CCFFFF;
-}
-
 .navclubpg {
     background-color: rgb(29, 194, 178);
 }
@@ -66,4 +62,13 @@ a {
 
 .landingpage {
     background-color: aliceblue;
+}
+
+.announcebackground {
+    overflow: auto;
+    height: 20rem;
+}
+
+.applicationinline {
+    display: inline;
 }

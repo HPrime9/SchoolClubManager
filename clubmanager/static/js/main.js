@@ -8,7 +8,6 @@ const AddRoleSpecificQuestionparent = document.querySelector('#insertrolespecifi
 
 const SubmitApplicationCheckbox = document.querySelector('#showsubmitapplication')
 
-
 if (BttnAddGeneralQuestion) {
     BttnAddGeneralQuestion.addEventListener('click', AddGeneralQuestion);
 }

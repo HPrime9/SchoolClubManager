@@ -9,7 +9,7 @@
 
 {% block body %}
 
-<body id='top' class='clubpage container-fluid'>
+<body id='top' class='container-fluid'>
     <div class='row'>
         <header id='header' class='fixed-top d-flex align-items-center'>
             <div class="container d-flex align-items-center justify-content-between">
@@ -44,80 +44,88 @@
                 </div>
                 <nav id='navbar2' class="nav-menu navbar2">
                     <ul>
-                        <a class='nav-link2 scrollto'>Top</a>
-                        <a class='nav-link2 scrollto'>Announcements</a>
-                        <a class='nav-link2 scrollto'>Application</a>
-                        <a class='nav-link2 scrollto'>Contact</a>
+                        <a class='nav-link2 scrollto' href='#Top'>Top</a>
+                        <a class='nav-link2 scrollto' href='#Announcements'>Announcements</a>
+                        <a class='nav-link2 scrollto' href='#Application'>Application</a>
+                        <a class='nav-link2 scrollto' href='#Contact'>Contact</a>
                     </ul>
                 </nav>
             </div>
         </header>
     </div>
-    <main>
+    <main class='container' id='Top'>
+        <br><br><br>
         <div class='row'>
             <div class='col'>
                 <h1 id='clubname' style='text-align:center; margin: 80px auto;'>{{ club_to_display.ClubName }}</h1>
             </div>
         </div>
-        <hr>
-        
-        <div class='row'>
-            <div class='col-5'>
-                <h2>Description</h2>
-                <p>{{ club_to_display.ClubDescription }}</p>
-            </div>
-            <div class='col' style='margin: 80px auto;'>
-                <h5>Application Start Date</h5>
-                <p>{{ club_to_display.AppStartDate }}</p>
-                <h5>Application End Date</h5>
-                <p>{{ club_to_display.AppEndDate }}</p>
-            </div>
-            
-        </div>
-
-        <div class='row'>
-            <div class='col'>
-
-            </div>
-            <div class='col-5'>
-                <h2 id='announcements'>Announcements</h2>
-                <br>
-                {% if Announcements %}
-                <div>
-                    {% for announcement in Announcements %}
-                    <h1>{{ announcement.Header }}</h1>
-                    <p>{{ announcement.Message }}</p>
-                    {% endfor %}
-
+        <div class='container'>
+            <div class='row'>
+                <div class='col'></div>
+                <div class='col-5'>
+                    <h2>Description</h2>
+                    <p>{{ club_to_display.ClubDescription }}</p>
                 </div>
-                {% else %}
-                {% endif %}
+                <div class='col'></div>
+                
+                <div class='col'>
+                    <h5>Application Start Date</h5>
+                    <p>{{ club_to_display.AppStartDate }}</p>
+                    <h5>Application End Date</h5>
+                    <p>{{ club_to_display.AppEndDate }}</p>
+                </div>
             </div>
-            <div class='col'>
+            <div class='container'>
+            <div class='row'>
+                <div class='col'></div>
+                <div class='col'></div>
+                <div class='col'></div>
+                <div class='col'></div>
             </div>
-        </div>
+            <br><br>
+            <div class='row'>
+                <div class='col'></div>
+                <div class='col'></div>
+                <div class='col'></div>
+                <div class='col-9' id='Announcements'>
+                    <div class='announcebackground'>
+                    {% if Announcements %}
+                    <div id='annoucementarea'>
+                        {% for announcement in Announcements %}
+                        <h1>{{ announcement.Header }}</h1>
+                        <p>{{ announcement.Message }}</p>
+                        {% endfor %}
 
-        <div class='row'>
-            <div class='col'>
-
+                    </div>
+                    {% else %}
+                    {% endif %}
+                </div>
+                </div>
+                <div class='col'></div>
             </div>
-            <div class='col'>
-                <h2 id='application'>Application</h2>
-                <button class='btn btn-info'><a href='/application/{{ club_to_display.ClubId }}'>Click to Apply</a></button>
-            <div class='col'>
-
+            <br><br><br>
+            <div class='row'>
+                <div class='col'></div>
+                <div class='col-3'>
+                    <h2 id='Application'>Application</h2>
+                    <p class='applicationinline'>Applications are closed!</p><button class='applicationinline btn btn-primary'><a style='color:rgb(255, 255, 255);' href='/application/{{ club_to_display.ClubId }}'>Click to
+                            Apply</a></button>
+                </div>
+                <div class='col'></div>
+                <div class='col'></div>
+                <div class='col'></div>
             </div>
-        </div>
-        <div class='row'>
-            <div class='col'>
-
-            </div>
-            <div class='col-5'>
-                <h4 id='contact'>Contact</h4>
-                <p>{{ club_to_display.ClubContactEmail }}</p>
-            </div>
-            <div class='col'>
-
+            <br><br>
+            <div class='row'>
+                <div class='col'></div>
+                <div class='col-3'>
+                    <h4 id='Contact'>Contact</h4>
+                    <p>{{ club_to_display.ClubContactEmail }}</p>
+                </div>
+                <div class='col'></div>
+                <div class='col'></div>
+                <div class='col'></div>
             </div>
         </div>
     </main>
