@@ -126,7 +126,7 @@ def club_application_save(ClubId):
                         new_application_save = QuestionAnswer(AnswerId=generate_UUID(), StudentNum=current_user.StudentNum, ClubId=str(ClubId), Grade=current_user.Grade, Status=status, RoleId=str(selectedrole_id), QuestionId=rolespecificquestions_id[i], Answer=answer_rolespecificquestion)
                         db.session.add(new_application_save)
                         db.session.commit()
-            return redirect(url_for('my_clubs'))
+            return redirect(url_for('dashboard'))
 
 @app.route('/responseoverview/<uuid:ClubId>')
 @login_required

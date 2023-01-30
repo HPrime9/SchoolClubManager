@@ -55,7 +55,7 @@ def create_club():
         db.session.add(new_club)
         db.session.add(new_clubstudentmap)
         db.session.commit()
-        return redirect(url_for('my_clubs'))
+        return redirect(url_for('dashboard'))
     else:
         return 'invalid'
     
@@ -151,7 +151,7 @@ def update_club(Id):
             updClubInfo.ClubContactEmail = request.form['ClubContactEmail']
             try:
                 db.session.commit()
-                return redirect(url_for('my_clubs'))
+                return redirect(url_for('dashboard'))
             except:
                 return 'there was problem updating'
         else:
@@ -250,9 +250,9 @@ def delete_club(Id):
         db.session.delete(club_to_del)
         db.session.delete(club_to_del_from_cs_map)
         db.session.commit()
-        return redirect(url_for('my_clubs'))
+        return redirect(url_for('dashboard'))
     except:
-        return redirect(url_for('my_clubs'))
+        return redirect(url_for('dashboard'))
 
 @app.route('/delete/<uuid:ClubId>/<uuid:QuestionId>')
 def delete_question(ClubId, QuestionId):
@@ -285,7 +285,7 @@ def club_announcement(ClubId):
             db.session.add(new_announcemnt)
             try:
                 db.session.commit()
-                return redirect(url_for('my_clubs'))
+                return redirect(url_for('dashboard'))
             except:
                 return 'there was problem making announcement'
         else:
@@ -301,7 +301,7 @@ def club_announcement(ClubId):
 #         new_announcemnt = Announcement(AnnouncementId=generate_UUID(), ClubId=ClubId, Header=form.Header.data, Message=form.Message.data)
 #         db.session.add(new_announcemnt)
 #         db.session.commit()
-#         return redirect(url_for('my_clubs'))
+#         return redirect(url_for('dashboard'))
 
 @app.route('/viewclubs')
 @login_required

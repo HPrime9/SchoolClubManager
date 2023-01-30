@@ -36,7 +36,7 @@ class RegisterForm(FlaskForm):
     Grade = IntegerField('Grade', validators=[InputRequired()])
     School = StringField('School', validators=[InputRequired(), Length(min=6, max=40)])
 
-@app.route('/login', methods=['POST', 'GET'])
+@app.route('/login/dashboard', methods=['POST', 'GET'])
 def login():
     form = LoginForm()
 
@@ -45,12 +45,12 @@ def login():
         if user:
             if check_password_hash(user.Password, form.Password.data):
                 login_user(user)
-                return redirect(url_for('my_clubs'))
+                return redirect(url_for('dashboard'))
         return 'Invalid Username or Password'
 
     return render_template('login.html', form=form)
 
-@app.route('/register', methods=['POST', 'GET'])
+@app.route('/register/dashboard', methods=['POST', 'GET'])
 def register():
     form = RegisterForm()
     
@@ -60,17 +60,17 @@ def register():
         db.session.add(new_user)
         db.session.commit()
 
-        return redirect(url_for('my_clubs'))
+        return redirect(url_for('dashboard'))
     return render_template('register.html', form=form)
 
-@app.route('/myclubs')
+@app.route('/dashboard')
 @login_required
-def my_clubs():
+def dashboard():
     userClubCatalogue = getUserOwnedClubs(current_user.StudentNum)
     truthy = True
     if userClubCatalogue:
         truthy = False
-    return render_template('myclubs.html', truthy=truthy, name=current_user.FirstName, userClubCatalogue=userClubCatalogue) 
+    return render_template('dashboard.html', truthy=truthy, name=current_user.FirstName, userClubCatalogue=userClubCatalogue) 
 
 @app.route('/logout')
 @login_required
