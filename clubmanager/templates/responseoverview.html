@@ -29,8 +29,12 @@
                 </thead>
                 <tbody>
                     {% set counter = 0 %}
+                    {% set test = [] %}
                     {% for response in club_to_display_responses %}
-                    {% if response.Status == 'submitted' %}
+                    {% set studentnum = response.StudentNum | int %}
+                    {% if response.Status == 'submitted' and test.count(studentnum) == 0 %}
+                    {% set test = test + [studentnum] %}
+                   
                     <tr>
                         <td>{{ response.StudentNum }}</td>
                         <td>{{ response.Grade }}</td>
