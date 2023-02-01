@@ -7,15 +7,15 @@ from wtforms.fields import SelectField
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 
-# import custom models
+# Import custom libraries
 from clubmanager import app, db
 from clubmanager.models import Student
 from clubmanager.functions import generate_UUID, getUserOwnedClubs
 
+# Initialize variables
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
-
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -37,6 +37,7 @@ class RegisterForm(FlaskForm):
     Grade = SelectField('Select Grade', choices=['3', '4', '5', '6', '7', '8', '9', '10', '11', '12'])
     School = SelectField('Select School', choices=['Turner Fenton Secondary School', 'Roberta Bondar Public School', 'T. L. Kennedy Secondary School'])
 
+# Create routes
 @app.route('/login/dashboard', methods=['GET'])
 def get_login():
     form = LoginForm()
