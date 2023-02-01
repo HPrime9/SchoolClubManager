@@ -72,3 +72,8 @@ a {
 .applicationinline {
     display: inline;
 }
+
+.validate {
+    color: rgb(214, 101, 101);
+    font-size: 15px;
+}

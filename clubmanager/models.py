@@ -6,11 +6,11 @@ from clubmanager import db
 # Create student data table
 class Student(UserMixin, db.Model):
     id = db.Column(db.String(36), primary_key=True)
-    FirstName = db.Column(db.String(100), nullable=False)
+    FirstName = db.Column(db.String(75), nullable=False)
     LastName = db.Column(db.String(100), nullable=False)
-    Username = db.Column(db.String(30), unique=True, nullable=False)
+    Username = db.Column(db.String(36), unique=True, nullable=False)
     StudentNum = db.Column(db.Integer, unique=True, nullable=False)
-    Email = db.Column(db.String(55), unique=True, nullable=False)
+    Email = db.Column(db.String(75), unique=True, nullable=False)
     Password = db.Column(db.String(80), nullable=False)
     Grade = db.Column(db.Integer, nullable=False)
     School = db.Column(db.String(40), nullable=False)

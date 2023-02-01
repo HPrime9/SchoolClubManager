@@ -2,7 +2,8 @@
 from flask import render_template, redirect, url_for
 from flask_wtf import FlaskForm
 from wtforms import StringField, IntegerField, PasswordField
-from wtforms.validators import InputRequired, Email, Length
+from wtforms.validators import InputRequired, Email, Length, NumberRange
+from wtforms.fields import SelectField
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 
@@ -27,14 +28,14 @@ class LoginForm(FlaskForm):
 
 # Create registration form
 class RegisterForm(FlaskForm):
-    FirstName = StringField('First Name', validators=[InputRequired(), Length(max=100)])
+    FirstName = StringField('First Name', validators=[InputRequired(), Length(max=75)])
     LastName = StringField('Last Name', validators=[InputRequired(), Length(max=100)])
-    Username = StringField('Username', validators=[InputRequired(), Length(min=6, max=30)])
-    StudentNum = StringField('Student Number', validators=[InputRequired()])
-    Email = StringField('Email', validators=[InputRequired(), Email(message='Invalid Email'), Length(max=55)])
+    Username = StringField('Username', validators=[InputRequired(), Length(min=3, max=36)])
+    StudentNum = IntegerField('Student Number', validators=[InputRequired(), NumberRange(min=0)])
+    Email = StringField('Email', validators=[InputRequired(), Email(), Length(max=75)])
     Password = PasswordField('Password', validators=[InputRequired(), Length(min=1, max=80)]) # remeber to change min to 8
-    Grade = IntegerField('Grade', validators=[InputRequired()])
-    School = StringField('School', validators=[InputRequired(), Length(min=6, max=40)])
+    Grade = SelectField('Select Grade', choices=['3', '4', '5', '6', '7', '8', '9', '10', '11', '12'])
+    School = SelectField('Select School', choices=['Turner Fenton Secondary School', 'Roberta Bondar Public School', 'T. L. Kennedy Secondary School'])
 
 @app.route('/login/dashboard', methods=['POST', 'GET'])
 def login():
