@@ -9,6 +9,22 @@ sqlite3
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ==========
 
 CREATE TABLE COMPANY(
