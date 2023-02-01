@@ -1,5 +1,5 @@
 # Import libraries
-from flask import render_template, redirect, url_for
+from flask import render_template, redirect, url_for, flash
 from flask_wtf import FlaskForm
 from wtforms import StringField, IntegerField, PasswordField
 from wtforms.validators import InputRequired, Email, Length, NumberRange
@@ -37,32 +37,38 @@ class RegisterForm(FlaskForm):
     Grade = SelectField('Select Grade', choices=['3', '4', '5', '6', '7', '8', '9', '10', '11', '12'])
     School = SelectField('Select School', choices=['Turner Fenton Secondary School', 'Roberta Bondar Public School', 'T. L. Kennedy Secondary School'])
 
-@app.route('/login/dashboard', methods=['POST', 'GET'])
-def login():
+@app.route('/login/dashboard', methods=['GET'])
+def get_login():
     form = LoginForm()
+    return render_template('login.html', form=form)
 
+@app.route('/login/dashboard', methods=['POST'])
+def create_login():
+    form = LoginForm()
     if form.validate_on_submit():
         user = Student.query.filter_by(StudentNum=form.StudentNum.data).first()
         if user:
             if check_password_hash(user.Password, form.Password.data):
                 login_user(user)
                 return redirect(url_for('dashboard'))
-        return 'Invalid Username or Password'
+        flash('Incorrect Username or Password!', 'error') #warning, info, error
+        return render_template('login.html', form=form)
 
-    return render_template('login.html', form=form)
-
-@app.route('/register/dashboard', methods=['POST', 'GET'])
-def register():
+@app.route('/register/dashboard', methods=['GET'])
+def get_registration():
     form = RegisterForm()
-    
+    return render_template('register.html', form=form)
+
+@app.route('/register/dashboard', methods=['POST'])
+def create_user():
+    form = RegisterForm()
     if form.validate_on_submit():
         hashed_Password = generate_password_hash(form.Password.data, method='sha256')
         new_user = Student(id=generate_UUID(), FirstName=form.FirstName.data, LastName=form.LastName.data, Username=form.Username.data, StudentNum=form.StudentNum.data, Email=form.Email.data, Password=hashed_Password, Grade=form.Grade.data, School=form.School.data)
         db.session.add(new_user)
         db.session.commit()
-
+        login_user(new_user)
         return redirect(url_for('dashboard'))
-    return render_template('register.html', form=form)
 
 @app.route('/dashboard')
 @login_required
