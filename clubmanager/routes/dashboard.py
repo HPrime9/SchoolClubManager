@@ -15,7 +15,7 @@ from clubmanager.functions import generate_UUID, getUserOwnedClubs
 # Initialize variables
 login_manager = LoginManager()
 login_manager.init_app(app)
-login_manager.login_view = 'login'
+login_manager.login_view = 'get_login'
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -50,7 +50,7 @@ def create_login():
         user = Student.query.filter_by(StudentNum=form.StudentNum.data).first()
         if user:
             if check_password_hash(user.Password, form.Password.data):
-                login_user(user)
+                login_user(user, remember=True)
                 return redirect(url_for('dashboard'))
         flash('Incorrect Username or Password!', 'error') #warning, info, error
         return render_template('login.html', form=form)
@@ -68,7 +68,7 @@ def create_user():
         new_user = Student(id=generate_UUID(), FirstName=form.FirstName.data, LastName=form.LastName.data, Username=form.Username.data, StudentNum=form.StudentNum.data, Email=form.Email.data, Password=hashed_Password, Grade=form.Grade.data, School=form.School.data)
         db.session.add(new_user)
         db.session.commit()
-        login_user(new_user)
+        login_user(new_user, remember=True)
         return redirect(url_for('dashboard'))
 
 @app.route('/dashboard')

@@ -26,14 +26,12 @@ class ClubCreationForm(FlaskForm):
 def get_club(ClubId = ''):
     mode = request.args.get('mode')
     form = ClubCreationForm()
-    updClubInfo = Club.query.get_or_404(str(ClubId))
-    roles, role_descriptions, rolesId = uniqueRoles(ClubId)
     if mode == 'new':  
         return render_template('club.html', form=form)
     elif mode == 'update':
+        updClubInfo = Club.query.get_or_404(str(ClubId))   
+        roles, role_descriptions, rolesId = uniqueRoles(ClubId)
         return render_template('updateclub.html', form=form, updClubInfo=updClubInfo, rolesId=rolesId, roles=roles, length=len(roles))
-    else:
-        return 's'
 
 # POST routes for creating, updating and deleting a club
 @app.route('/clubs', methods=['POST'])

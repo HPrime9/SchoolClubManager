@@ -63,8 +63,28 @@
                                     <p class='card-text'>{{ club.ClubDescription }}</p>
                                     <a href="/clubs/{{ club.ClubId }}?mode=update"><button
                                             class='btn btn-primary'>Update</button></a>
-                                    <a href="/clubs/{{ club.ClubId }}?mode=delete"><button
-                                            class='btn btn-danger'>Delete</button></a>
+                                    <button type="button" data-bs-toggle="modal" data-bs-target="#exampleModal"
+                                        class='btn btn-danger'>Delete</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+                            aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h1 class="modal-title fs-5" id="exampleModalLabel">Delete Club</h1>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                            aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        Are you sure you want to delete?
+                                    </div>
+                                    <div class="modal-footer">
+                                        <form method='POST' action='/clubs/{{ club.ClubId }}?mode=delete'>
+                                            <button type="submit" class="btn btn-danger">Delete</button>
+                                        </form>
+                                    </div>
                                 </div>
                             </div>
                         </div>
