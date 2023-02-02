@@ -6,7 +6,7 @@ from wtforms.validators import InputRequired, Email, Length
 from flask_login import login_required, current_user
 from sqlalchemy import delete
 
-# import custom models
+# Import custom libraries
 from clubmanager import app, db
 from clubmanager.models import Club, ClubStudentMap, ApplicationQuestions, ClubRole, Announcement
 from clubmanager.functions import generate_UUID, uniqueRoles, rolespecificquestions
@@ -38,26 +38,7 @@ class AnnouncementForm(FlaskForm):
     Header = StringField('Title', validators=[InputRequired(), Length(max=100)])
     Message = StringField('Write a Message', validators=[InputRequired(), Length(max=2000)])
 
-@app.route('/club/basicinformation', methods=['GET'])
-@login_required
-def get_club():    
-    form = ClubCreationForm()
-    return render_template('club.html', form=form)
 
-@app.route('/club/basicinformation', methods=['POST'])
-@login_required
-def create_club():    
-    form = ClubCreationForm()
-    if form.validate_on_submit():
-        dummy_id = generate_UUID()
-        new_club = Club(ClubId=dummy_id, StudentNum=current_user.StudentNum, School=current_user.School, ClubName=form.ClubName.data, ClubDescription=form.ClubDescription.data, AppStartDate=form.AppStartDate.data, AppEndDate=form.AppEndDate.data, ClubContactEmail=form.ClubContactEmail.data)
-        new_clubstudentmap = ClubStudentMap(ClubStudentMapId=generate_UUID(), StudentId = current_user.id, ClubId=dummy_id)
-        db.session.add(new_club)
-        db.session.add(new_clubstudentmap)
-        db.session.commit()
-        return redirect(url_for('dashboard'))
-    else:
-        return 'invalid'
     
 @app.route('/club/<uuid:ClubId>/generalquestions', methods=['GET', 'POST'])
 @login_required
@@ -135,29 +116,6 @@ def create_rolespecificquestion(ClubId, RoleId):
             return render_template('rolespecificquestions.html', form=form, length=length, RoleId=RoleId, ClubId=ClubId, role_specific_questions_to_display=info_to_display)
     else:
         return 'invalid information'
-
-@app.route('/update/<uuid:Id>', methods=['GET', 'POST'])
-@login_required
-def update_club(Id):
-    form = ClubCreationForm()
-    updClubInfo = Club.query.get_or_404(str(Id))   
-    roles, role_descriptions, rolesId = uniqueRoles(Id)
-    if form.validate_on_submit: 
-        if request.method == 'POST':
-            updClubInfo.ClubName = request.form['ClubName']
-            updClubInfo.ClubDescription = request.form['ClubDescription']
-            updClubInfo.AppStartDate = request.form['AppStartDate']
-            updClubInfo.AppEndDate = request.form['AppEndDate']
-            updClubInfo.ClubContactEmail = request.form['ClubContactEmail']
-            try:
-                db.session.commit()
-                return redirect(url_for('dashboard'))
-            except:
-                return 'there was problem updating'
-        else:
-            return render_template('updateclub.html', form=form, updClubInfo=updClubInfo, rolesId=rolesId, roles=roles, length=len(roles))
-    else:
-        return 'not vlaid'
 
 
 
@@ -241,18 +199,6 @@ def delete_clubrole(ClubId, RoleId):
         return redirect(url_for('update_club', Id=ClubId))
     except:
         return 'sorry could not delete'
-
-@app.route('/delete/<uuid:Id>')
-def delete_club(Id):
-    club_to_del = Club.query.get_or_404(str(Id))
-    club_to_del_from_cs_map = ClubStudentMap.query.filter_by(ClubId=str(Id)).first()
-    try:
-        db.session.delete(club_to_del)
-        db.session.delete(club_to_del_from_cs_map)
-        db.session.commit()
-        return redirect(url_for('dashboard'))
-    except:
-        return redirect(url_for('dashboard'))
 
 @app.route('/delete/<uuid:ClubId>/<uuid:QuestionId>')
 def delete_question(ClubId, QuestionId):

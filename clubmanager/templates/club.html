@@ -50,7 +50,7 @@
             <div class="tab-content" id="nav-tabContent">
                 <div class="tab-pane fade show active" id="nav-generaldetails">
                     <h1>Create your club</h1>
-                    <form class='formcolor' action='/club/basicinformation' method='POST'>
+                    <form class='formcolor' action='/clubs?mode=new' method='POST'>
                         {{ form.hidden_tag() }}
                         <div class='mb-3'>
                             <label for='l1' class='exampleFormControlInput1'>Club Name</label>

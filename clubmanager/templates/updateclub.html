@@ -68,8 +68,9 @@
             <div class="tab-content" id="nav-tabContent">
                 <div class="tab-pane fade show active" id="nav-generaldetails">
                     <h1>Update your club</h1>
-                    <form class='formcolor' action='/update/{{ updClubInfo.ClubId }}' method='POST'>
+                    <form class='formcolor' action='/clubs/{{ updClubInfo.ClubId }}?mode=update' method='POST'>
                         {{ form.hidden_tag() }}
+                        <input type='hidden' name='HiddenBasicInformation' value='PUT'>
                         <div class='mb-3'>
                             <label for='l1' class='exampleFormControlInput1'>Club Name</label>
                             <input id='l1' class='form-control' type='text' name='ClubName'

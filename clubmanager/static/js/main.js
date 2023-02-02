@@ -8,6 +8,17 @@ const AddRoleSpecificQuestionparent = document.querySelector('#insertrolespecifi
 
 const SubmitApplicationCheckbox = document.querySelector('#showsubmitapplication')
 
+// const BttnDeleteClub = document.getElementsByClassName('deleteclub')
+// const BttnUpdateClub = document.getElementsByClassName('updateclub')
+
+// if (BttnDeleteClub) {
+//     BttnDeleteClub.addEventListener('click', DeleteClub);
+// }
+
+// if (BttnUpdateClub) {
+//     BttnUpdateClub.addEventListener('click', UpdateClub);
+// }
+
 if (BttnAddGeneralQuestion) {
     BttnAddGeneralQuestion.addEventListener('click', AddGeneralQuestion);
 }
@@ -18,6 +29,14 @@ if (BttnAddRole) {
 if (SubmitApplicationCheckbox) {
     SubmitApplicationCheckbox.addEventListener('change', AddApplicationSubmitSaveButton);
 }
+
+// function UpdateClub() {
+//     document.getElementsByClassName('UpdateDeleteClubHiddenClass').value = 'PUT'
+// }
+
+// function DeleteClub() {
+//     document.getElementsByClassName('UpdateDeleteClubHiddenClass').value = 'DELETE'
+// }
 
 
 function AddApplicationSubmitSaveButton() {
