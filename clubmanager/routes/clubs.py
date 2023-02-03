@@ -1,8 +1,5 @@
 # Import libraries
 from flask import render_template, redirect, url_for, request
-from flask_wtf import FlaskForm
-from wtforms import StringField, IntegerField
-from wtforms.validators import InputRequired, Email, Length
 from flask_login import login_required, current_user
 from sqlalchemy import delete
 
@@ -10,14 +7,8 @@ from sqlalchemy import delete
 from clubmanager import app, db
 from clubmanager.models import Club, ClubStudentMap, ApplicationQuestions, ClubRole, Announcement
 from clubmanager.functions import generate_UUID, uniqueRoles, rolespecificquestions
+from clubmanager.flaskforms import ClubCreationForm, ClubGeneralQuestionForm
 
-# Create a class containing basic information required to start a club
-class ClubCreationForm(FlaskForm):
-    ClubName = StringField('Club Name', validators=[InputRequired(), Length(min=2, max=50)])
-    ClubDescription = StringField('Club Description', validators=[InputRequired(), Length(max=300)])
-    AppStartDate = StringField('Application Start Date', validators=[InputRequired(), Length(min=5, max=35)])
-    AppEndDate = StringField('Application End Date', validators=[InputRequired(), Length(min=5, max=35)])
-    ClubContactEmail = StringField('Club Contact Email', validators=[InputRequired(), Email(message='Invalid Email'), Length(max=55)])
 
 # GET routes for creating a club and updating
 @app.route('/clubs', methods=['GET'])
@@ -25,13 +16,18 @@ class ClubCreationForm(FlaskForm):
 @login_required
 def get_club(ClubId = ''):
     mode = request.args.get('mode')
-    form = ClubCreationForm()
     if mode == 'new':  
-        return render_template('club.html', form=form)
+        return render_template('club.html')
     elif mode == 'update':
-        updClubInfo = Club.query.get_or_404(str(ClubId))   
-        roles, role_descriptions, rolesId = uniqueRoles(ClubId)
-        return render_template('updateclub.html', form=form, updClubInfo=updClubInfo, rolesId=rolesId, roles=roles, length=len(roles))
+        roles, role_descriptions, RoleId = uniqueRoles(ClubId)
+        length = len(roles)
+        updClubInfo = Club.query.get_or_404(str(ClubId))  
+        questions_to_display = ApplicationQuestions.query.filter(ApplicationQuestions.ClubId==str(ClubId)) 
+        return render_template('updateclub.html', RoleId=RoleId, ClubId=ClubId, length=length, roles=roles, \
+            role_descriptions=role_descriptions, updClubInfo=updClubInfo, questions_to_display=questions_to_display, \
+                rolesId=RoleId)
+    else:
+        return 'error'
 
 # POST routes for creating, updating and deleting a club
 @app.route('/clubs', methods=['POST'])

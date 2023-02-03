@@ -10,12 +10,7 @@ from sqlalchemy import select
 from clubmanager import app, db
 from clubmanager.models import ClubRole, QuestionAnswer
 from clubmanager.functions import generate_UUID, uniqueRoles, rolespecificquestions, generalquestions
-
-class ClubApplicationForm(FlaskForm):
-    SubmitApplication = StringField('General Question Answer', validators=[Length(max=1000)])
-    GeneralQuestionAnswers = StringField('General Question Answer', validators=[InputRequired(), Length(max=1000)])
-    SelectRole = StringField('Select Role', validators=[InputRequired(), Length(max=500)])
-    RoleSpecificQuestionAnswers = StringField('Role Specific Question Answer', validators=[InputRequired(), Length(max=1000)])
+from clubmanager.flaskforms import ClubApplicationForm
 
 @app.route('/application/<uuid:ClubId>', methods=['GET', 'POST'])
 @login_required
