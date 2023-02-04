@@ -16,7 +16,7 @@ from clubmanager.flaskforms import ClubCreationForm, ClubGeneralQuestionForm, Cl
 @app.route('/clubs/<uuid:ClubId>/announcements', methods=['POST'])
 @app.route('/clubs/<uuid:ClubId>/announcements/<uuid:AnnouncementId>', methods=['POST'])
 @login_required
-def club_announcement(ClubId):
+def club_announcement(ClubId, AnnouncementId = ''):
     mode = request.args.get('mode')
     form = AnnouncementForm()
     if mode == 'new':

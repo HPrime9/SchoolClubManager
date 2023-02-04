@@ -27,7 +27,7 @@ class Club(UserMixin, db.Model):
     AppEndDate = db.Column(db.String(35), nullable=False)
     ClubContactEmail = db.Column(db.String(55), unique=True, nullable=False)
     Date_Club_Created = db.Column(db.Date, default=datetime.utcnow)
-
+    
 # Create club-student data table
 class ClubStudentMap(UserMixin, db.Model):
     ClubStudentMapId = db.Column(db.String(36), primary_key=True)

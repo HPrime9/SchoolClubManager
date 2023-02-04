@@ -12,19 +12,17 @@
 <body class='container form'>
     <header id='header' class='fixed-top d-flex align-items-center'>
         <div class="container d-flex align-items-center justify-content-between">
-            <div class='logo'>
-                <h2><a href='/'>School Club Manager</a></h2>
-            </div>
+            <h2><a href='/'>School Club Manager</a></h2>
             <nav class='navbar navbar-expand-lg bg-body'>
                 <div class='container-fluid'>
                     <div class='collapse navbar-collapse' id='navbarText'>
                         <ul class="nav justify-content-end">
                             <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button"
+                                <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button"
                                     aria-expanded="false">My Clubs</a>
                                 <ul class="dropdown-menu">
                                     <a class="dropdown-item" href="/dashboard">Dashboard</a>
-                                    <a class="dropdown-item" href="/club/basicinformation">Create a club</a>
+                                    <a class="dropdown-item" href="/clubs?mode=new">Create a club</a>
                                 </ul>
                             </li>
                             <a class="nav-link" href='/clubs?mode=viewall'>View Clubs</a>
@@ -48,10 +46,12 @@
                         style='color: rgb(59, 84, 154)'>Application</a>
                     <ul class="dropdown-menu">
                         <a id="nav-generalquestions-tab" data-bs-toggle="tab" data-bs-target="#nav-generalquestions"
-                            class="nav-link dropdown-item" style='color: rgb(59, 84, 154)'>Create General
+                            class="nav-link dropdown-item" style='color: rgb(59, 84, 154)' {{ stateofwidget }}>Create
+                            General
                             Questions</a>
                         <a id="nav-roles-tab" data-bs-toggle="tab" data-bs-target="#nav-roles"
-                            class="nav-link dropdown-item" style='color: rgb(59, 84, 154)'>Create Roles</a>
+                            class="nav-link dropdown-item" style='color: rgb(59, 84, 154)' {{ stateofwidget }}>Create
+                            Roles</a>
                     </ul>
                     {% if roles %}
                     <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false"
@@ -66,7 +66,7 @@
                     {% endif %}
                     <a class="nav-link" id="nav-announcements-tab" data-bs-toggle="tab"
                         data-bs-target="#nav-announcements" style='color: rgb(59, 84, 154)'
-                        href='#/annoucements/{{ updClubInfo.ClubId }}'>Announcements</a>
+                        href='#/annoucements/{{ updClubInfo.ClubId }}' {{ stateofwidget }}>Announcements</a>
                     <a class="nav-link" style='color: rgb(59, 84, 154)' id="nav-disabled-tab"
                         data-bs-target="#nav-disabled" type="button" disabled>Coming Soon!</a>
                 </div>
@@ -391,9 +391,30 @@
                                 <td>
                                     <button type="button" class="btn btn-primary" data-bs-toggle="modal"
                                         data-bs-target="#staticBackdrop{{ question.QuestionId }}">Update</button>
-                                    <a
-                                        href='/clubs/{{ question.ClubId }}/roles/{{ RoleId[i] }}/rolespecificquestions/{{ question.QuestionId }}?mode=delete'><button
-                                            class='btn btn-danger'>Delete</button></a>
+                                    <button class='btn btn-danger' type="button" data-bs-toggle="modal"
+                                        data-bs-target="#exampleModal">Delete</button>
+                                    <div class="modal fade" id="exampleModal" tabindex="-1"
+                                        aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h1 class="modal-title fs-5" id="exampleModalLabel">Delete
+                                                        Announcement</h1>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                        aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    Are you sure you want to delete?
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <form method='POST'
+                                                        action='/clubs/{{ question.ClubId }}/roles/{{ RoleId[i] }}/rolespecificquestions/{{ question.QuestionId }}?mode=delete'>
+                                                        <button type="submit" class="btn btn-danger">Delete</button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </td>
                                 {% endif %}
                             </tr>

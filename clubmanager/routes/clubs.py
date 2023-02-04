@@ -16,8 +16,9 @@ from clubmanager.flaskforms import ClubCreationForm, ClubGeneralQuestionForm
 @login_required
 def get_club(ClubId = ''):
     mode = request.args.get('mode')
+    form = ClubCreationForm()
     if mode == 'new':  
-        return render_template('club.html')
+        return render_template('club.html', form=form)
     elif mode == 'update':
         roles, role_descriptions, RoleId = uniqueRoles(ClubId)
         length = len(roles)
@@ -59,6 +60,8 @@ def create_update_delete_club(ClubId = ''):
             db.session.add(new_clubstudentmap)
             db.session.commit()
             return redirect(url_for('dashboard'))
+        else:
+            return 'asfsf'
     elif mode == 'update':
         updClubInfo = Club.query.get_or_404(str(ClubId))
         roles, role_descriptions, rolesId = uniqueRoles(ClubId)
