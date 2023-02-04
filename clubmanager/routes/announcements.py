@@ -13,35 +13,29 @@ from clubmanager.functions import generate_UUID, uniqueRoles, rolespecificquesti
 from clubmanager.flaskforms import ClubCreationForm, ClubGeneralQuestionForm, ClubRoleForm, RoleSpecificQuestionForm, AnnouncementForm
 
 
-
-@app.route('/club/<uuid:Id>')
-def club_page(Id):
-    club_to_display = Club.query.get_or_404(str(Id))
-    Announcements = Announcement.query.filter(Announcement.ClubId==str(Id)).all() 
-    if club_to_display:
-        return render_template('clubpage.html', club_to_display=club_to_display, Announcements=Announcements)
-    else:
-        return 'Club does not exist'
-
-
-@app.route('/announce/<uuid:ClubId>', methods=['GET', 'POST'])
+@app.route('/clubs/<uuid:ClubId>/announcements', methods=['POST'])
+@app.route('/clubs/<uuid:ClubId>/announcements/<uuid:AnnouncementId>', methods=['POST'])
 @login_required
 def club_announcement(ClubId):
+    mode = request.args.get('mode')
     form = AnnouncementForm()
-    if form.validate_on_submit: 
-        if request.method == 'POST':
+    if mode == 'new':
+        if form.validate_on_submit: 
             new_announcemnt = Announcement(AnnouncementId=generate_UUID(), ClubId=str(ClubId), Header=form.Header.data, Message=form.Message.data)
             db.session.add(new_announcemnt)
             try:
                 db.session.commit()
-                return redirect(url_for('dashboard'))
+                return redirect(url_for('get_club', ClubId=ClubId))
             except:
                 return 'there was problem making announcement'
-        else:
-            return render_template('announce.html', form=form, ClubId=ClubId)
+    elif mode == 'delete':
+        announcement_to_del = Announcement.query.get_or_404(str(AnnouncementId))
+        db.session.delete(announcement_to_del)
+        db.session.commit()
+        return redirect(url_for('get_club', ClubId=ClubId))
     else:
-        return 'not valid'
-
+        return 'not valid update not created yet'
+#Announcements = Announcement.query.filter(Announcement.ClubId==str(ClubId)).all()
 # @app.route('/announce/<uuid:ClubId>', methods=['POST'])
 # @login_required
 # def club_announcement(ClubId):
@@ -51,12 +45,3 @@ def club_announcement(ClubId):
 #         db.session.add(new_announcemnt)
 #         db.session.commit()
 #         return redirect(url_for('dashboard'))
-
-@app.route('/viewclubs')
-@login_required
-def viewclubs():
-    clubs = Club.query.filter(Club.School == current_user.School).all()
-    truthy = True
-    if clubs:
-        truthy = False
-    return render_template('viewclubs.html', School=current_user.School, truthy=truthy, ClubCatalogue=clubs)

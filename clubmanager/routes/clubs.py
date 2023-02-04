@@ -27,7 +27,18 @@ def get_club(ClubId = ''):
         # role_specific_questions_to_display, ids = rolespecificquestions(RoleIdInUrl) role_specific_questions_to_display=info_to_display
         # length2 = len(role_specific_questions_to_display) length2=length2
         return render_template('updateclub.html', RoleId=RoleId, ClubId=ClubId, length=length, roles=roles, \
-            role_descriptions=role_descriptions, updClubInfo=updClubInfo, questions_to_display=questions_to_display)
+            role_descriptions=role_descriptions, updClubInfo=updClubInfo, ClubId=ClubId,questions_to_display=questions_to_display)
+    elif mode == 'viewall':
+        clubs = Club.query.filter(Club.School == current_user.School).all()
+        truthy = True
+        if clubs:
+            truthy = False
+        return render_template('viewclubs.html', School=current_user.School, truthy=truthy, ClubCatalogue=clubs)
+    elif mode == 'view':
+        club_to_display = Club.query.get_or_404(str(ClubId))
+        Announcements = Announcement.query.filter(Announcement.ClubId==str(ClubId)).all() 
+        if club_to_display:
+            return render_template('clubpage.html', club_to_display=club_to_display, Announcements=Announcements)
     else:
         return 'error'
 
