@@ -50,6 +50,6 @@ def create_update_delete_generalquestions(ClubId = '', QuestionId=''):
         question_to_del = ApplicationQuestions.query.get_or_404(str(QuestionId))
         db.session.delete(question_to_del)
         db.session.commit()
-        return redirect(url_for('update_club', Id=ClubId))
+        return redirect(url_for('get_club', ClubId=ClubId))
     else:
         return 'error'

@@ -58,9 +58,9 @@
                         style='color: rgb(59, 84, 154)'>Create Role Specific Questions</a>
                     <ul class="dropdown-menu">
                         {% for i in range(length) %}
-                        <a class="dropdown-item" style='color: rgb(59, 84, 154)'
-                            href='/club/{{ updClubInfo.ClubId }}/{{ rolesId[i] }}/rolespecificquestions'>{{ roles[i]
-                            }}</a>
+                        <a id="nav-rolespecificquestions{{ [i] }}-tab" data-bs-toggle="tab"
+                            data-bs-target="#nav-rolespecificquestions{{ [i] }}" class="nav-link dropdown-item"
+                            style='color: rgb(59, 84, 154)'>{{ roles[i] }}</a>
                         {% endfor %}
                     </ul>
                     {% endif %}
@@ -71,6 +71,9 @@
                         data-bs-target="#nav-disabled" type="button" disabled>Coming Soon!</a>
                 </div>
             </nav>
+
+
+
             <div class="tab-content" id="nav-tabContent">
                 <div class="tab-pane fade show active" id="nav-generaldetails">
                     <h1>Update your club</h1>
@@ -108,6 +111,9 @@
                 </div>
                 </form>
             </div>
+
+
+
             <div class="tab-pane fade" id="nav-generalquestions">
                 <div class='row'>
                     <div class='col-2'>
@@ -233,6 +239,9 @@
                     <input class='btn btn-primary' type='submit' value='Save'>
                 </form>
             </div>
+
+
+
             <div class="tab-pane fade" id="nav-roles">
                 <div class='row'>
                     <div class='col-2'>
@@ -264,7 +273,7 @@
                                     <button type="button" class="btn btn-primary" data-bs-toggle="modal"
                                         data-bs-target="#staticBackdrop{{ RoleId[i] }}">Update</button>
                                     <button type="button" data-bs-toggle="modal" data-bs-target="#exampleModal"
-                                    class='btn btn-danger'>Delete</button>
+                                        class='btn btn-danger'>Delete</button>
                                     <div class="modal fade" id="exampleModal" tabindex="-1"
                                         aria-labelledby="exampleModalLabel" aria-hidden="true">
                                         <div class="modal-dialog">
@@ -279,7 +288,8 @@
                                                     Are you sure you want to delete?
                                                 </div>
                                                 <div class="modal-footer">
-                                                    <form method='POST' action='/clubs/{{ updClubInfo.ClubId }}/roles/{{ RoleId[i] }}?mode=delete'>
+                                                    <form method='POST'
+                                                        action='/clubs/{{ updClubInfo.ClubId }}/roles/{{ RoleId[i] }}?mode=delete'>
                                                         <button type="submit" class="btn btn-danger">Delete</button>
                                                     </form>
                                                 </div>
@@ -301,7 +311,9 @@
                                                 aria-label="Close"></button>
                                         </div>
                                         <div class="modal-body">
-                                            <form action='/clubs/{{ updClubInfo.ClubId }}/roles/{{ RoleId[i] }}?mode=update' method='POST'>
+                                            <form
+                                                action='/clubs/{{ updClubInfo.ClubId }}/roles/{{ RoleId[i] }}?mode=update'
+                                                method='POST'>
                                                 <div class='row'>
                                                     <label>Enter Role</label>
                                                     <input type='text' class='form-control' name='Role'
@@ -334,6 +346,115 @@
                     <input class='btn btn-primary' type='submit' value='Save'>
                 </form>
             </div>
+
+
+
+            {% for i in range(length2) %}
+            <div class="tab-pane fade" id="nav-rolespecificquestions{{ [i] }}">
+                <div>
+                    <div class='row'>
+                        <div class='col-2'>
+                            <label class='exampleFormControlInput1'>Create your role specific questions</label>
+                        </div>
+                        <div class='col-10'>
+                            <button onclick='OnAddRoleSpecificQuestion(this)' class='btn btn-success' type='button'>Add
+                                question</button>
+                        </div>
+                    </div>
+                    <br>
+                </div>
+                {% if role_specific_questions_to_display %}
+                <div class='row table table-striped'>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Role Specific Question Order</th>
+                                <th>Maximum character length for the response</th>
+                                <th>Question</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for question in role_specific_questions_to_display %}
+                            <tr>
+                                {% if question.OrderNumber != None %}
+                                <td>{{ question.OrderNumber }}</td>
+                                {% endif %}
+                                {% if question.LengthOfResponse != None %}
+                                <td>{{ question.LengthOfResponse }}</td>
+                                {% endif %}
+                                {% if question.Question != None %}
+                                <td>{{ question.Question }}</td>
+                                {% endif %}
+                                {% if question.OrderNumber != None or question.LengthOfResponse != None or
+                                question.Question != None %}
+                                <td>
+                                    <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                                        data-bs-target="#staticBackdrop{{ question.QuestionId }}">Update</button>
+                                    <a
+                                        href='/clubs/{{ question.ClubId }}/roles/{{ RoleId[i] }}/rolespecificquestions/{{ question.QuestionId }}?mode=delete'><button
+                                            class='btn btn-danger'>Delete</button></a>
+                                </td>
+                                {% endif %}
+                            </tr>
+                            <div class="modal fade" id="staticBackdrop{{ question.QuestionId }}"
+                                data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+                                aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                                {{ question.QuestionId }}
+                                <div style='background-color: rgb(77, 171, 169)' class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h1 class="modal-title fs-5" id="staticBackdrop{{ i }}Label">Update General
+                                                Question</h1>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <form
+                                                action='/clubs/{{ ClubId }}/roles/{{ RoleId[i] }}/rolespecificquestions/{{ question.QuestionId }}?mode=update'
+                                                method='POST'>
+                                                <div class='row'>
+                                                    <label>Enter Role Specific Question</label>
+                                                    <input type='text' class='form-control' name='RoleSpecificQuestion'
+                                                        value='{{ question.Question }}'>
+                                                </div>
+                                                <br>
+                                                <div class='row'>
+                                                    <label>Maximum character length for the response?</label>
+                                                    <input type='number' class='form-control' name='LengthOfResponse'
+                                                        value='{{ question.LengthOfResponse }}'>
+                                                </div>
+                                                <br>
+                                                <div class='row'>
+                                                    <label>Enter Order Number</label>
+                                                    <input type='text' class='form-control'
+                                                        name='RoleSpecificQuestionOrderNumber'
+                                                        value='{{ question.OrderNumber }}'>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary"
+                                                        data-bs-dismiss="modal">Cancel</button>
+                                                    <input type='submit' value='Update' class="btn btn-primary">
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% endif %}
+                <form action='/clubs/{{ ClubId }}/roles/{{ RoleId[i] }}/rolespecificquestions?mode=new' method='POST'>
+                    <div class='row' id='insertrolespecificquestionshere'>
+                    </div>
+                    <input class='btn btn-primary' type='submit' value='Save'>
+                </form>
+            </div>
+            {% endfor %}
+
+
+
             <div class="tab-pane fade" id="nav-announcements">
                 <div class='row'>
                     <div class='col-3'>

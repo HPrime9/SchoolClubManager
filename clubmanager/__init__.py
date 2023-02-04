@@ -10,4 +10,4 @@ Bootstrap(app)
 db = SQLAlchemy(app)
 
 # from clubmanage import routes
-from clubmanager.routes import clubapplication, clubs, dashboard, index, club, generalquestions
+from clubmanager.routes import clubapplication, clubs, dashboard, index, club, generalquestions, rolespecificquestions

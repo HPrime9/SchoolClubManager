@@ -23,9 +23,11 @@ def get_club(ClubId = ''):
         length = len(roles)
         updClubInfo = Club.query.get_or_404(str(ClubId))  
         questions_to_display = ApplicationQuestions.query.filter(ApplicationQuestions.ClubId==str(ClubId)) 
+        # info_to_display = ApplicationQuestions.query.filter(ApplicationQuestions.RoleId==str(RoleIdInUrl)) 
+        # role_specific_questions_to_display, ids = rolespecificquestions(RoleIdInUrl) role_specific_questions_to_display=info_to_display
+        # length2 = len(role_specific_questions_to_display) length2=length2
         return render_template('updateclub.html', RoleId=RoleId, ClubId=ClubId, length=length, roles=roles, \
-            role_descriptions=role_descriptions, updClubInfo=updClubInfo, questions_to_display=questions_to_display, \
-                rolesId=RoleId)
+            role_descriptions=role_descriptions, updClubInfo=updClubInfo, questions_to_display=questions_to_display)
     else:
         return 'error'
 
