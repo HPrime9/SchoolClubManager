@@ -35,13 +35,3 @@ def club_announcement(ClubId):
         return redirect(url_for('get_club', ClubId=ClubId))
     else:
         return 'not valid update not created yet'
-#Announcements = Announcement.query.filter(Announcement.ClubId==str(ClubId)).all()
-# @app.route('/announce/<uuid:ClubId>', methods=['POST'])
-# @login_required
-# def club_announcement(ClubId):
-#     form = AnnouncementForm()
-#     if form.validate_on_submit:
-#         new_announcemnt = Announcement(AnnouncementId=generate_UUID(), ClubId=ClubId, Header=form.Header.data, Message=form.Message.data)
-#         db.session.add(new_announcemnt)
-#         db.session.commit()
-#         return redirect(url_for('dashboard'))

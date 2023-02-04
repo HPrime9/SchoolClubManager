@@ -8,6 +8,7 @@ const AddRoleSpecificQuestionparent = document.querySelector('#insertrolespecifi
 
 const SubmitApplicationCheckbox = document.querySelector('#showsubmitapplication')
 
+
 // const BttnDeleteClub = document.getElementsByClassName('deleteclub')
 // const BttnUpdateClub = document.getElementsByClassName('updateclub')
 

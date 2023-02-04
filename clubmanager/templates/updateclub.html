@@ -456,14 +456,6 @@
 
 
             <div class="tab-pane fade" id="nav-announcements">
-                <form action='/clubs/{{ ClubId }}/announcements?mode=new' method='POST'>
-                    <div class='mb-3'>
-                        <label for='l1' class='exampleFormControlInput1'>Create Announcement</label>
-                        <input id='l1' class='form-control' type='text' name='Header' placeholder='Header'>
-                        <input id='l1' class='form-control' type='text' name='Message' placeholder='body'>
-                        <input type='submit' value='Submit'>
-                    </div>
-                </form>
 
 
 
@@ -473,19 +465,55 @@
 
 
                 <div class='row'>
-                    <div class='col-3'>
-                        <h1>Announcements</h1>
-                    </div>
-                    <div class='col-8'>
-                        <button class='btn btn-info' type='button'><a href='/announce/{{ updClubInfo.ClubId }}'
-                                style='color: rgb(135, 59, 59);'>Announce</a></button>
-                    </div>
+                    Announce
                 </div>
-                <div id='annoucements'>
-
+                <form action='/clubs/{{ ClubId }}/announcements?mode=new' method='POST'>
+                    <div class='row'>
+                        <div class='col-4'>
+                            <label>Enter Title</label>
+                            <input class='form-control' type='text' name='Header'>
+                        </div>
+                        <div class='col-6'>
+                            <label>Enter Body of Announcement</label>
+                            <input class='form-control' type='text' name='Message'>
+                        </div>
+                        <div class='col-2'>
+                            <input type='submit' class='btn-btn-primary'>
+                        </div>
+                    </div>
+                </form>
+                {% if Announcements %}
+                <div class='row'>
+                    {% for announcement in Announcements %}
+                    <h1 class='displayannoucement'>{{ announcement.Header }}</h1>
+                    <button class='displayannoucement btn btn-danger' type="button" data-bs-toggle="modal"
+                        data-bs-target="#exampleModal"></button>
+                    <p>{{ announcement.Message }}</p>
+                    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+                        aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h1 class="modal-title fs-5" id="exampleModalLabel">Delete Announcement</h1>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    Are you sure you want to delete?
+                                </div>
+                                <div class="modal-footer">
+                                    <form method='POST'
+                                        action='/clubs/{{ ClubId }}/announcements/{{ Announcements.AnnouncementId }}?mode=delete'>
+                                        <button type="submit" class="btn btn-danger">Delete</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
                 </div>
+                {% endif %}
             </div>
-
         </div>
     </main>
     <script src='/static/js/main.js'></script>
