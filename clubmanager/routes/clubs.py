@@ -7,7 +7,7 @@ from sqlalchemy import delete
 from clubmanager import app, db
 from clubmanager.models import Club, ClubStudentMap, ApplicationQuestions, ClubRole, Announcement
 from clubmanager.functions import generate_UUID, uniqueRoles, rolespecificquestions
-from clubmanager.flaskforms import ClubCreationForm, ClubGeneralQuestionForm
+from clubmanager.flaskforms import ClubCreationForm, ClubGeneralQuestionForm, ClubRoleForm
 
 
 # GET routes for creating a club and updating
@@ -17,6 +17,7 @@ from clubmanager.flaskforms import ClubCreationForm, ClubGeneralQuestionForm
 def get_club(ClubId = ''):
     mode = request.args.get('mode')
     form = ClubCreationForm()
+    formRole = ClubRoleForm()
     if mode == 'new':  
         return render_template('club.html', form=form)
     elif mode == 'update':
@@ -28,7 +29,7 @@ def get_club(ClubId = ''):
         # info_to_display = ApplicationQuestions.query.filter(ApplicationQuestions.RoleId==str(RoleIdInUrl)) 
         # role_specific_questions_to_display, ids = rolespecificquestions(RoleIdInUrl) role_specific_questions_to_display=info_to_display
         # length2 = len(role_specific_questions_to_display) length2=length2
-        return render_template('updateclub.html', RoleId=RoleId, ClubId=str(ClubId), length=length, roles=roles, \
+        return render_template('updateclub.html', formRole=formRole, RoleId=RoleId, ClubId=str(ClubId), length=length, roles=roles, \
             role_descriptions=role_descriptions, Announcements=Announcements, length2 = 1, updClubInfo=updClubInfo,questions_to_display=questions_to_display)
     elif mode == 'viewall':
         clubs = Club.query.filter(Club.School == current_user.School).all()
@@ -40,7 +41,7 @@ def get_club(ClubId = ''):
         club_to_display = Club.query.get_or_404(str(ClubId))
         Announcements = Announcement.query.filter(Announcement.ClubId==str(ClubId)).all() 
         if club_to_display:
-            return render_template('clubpage.html', club_to_display=club_to_display, Announcements=Announcements)
+            return render_template('clubpage.html', StudentNumUrl=int(current_user.StudentNum), club_to_display=club_to_display, Announcements=Announcements)
     else:
         return 'errerer'
 

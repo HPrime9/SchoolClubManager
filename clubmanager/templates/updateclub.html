@@ -355,6 +355,7 @@
                     </div>
                 </div>
                 <form action='/clubs/{{ ClubId }}/roles?mode=new' method='POST'>
+                    {{ formRole.csrf_token }}
                     <div class='mb-3' id='roles'></div>
                     <input class='btn btn-primary' type='submit' value='Save'>
                 </form>
