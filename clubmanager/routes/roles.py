@@ -15,12 +15,11 @@ from clubmanager.flaskforms import ClubRoleForm
 @app.route('/clubs/<uuid:ClubId>/roles', methods=['POST'])
 @app.route('/clubs/<uuid:ClubId>/roles/<uuid:RoleId>', methods=['POST'])
 @login_required
-def create_update_delete_roles(ClubId = '', RoleId = ''):
+def create_update_delete_roles(ClubId, RoleId = ''):
     mode = request.args.get('mode') 
     form = ClubRoleForm() 
     Role = request.form.getlist('Role')
     RoleDescription = request.form.getlist('RoleDescription')
-    updClubRole = ClubRole.query.get_or_404(str(RoleId))
     if mode == 'new':
         if form.validate_on_submit:
             for i in range(len(Role)):
@@ -35,14 +34,15 @@ def create_update_delete_roles(ClubId = '', RoleId = ''):
             return redirect(url_for('get_club', ClubId=ClubId))
     elif mode == 'update':
         if form.validate_on_submit: 
-                if request.form['Role'].strip() != '' and request.form['RoleDescription'].strip() != '':
-                    updClubRole.Role = request.form['Role']
-                    updClubRole.RoleDescription = request.form['RoleDescription']
-                    try:
-                        db.session.commit()
-                        return redirect(url_for('get_club', ClubId=ClubId))
-                    except:
-                        return 'there was problem updating'
+            updClubRole = ClubRole.query.get_or_404(str(RoleId))
+            if request.form['Role'].strip() != '' and request.form['RoleDescription'].strip() != '':
+                updClubRole.Role = request.form['Role']
+                updClubRole.RoleDescription = request.form['RoleDescription']
+                try:
+                    db.session.commit()
+                    return redirect(url_for('get_club', ClubId=ClubId))
+                except:
+                    return 'there was problem updating'
     elif mode == 'delete':
         delete_rows = delete(ApplicationQuestions).where(ApplicationQuestions.RoleId == str(RoleId))
         role_to_del = ClubRole.query.filter_by(RoleId=str(RoleId)).first()

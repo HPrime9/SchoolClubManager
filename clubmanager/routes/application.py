@@ -123,19 +123,22 @@ def club_application_save(ClubId):
                         db.session.commit()
             return redirect(url_for('dashboard'))
 
-@app.route('/responseoverview/<uuid:ClubId>')
+@app.route('/clubs/<uuid:ClubId>/applications', method=['GET'])
 @login_required
 def response(ClubId):
+    mode = request.args.get('mode')
     roles_to_display = []
     club_to_display_responses = QuestionAnswer.query.filter(QuestionAnswer.ClubId == str(ClubId)).all()
-    for row in club_to_display_responses:
-        if row.Status != 'draft':
-            name_role = ClubRole.query.filter(ClubRole.RoleId==str(row.RoleId)).first()
-            try:
-                for row in name_role:
-                    roles_to_display.append(row.Role)
-            except:
-                print('error2')
-    return render_template('responseoverview.html', club_to_display_responses=club_to_display_responses, roles_to_display=roles_to_display)
+    if mode == 'viewall':
+        for row in club_to_display_responses:
+            if row.Status != 'draft':
+                name_role = ClubRole.query.filter(ClubRole.RoleId==str(row.RoleId)).first()
+                try:
+                    for row in name_role:
+                        roles_to_display.append(row.Role)
+                except:
+                    print('error2')
+        return render_template('responseoverview.html', club_to_display_responses=club_to_display_responses, roles_to_display=roles_to_display)
 
+# Global variables
 selectedrole_id = ''

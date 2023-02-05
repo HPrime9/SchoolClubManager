@@ -32,7 +32,7 @@
                                     aria-expanded="false">Applicants</a>
                                 <ul class="dropdown-menu">
                                     {% for club in userClubCatalogue %}
-                                    <a class="dropdown-item" href="/responseoverview/{{ club.ClubId }}">{{ club.ClubName
+                                    <a class="dropdown-item" href="/clubs/{{ club.ClubId }}/applications?mode=viewall">{{ club.ClubName
                                         }}</a>
                                     {% endfor %}
                                 </ul>
