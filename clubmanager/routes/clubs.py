@@ -28,8 +28,8 @@ def get_club(ClubId = ''):
         # info_to_display = ApplicationQuestions.query.filter(ApplicationQuestions.RoleId==str(RoleIdInUrl)) 
         # role_specific_questions_to_display, ids = rolespecificquestions(RoleIdInUrl) role_specific_questions_to_display=info_to_display
         # length2 = len(role_specific_questions_to_display) length2=length2
-        return render_template('updateclub.html', RoleId=RoleId, ClubId=ClubId, length=length, roles=roles, \
-            role_descriptions=role_descriptions, Announcements=Announcements, updClubInfo=updClubInfo,questions_to_display=questions_to_display)
+        return render_template('updateclub.html', RoleId=RoleId, ClubId=str(ClubId), length=length, roles=roles, \
+            role_descriptions=role_descriptions, Announcements=Announcements, length2 = 1, updClubInfo=updClubInfo,questions_to_display=questions_to_display)
     elif mode == 'viewall':
         clubs = Club.query.filter(Club.School == current_user.School).all()
         truthy = True
@@ -42,7 +42,7 @@ def get_club(ClubId = ''):
         if club_to_display:
             return render_template('clubpage.html', club_to_display=club_to_display, Announcements=Announcements)
     else:
-        return 'error'
+        return 'errerer'
 
 # POST routes for creating, updating and deleting a club
 @app.route('/clubs', methods=['POST'])
@@ -73,7 +73,7 @@ def create_update_delete_club(ClubId = ''):
             updClubInfo.ClubContactEmail = request.form['ClubContactEmail']
             db.session.commit()
             roles, role_descriptions, rolesId = uniqueRoles(ClubId)
-            return render_template('updateclub.html', form=form, updClubInfo=updClubInfo, rolesId=rolesId, roles=roles, length=len(roles))
+            return render_template('updateclub.html', form=form, updClubInfo=updClubInfo, RoleId=rolesId, rolesId=rolesId, roles=roles, length2 = 5, length=len(roles))
     elif mode == 'delete':
         club_to_del = Club.query.get_or_404(str(ClubId))
         club_to_del_from_cs_map = ClubStudentMap.query.filter_by(ClubId=str(ClubId)).first()

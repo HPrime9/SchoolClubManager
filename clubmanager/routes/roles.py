@@ -15,7 +15,7 @@ from clubmanager.flaskforms import ClubRoleForm
 @app.route('/clubs/<uuid:ClubId>/roles', methods=['POST'])
 @app.route('/clubs/<uuid:ClubId>/roles/<uuid:RoleId>', methods=['POST'])
 @login_required
-def create_update_delete_roles(ClubId, RoleId = ''):
+def create_update_delete_roles(ClubId = '', RoleId = ''):
     mode = request.args.get('mode') 
     form = ClubRoleForm() 
     Role = request.form.getlist('Role')

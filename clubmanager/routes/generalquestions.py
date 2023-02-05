@@ -22,7 +22,6 @@ def create_update_delete_generalquestions(ClubId = '', QuestionId=''):
     GeneralQuestionOrderNumbers = request.form.getlist('GeneralQuestionOrderNumbers')
     updClubInfo = Club.query.get_or_404(str(ClubId))   
     questions_to_display = ApplicationQuestions.query.filter(ApplicationQuestions.ClubId==str(ClubId))
-    updClubQuestions = ApplicationQuestions.query.get_or_404(str(QuestionId))   
     if mode == 'new':
         if form.validate_on_submit:
             for i in range(len(GeneralQuestions)):
@@ -33,23 +32,42 @@ def create_update_delete_generalquestions(ClubId = '', QuestionId=''):
                         db.session.commit()
                     except:
                         return 'there was problem adding general question'
-            return render_template('generalquestions.html', form=form, updClubInfo=updClubInfo, questions_to_display=questions_to_display)
+            roles, role_descriptions, RoleId = uniqueRoles(ClubId)
+            length = len(roles)
+            updClubInfo = Club.query.get_or_404(str(ClubId))  
+            questions_to_display = ApplicationQuestions.query.filter(ApplicationQuestions.ClubId==str(ClubId)) 
+            Announcements = Announcement.query.filter(Announcement.ClubId==str(ClubId)).all() 
+            return render_template('updateclub.html', RoleId=RoleId, ClubId=str(ClubId), length=length, roles=roles, \
+            role_descriptions=role_descriptions, Announcements=Announcements, length2 = 5, updClubInfo=updClubInfo,questions_to_display=questions_to_display)
         else:
             return 'invalid information'
     elif mode == 'update':
-        if form.validate_on_submit: 
+        if form.validate_on_submit:
+            updClubQuestions = ApplicationQuestions.query.get_or_404(str(QuestionId))    
             updClubQuestions.Question = request.form['GeneralQuestions']
             updClubQuestions.LengthOfResponse = request.form['GeneralQuestionsLengthOfResponse']
             updClubQuestions.OrderNumber = request.form['GeneralQuestionOrderNumbers']
             try:
                 db.session.commit()
-                return render_template('generalquestions.html', form=form, updClubInfo=updClubInfo, questions_to_display=questions_to_display)
+                roles, role_descriptions, RoleId = uniqueRoles(ClubId)
+                length = len(roles)
+                updClubInfo = Club.query.get_or_404(str(ClubId))  
+                questions_to_display = ApplicationQuestions.query.filter(ApplicationQuestions.ClubId==str(ClubId)) 
+                Announcements = Announcement.query.filter(Announcement.ClubId==str(ClubId)).all() 
+                return render_template('updateclub.html', RoleId=RoleId, ClubId=str(ClubId), length=length, roles=roles, \
+                role_descriptions=role_descriptions, Announcements=Announcements, length2 = 5, updClubInfo=updClubInfo,questions_to_display=questions_to_display)
             except:
                 return 'there was problem updating'
     elif mode == 'delete':
         question_to_del = ApplicationQuestions.query.get_or_404(str(QuestionId))
         db.session.delete(question_to_del)
         db.session.commit()
-        return redirect(url_for('get_club', ClubId=ClubId))
+        roles, role_descriptions, RoleId = uniqueRoles(ClubId)
+        length = len(roles)
+        updClubInfo = Club.query.get_or_404(str(ClubId))  
+        questions_to_display = ApplicationQuestions.query.filter(ApplicationQuestions.ClubId==str(ClubId)) 
+        Announcements = Announcement.query.filter(Announcement.ClubId==str(ClubId)).all() 
+        return render_template('updateclub.html', RoleId=RoleId, ClubId=str(ClubId), length=length, roles=roles, \
+        role_descriptions=role_descriptions, Announcements=Announcements, length2 = 5, updClubInfo=updClubInfo,questions_to_display=questions_to_display)
     else:
         return 'error'
