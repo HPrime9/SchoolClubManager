@@ -32,7 +32,13 @@ def create_update_delete_rolespecificquestion(ClubId, RoleId, QuestionId = ''):
                             db.session.commit()
                         except:
                             return 'there was problem adding role and question'
-                return redirect(url_for('get_club', ClubId=ClubId))
+                roles, role_descriptions, RoleId = uniqueRoles(ClubId)
+                length = len(roles)
+                updClubInfo = Club.query.get_or_404(str(ClubId))  
+                questions_to_display = ApplicationQuestions.query.filter(ApplicationQuestions.ClubId==str(ClubId)) 
+                Announcements = Announcement.query.filter(Announcement.ClubId==str(ClubId)).all() 
+                return render_template('updateclub.html', RoleId=RoleId, ClubId=str(ClubId), length=length, roles=roles, \
+                role_descriptions=role_descriptions, Announcements=Announcements, length2 = 5, updClubInfo=updClubInfo,questions_to_display=questions_to_display)
     elif mode == 'update':
         updClubQuestions = ApplicationQuestions.query.get_or_404(str(QuestionId))   
         if form.validate_on_submit: 
@@ -41,14 +47,26 @@ def create_update_delete_rolespecificquestion(ClubId, RoleId, QuestionId = ''):
             updClubQuestions.OrderNumber = request.form['RoleSpecificQuestionOrderNumber']
             try:
                 db.session.commit()
-                return redirect(url_for('get_club', ClubId=ClubId))
+                roles, role_descriptions, RoleId = uniqueRoles(ClubId)
+                length = len(roles)
+                updClubInfo = Club.query.get_or_404(str(ClubId))  
+                questions_to_display = ApplicationQuestions.query.filter(ApplicationQuestions.ClubId==str(ClubId)) 
+                Announcements = Announcement.query.filter(Announcement.ClubId==str(ClubId)).all() 
+                return render_template('updateclub.html', RoleId=RoleId, ClubId=str(ClubId), length=length, roles=roles, \
+                role_descriptions=role_descriptions, Announcements=Announcements, length2 = 5, updClubInfo=updClubInfo,questions_to_display=questions_to_display)
             except:
                 return 'there was problem updating'
     elif mode == 'delete':
         question_to_del = ApplicationQuestions.query.get_or_404(str(QuestionId))
         db.session.delete(question_to_del)
         db.session.commit()
-        return redirect(url_for('get_club', ClubId=ClubId))
+        roles, role_descriptions, RoleId = uniqueRoles(ClubId)
+        length = len(roles)
+        updClubInfo = Club.query.get_or_404(str(ClubId))  
+        questions_to_display = ApplicationQuestions.query.filter(ApplicationQuestions.ClubId==str(ClubId)) 
+        Announcements = Announcement.query.filter(Announcement.ClubId==str(ClubId)).all() 
+        return render_template('updateclub.html', RoleId=RoleId, ClubId=str(ClubId), length=length, roles=roles, \
+        role_descriptions=role_descriptions, Announcements=Announcements, length2 = 5, updClubInfo=updClubInfo,questions_to_display=questions_to_display)
     else:
         return 'error'
 

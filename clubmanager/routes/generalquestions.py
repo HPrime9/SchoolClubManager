@@ -34,7 +34,6 @@ def create_update_delete_generalquestions(ClubId = '', QuestionId=''):
                         return 'there was problem adding general question'
             roles, role_descriptions, RoleId = uniqueRoles(ClubId)
             length = len(roles)
-            updClubInfo = Club.query.get_or_404(str(ClubId))  
             questions_to_display = ApplicationQuestions.query.filter(ApplicationQuestions.ClubId==str(ClubId)) 
             Announcements = Announcement.query.filter(Announcement.ClubId==str(ClubId)).all() 
             return redirect(url_for('get_club', ClubId=str(ClubId)) + '?mode=update#nav-generalquestions')
