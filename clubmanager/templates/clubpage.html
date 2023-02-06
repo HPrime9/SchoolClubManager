@@ -68,7 +68,7 @@
                     <p>{{ club_to_display.ClubDescription }}</p>
                 </div>
                 <div class='col'></div>
-                
+
                 <div class='col'>
                     <h5>Application Start Date</h5>
                     <p>{{ club_to_display.AppStartDate }}</p>
@@ -77,57 +77,62 @@
                 </div>
             </div>
             <div class='container'>
-            <div class='row'>
-                <div class='col'></div>
-                <div class='col'></div>
-                <div class='col'></div>
-                <div class='col'></div>
-            </div>
-            <br><br>
-            <div class='row'>
-                <div class='col'></div>
-                <div class='col'></div>
-                <div class='col'></div>
-                <div class='col-9' id='Announcements'>
-                    <div class='announcebackground'>
-                    {% if Announcements %}
-                    <div id='annoucementarea'>
-                        {% for announcement in Announcements %}
-                        <h1>{{ announcement.Header }}</h1>
-                        <p>{{ announcement.Message }}</p>
-                        {% endfor %}
+                <div class='row'>
+                    <div class='col'></div>
+                    <div class='col'></div>
+                    <div class='col'></div>
+                    <div class='col'></div>
+                </div>
+                <br><br>
+                <div class='row'>
+                    <div class='col'></div>
+                    <div class='col'></div>
+                    <div class='col'></div>
+                    <div class='col-9' id='Announcements'>
+                        <div class='announcebackground'>
+                            {% if Announcements %}
+                            <div id='annoucementarea'>
+                                {% for announcement in Announcements %}
+                                <div class='p-3 bg-info bg-opacity-10 border border-info border-start-0 rounded-end border rounded-pill'>
+                                    <h1>{{ announcement.Header }}</h1>
+                                    <p>{{ announcement.Message }}</p>
+                                </div>
+                                {% endfor %}
 
+                            </div>
+                            {% else %}
+                            {% endif %}
+                        </div>
                     </div>
-                    {% else %}
-                    {% endif %}
+                    <div class='col'></div>
                 </div>
+                <br><br><br>
+                <div class='row'>
+                    <div class='col'></div>
+                    <div class='col-3'>
+                        <h2 id='Application'>Application</h2>
+                        <p class='applicationinline'>Applications are closed!</p><button
+                            class='applicationinline btn btn-primary'><a style='color:rgb(255, 255, 255);'
+                                href='/clubs/{{ club_to_display.ClubId }}/applications/{{ StudentNumUrl }}?mode=view'>Click
+                                to
+                                Apply</a></button>
+                    </div>
+                    <div class='col'></div>
+                    <div class='col'></div>
+                    <div class='col'></div>
                 </div>
-                <div class='col'></div>
+                <br><br>
+                <div class='row'>
+                    <div class='col'></div>
+                    <div class='col-3'>
+                        <h4 id='Contact'>Contact</h4>
+                        <p>{{ club_to_display.ClubContactEmail }}</p>
+                    </div>
+                    <div class='col'></div>
+                    <div class='col'></div>
+                    <div class='col'></div>
+                </div>
             </div>
-            <br><br><br>
-            <div class='row'>
-                <div class='col'></div>
-                <div class='col-3'>
-                    <h2 id='Application'>Application</h2>
-                    <p class='applicationinline'>Applications are closed!</p><button class='applicationinline btn btn-primary'><a style='color:rgb(255, 255, 255);' href='/clubs/{{ club_to_display.ClubId }}/applications/{{ StudentNumUrl }}?mode=view'>Click to
-                            Apply</a></button>
-                </div>
-                <div class='col'></div>
-                <div class='col'></div>
-                <div class='col'></div>
-            </div>
-            <br><br>
-            <div class='row'>
-                <div class='col'></div>
-                <div class='col-3'>
-                    <h4 id='Contact'>Contact</h4>
-                    <p>{{ club_to_display.ClubContactEmail }}</p>
-                </div>
-                <div class='col'></div>
-                <div class='col'></div>
-                <div class='col'></div>
-            </div>
-        </div>
     </main>
 </body>
 {% endblock %}

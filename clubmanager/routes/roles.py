@@ -8,7 +8,7 @@ from sqlalchemy import delete
 
 # Import custom libraries
 from clubmanager import app, db
-from clubmanager.models import Club, ApplicationQuestions, ClubRole
+from clubmanager.models import Club, ApplicationQuestions, ClubRole, Announcement
 from clubmanager.functions import generate_UUID, uniqueRoles, rolespecificquestions
 from clubmanager.flaskforms import ClubRoleForm
 
@@ -31,16 +31,34 @@ def create_update_delete_roles(ClubId, RoleId = ''):
                         db.session.commit()
                     except:
                         return 'there was problem adding role and description'
-            return redirect(url_for('get_club', ClubId=ClubId))
+            roles, role_descriptions, RoleId = uniqueRoles(ClubId)
+            length = len(roles)
+            updClubInfo = Club.query.get_or_404(str(ClubId))  
+            questions_to_display = ApplicationQuestions.query.filter(ApplicationQuestions.ClubId==str(ClubId)) 
+            Announcements = Announcement.query.filter(Announcement.ClubId==str(ClubId)).all() 
+            # info_to_display = ApplicationQuestions.query.filter(ApplicationQuestions.RoleId==str(RoleIdInUrl)) 
+            # role_specific_questions_to_display, ids = rolespecificquestions(RoleIdInUrl) role_specific_questions_to_display=info_to_display
+            # length2 = len(role_specific_questions_to_display) length2=length2
+            return render_template('updateclub.html', RoleId=RoleId, ClubId=str(ClubId), length=length, roles=roles, \
+                role_descriptions=role_descriptions, Announcements=Announcements, length2 = 1, updClubInfo=updClubInfo,questions_to_display=questions_to_display)
     elif mode == 'update':
         if form.validate_on_submit: 
-            updClubRole = ClubRole.query.get_or_404(str(RoleId))
             if request.form['Role'].strip() != '' and request.form['RoleDescription'].strip() != '':
+                updClubRole = ClubRole.query.get_or_404(str(RoleId))
                 updClubRole.Role = request.form['Role']
                 updClubRole.RoleDescription = request.form['RoleDescription']
                 try:
                     db.session.commit()
-                    return redirect(url_for('get_club', ClubId=ClubId))
+                    roles, role_descriptions, RoleId = uniqueRoles(ClubId)
+                    length = len(roles)
+                    updClubInfo = Club.query.get_or_404(str(ClubId))  
+                    questions_to_display = ApplicationQuestions.query.filter(ApplicationQuestions.ClubId==str(ClubId)) 
+                    Announcements = Announcement.query.filter(Announcement.ClubId==str(ClubId)).all() 
+                    # info_to_display = ApplicationQuestions.query.filter(ApplicationQuestions.RoleId==str(RoleIdInUrl)) 
+                    # role_specific_questions_to_display, ids = rolespecificquestions(RoleIdInUrl) role_specific_questions_to_display=info_to_display
+                    # length2 = len(role_specific_questions_to_display) length2=length2
+                    return render_template('updateclub.html', RoleId=RoleId, ClubId=str(ClubId), length=length, roles=roles, \
+                        role_descriptions=role_descriptions, Announcements=Announcements, length2 = 1, updClubInfo=updClubInfo,questions_to_display=questions_to_display)
                 except:
                     return 'there was problem updating'
     elif mode == 'delete':
@@ -51,7 +69,16 @@ def create_update_delete_roles(ClubId, RoleId = ''):
             db.session.commit()
             rows = db.session.execute(delete_rows)
             print(rows)
-            return redirect(url_for('get_club', ClubId=ClubId))
+            roles, role_descriptions, RoleId = uniqueRoles(ClubId)
+            length = len(roles)
+            updClubInfo = Club.query.get_or_404(str(ClubId))  
+            questions_to_display = ApplicationQuestions.query.filter(ApplicationQuestions.ClubId==str(ClubId)) 
+            Announcements = Announcement.query.filter(Announcement.ClubId==str(ClubId)).all() 
+            # info_to_display = ApplicationQuestions.query.filter(ApplicationQuestions.RoleId==str(RoleIdInUrl)) 
+            # role_specific_questions_to_display, ids = rolespecificquestions(RoleIdInUrl) role_specific_questions_to_display=info_to_display
+            # length2 = len(role_specific_questions_to_display) length2=length2
+            return render_template('updateclub.html', RoleId=RoleId, ClubId=str(ClubId), length=length, roles=roles, \
+                role_descriptions=role_descriptions, Announcements=Announcements, length2 = 1, updClubInfo=updClubInfo,questions_to_display=questions_to_display)
         except:
             return 'sorry could not delete'
     else:

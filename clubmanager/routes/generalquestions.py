@@ -37,8 +37,9 @@ def create_update_delete_generalquestions(ClubId = '', QuestionId=''):
             updClubInfo = Club.query.get_or_404(str(ClubId))  
             questions_to_display = ApplicationQuestions.query.filter(ApplicationQuestions.ClubId==str(ClubId)) 
             Announcements = Announcement.query.filter(Announcement.ClubId==str(ClubId)).all() 
-            return render_template('updateclub.html', RoleId=RoleId, ClubId=str(ClubId), length=length, roles=roles, \
-            role_descriptions=role_descriptions, Announcements=Announcements, length2 = 5, updClubInfo=updClubInfo,questions_to_display=questions_to_display)
+            return redirect(url_for('get_club', ClubId=str(ClubId)) + '?mode=update#nav-generalquestions')
+            # return render_template('updateclub.html', RoleId=RoleId, ClubId=str(ClubId), length=length, roles=roles, \
+            # role_descriptions=role_descriptions, Announcements=Announcements, length2 = 5, updClubInfo=updClubInfo,questions_to_display=questions_to_display)
         else:
             return 'invalid information'
     elif mode == 'update':

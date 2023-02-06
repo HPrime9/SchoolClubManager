@@ -17,7 +17,6 @@ from clubmanager.flaskforms import ClubCreationForm, ClubGeneralQuestionForm, Cl
 def get_club(ClubId = ''):
     mode = request.args.get('mode')
     form = ClubCreationForm()
-    formRole = ClubRoleForm()
     if mode == 'new':  
         return render_template('club.html', form=form)
     elif mode == 'update':
@@ -29,7 +28,7 @@ def get_club(ClubId = ''):
         # info_to_display = ApplicationQuestions.query.filter(ApplicationQuestions.RoleId==str(RoleIdInUrl)) 
         # role_specific_questions_to_display, ids = rolespecificquestions(RoleIdInUrl) role_specific_questions_to_display=info_to_display
         # length2 = len(role_specific_questions_to_display) length2=length2
-        return render_template('updateclub.html', formRole=formRole, RoleId=RoleId, ClubId=str(ClubId), length=length, roles=roles, \
+        return render_template('updateclub.html', RoleId=RoleId, ClubId=str(ClubId), length=length, roles=roles, \
             role_descriptions=role_descriptions, Announcements=Announcements, length2 = 1, updClubInfo=updClubInfo,questions_to_display=questions_to_display)
     elif mode == 'viewall':
         clubs = Club.query.filter(Club.School == current_user.School).all()

@@ -39,11 +39,11 @@
             <div class="nav nav-tabs" id="nav-tab" role="tablist">
                 <button class="nav-link active" id="nav-generaldetails-tab" data-bs-toggle="tab"
                     data-bs-target="#nav-generaldetails" type="button">General Details</button>
-                <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button"
+                <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="" role="button"
                     aria-expanded="false">Application</a>
                 <ul class="dropdown-menu">
-                    <button class="nav-link dropdown-item" id="nav-generalquestions-tab" data-bs-toggle="tab"
-                        data-bs-target="#nav-generalquestions" type="button">Create General Questions</button>
+                    <a class="nav-link dropdown-item" id="nav-generalquestions-tab" data-bs-toggle="tab"
+                        data-bs-target="#nav-generalquestions" type="button" href='#nav-generalquestions'>Create General Questions</a>
                     <button class="nav-link dropdown-item" id="nav-roles-tab" data-bs-toggle="tab"
                         data-bs-target="#nav-roles" type="button">Create Roles</button>
                 </ul>
@@ -52,8 +52,8 @@
                     aria-expanded="false">Create Role Specific Questions</a>
                 <ul class="dropdown-menu">
                     {% for i in range(length) %}
-                    <button class="nav-link dropdown-item" id="nav-rolespecificquestions{{ [i] }}-tab"
-                        data-bs-toggle="tab" data-bs-target="#nav-rolespecificquestions{{ [i] }}" type="button">{{
+                    <button class="nav-link dropdown-item" id="nav-rolespecificquestions{{ i }}-tab"
+                        data-bs-toggle="tab" data-bs-target="#nav-rolespecificquestions{{ i }}" type="button">{{
                         roles[i] }}</button>
                     {% endfor %}
                 </ul>
@@ -64,6 +64,7 @@
                     data-bs-target="#nav-announcements" type="button">Announcements</button>
             </div>
         </nav>
+        <!-- <input class='btn btn-primary' type='button' value='Try Me' id='tryme'> -->
         <div class="tab-content" id="nav-tabContent">
 
 
@@ -105,7 +106,7 @@
 
 
 
-            <div class="tab-pane fade" id="nav-generalquestions">
+            <div class="tab-pane fade" id="nav-generalquestions" role="tabpanel" tabindex="0">
                 <br>
                 {% if questions_to_display %}
                 <div class='row table table-striped'>
@@ -355,7 +356,6 @@
                     </div>
                 </div>
                 <form action='/clubs/{{ ClubId }}/roles?mode=new' method='POST'>
-                    {{ formRole.csrf_token }}
                     <div class='mb-3' id='roles'></div>
                     <input class='btn btn-primary' type='submit' value='Save'>
                 </form>
@@ -363,8 +363,8 @@
 
 
 
-            {% for i in range(length2) %}
-            <div class="tab-pane fade" id="nav-rolespecificquestions{{ [i] }}">
+            {% for i in range(length) %}
+            <div class="tab-pane fade" id="nav-rolespecificquestions{{ i }}">
                 <div>
                     <div class='row'>
                         <div class='col-2'>
@@ -499,10 +499,10 @@
 
             <div class="tab-pane fade" id="nav-announcements">
                 <div class='row'>
-                    Announce
+                    <h1 class='text-dark-emphasis'>Announce</h1>
                 </div>
                 <form action='/clubs/{{ ClubId }}/announcements?mode=new' method='POST'>
-                    <div class='row'>
+                    <div class='row mb-3'>
                         <div class='col-4'>
                             <label>Enter Title</label>
                             <input class='form-control' type='text' name='Header'>
@@ -512,18 +512,19 @@
                             <input class='form-control' type='text' name='Message'>
                         </div>
                         <div class='col-2'>
-                            <input type='submit' class='btn-btn-primary'>
+                            <input type='submit' style='margin: 20px;' class='btn btn-dark'>
                         </div>
                     </div>
                 </form>
+                <br>
                 {% if Announcements %}
                 <div class='row'>
                     {% for announcement in Announcements %}
-                    <div>
-                        <h1 class='displayannoucement'>{{ announcement.Header }}</h1>
-                        <p>{{ announcement.Message }}</p>
+                    <div class='border-success border rounded-pill'>
+                        <h2 class='displayannoucement text-secondary'>{{ announcement.Header }}</h2>
                         <button class='displayannoucement btn btn-danger' type="button" data-bs-toggle="modal"
-                            data-bs-target="#exampleModalDelete{{ announcement.AnnouncementId }}"></button>
+                            data-bs-target="#exampleModalDelete{{ announcement.AnnouncementId }}">Delete</button>
+                        <p class='text-secondary'>{{ announcement.Message }}</p>
                         <aside>
                             <div class="modal fade" id="exampleModalDelete{{ announcement.AnnouncementId }}"
                                 tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -555,10 +556,36 @@
                 {% endif %}
             </div>
         </div>
-    </main>
-    <script src='/static/js/main.js'></script>
+    </main>    
+</body>
+<!-- <script>
+    const btn = document.querySelector('#tryme');
+    btn.addEventListener("click", (event) => {
+        //alert(window.location.search("#"));
+        //alert(window.location.hash);
+        //alert(`#myTab button[data-bs-target='${window.location.hash}']`);
+        const triggerEl = document.querySelector(`#nav-tab button[data-bs-target="${window.location.hash}"]`);        
+        
+        //const tabTrigger = new bootstrap.Tab(triggerEl)
+        alert(triggerEl.innerHTML);
+        alert(bootstrap.Tab.getInstance(triggerEl));
+        bootstrap.Tab.getInstance(triggerEl).show() // Select tab by name
+}   );
+</script> -->
+<script src='/static/js/main.js'></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN"
         crossorigin="anonymous"></script>
-</body>
+<script>
+    var url = document.location.toString();
+if (url.match('#')) {
+    // const triggerEl = document.querySelector(`#nav-tab button[data-bs-target="${window.location.hash}"]`);
+    $('#nav-tab ul a[href=#' + url.split('#')[1] + ']').tab('show');
+}
+
+// Change hash for page-reload
+$('.nav-tabs ul a').on('shown.bs.tab', function (e) {
+    window.location.hash = e.target.hash;
+})
+</script>
 {% endblock %}

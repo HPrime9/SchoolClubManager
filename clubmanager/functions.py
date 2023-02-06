@@ -46,3 +46,12 @@ def generalquestions(ClubId):
 def getUserOwnedClubs(user):
     clubs = Club.query.filter(Club.StudentNum == user).all()
     return clubs
+
+#######################################
+# def updateroute(ClubId):
+#     roles, role_descriptions, RoleId = uniqueRoles(ClubId)
+#     length = len(roles)
+#     updClubInfo = Club.query.get_or_404(str(ClubId))  
+#     questions_to_display = ApplicationQuestions.query.filter(ApplicationQuestions.ClubId==str(ClubId)) 
+#     Announcements = Announcement.query.filter(Announcement.ClubId==str(ClubId)).all()
+#     return roles, role_descriptions, RoleId, length, updClubInfo, questions_to_display, Announcements

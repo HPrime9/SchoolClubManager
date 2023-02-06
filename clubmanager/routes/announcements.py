@@ -25,13 +25,24 @@ def club_announcement(ClubId, AnnouncementId = ''):
             db.session.add(new_announcemnt)
             try:
                 db.session.commit()
-                return redirect(url_for('get_club', ClubId=ClubId))
             except:
                 return 'there was problem making announcement'
+            roles, role_descriptions, RoleId = uniqueRoles(ClubId)
+            length = len(roles)
+            updClubInfo = Club.query.get_or_404(str(ClubId))  
+            questions_to_display = ApplicationQuestions.query.filter(ApplicationQuestions.ClubId==str(ClubId)) 
+            Announcements = Announcement.query.filter(Announcement.ClubId==str(ClubId)).all()
+            return render_template('updateclub.html', RoleId=RoleId, ClubId=str(ClubId), length=length, roles=roles, role_descriptions=role_descriptions, Announcements=Announcements, length2 = 1, updClubInfo=updClubInfo,questions_to_display=questions_to_display)
     elif mode == 'delete':
         announcement_to_del = Announcement.query.get_or_404(str(AnnouncementId))
         db.session.delete(announcement_to_del)
         db.session.commit()
-        return redirect(url_for('get_club', ClubId=ClubId))
+        roles, role_descriptions, RoleId = uniqueRoles(ClubId)
+        length = len(roles)
+        updClubInfo = Club.query.get_or_404(str(ClubId))  
+        questions_to_display = ApplicationQuestions.query.filter(ApplicationQuestions.ClubId==str(ClubId)) 
+        Announcements = Announcement.query.filter(Announcement.ClubId==str(ClubId)).all()
+        return render_template('updateclub.html', RoleId=RoleId, ClubId=str(ClubId), length=length, roles=roles, \
+    role_descriptions=role_descriptions, Announcements=Announcements, length2 = 1, updClubInfo=updClubInfo,questions_to_display=questions_to_display)
     else:
         return 'not valid update not created yet'

@@ -85,3 +85,8 @@ a {
 .ownertabcolor {
     color: rgb(59, 84, 154);
 }
+
+.border {
+    border: 2px solid;
+    margin: 12px;
+}
