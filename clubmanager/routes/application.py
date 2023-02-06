@@ -44,6 +44,12 @@ def get_application(ClubId, StudentNum = ''):
         generalquestion_answers = QuestionAnswer.query.filter_by(StudentNum=StudentNum, RoleId=None)
         rolespecificquestion_answers = QuestionAnswer.query.filter_by(StudentNum=StudentNum, RoleId=str(selectedrole_id))
         application_state, application_status_checked = '', ''
+        all_generalquestion_answers = []
+        all_rolespecificquestion_answers = []
+        for row1 in generalquestion_answers:
+            all_generalquestion_answers.append(row1.Answer)
+        for row2 in rolespecificquestion_answers:
+            all_rolespecificquestion_answers.append(row2.Answer)
         for row in checkifsubmitted:
             if row.Status == 'submitted':
                 application_state = 'disabled'
@@ -51,7 +57,7 @@ def get_application(ClubId, StudentNum = ''):
             else:
                 application_state = ''
                 application_status_checked = ''
-        return render_template('application.html', form=form, rolespecificquestion_answers=rolespecificquestion_answers, generalquestion_answers=generalquestion_answers, ClubId=ClubId, rolespecificquestions_ids=rolespecificquestions_ids, length_rolespecificquestions_to_display=length_rolespecificquestions_to_display, rolespecificquestions_to_display=rolespecificquestions_to_display, application_status_checked=application_status_checked, application_state=application_state, RoleIds=RoleIds, selectedrole_str=selectedrole_str, generalquestions=generalquestions_to_display, length_general=length_general, generalquestions_ids=generalquestions_ids, length_role=length_role, role_options=role_options, role_descriptions=role_descriptions)
+        return render_template('application.html', form=form, all_rolespecificquestion_answers=all_rolespecificquestion_answers, all_generalquestion_answers=all_generalquestion_answers, ClubId=ClubId, rolespecificquestions_ids=rolespecificquestions_ids, length_rolespecificquestions_to_display=length_rolespecificquestions_to_display, rolespecificquestions_to_display=rolespecificquestions_to_display, application_status_checked=application_status_checked, application_state=application_state, RoleIds=RoleIds, selectedrole_str=selectedrole_str, generalquestions=generalquestions_to_display, length_general=length_general, generalquestions_ids=generalquestions_ids, length_role=length_role, role_options=role_options, role_descriptions=role_descriptions)
 
 
 
@@ -132,6 +138,7 @@ def save_submit_application(ClubId, StudentNum):
         length_role = len(role_options)
         length_general = len(generalquestions_to_display)
         rolespecificquestions_to_display, rolespecificquestions_ids = rolespecificquestions(str(selectedrole_id))
+        print(rolespecificquestions_to_display)
         length_rolespecificquestions_to_display = len(rolespecificquestions_to_display)
         checkifsubmitted = QuestionAnswer.query.filter_by(StudentNum=StudentNum, Status='submitted')
         generalquestion_answers = QuestionAnswer.query.filter_by(StudentNum=StudentNum, RoleId=None)
@@ -144,14 +151,13 @@ def save_submit_application(ClubId, StudentNum):
             else:
                 application_state = ''
                 application_status_checked = ''
-        return render_template('application.html', form=form, rolespecificquestion_answers=rolespecificquestion_answers, generalquestion_answers=generalquestion_answers, ClubId=ClubId, rolespecificquestions_ids=rolespecificquestions_ids, length_rolespecificquestions_to_display=length_rolespecificquestions_to_display, rolespecificquestions_to_display=rolespecificquestions_to_display, application_status_checked=application_status_checked, application_state=application_state, RoleIds=RoleIds, selectedrole_str=selectedrole_str, generalquestions=generalquestions_to_display, length_general=length_general, generalquestions_ids=generalquestions_ids, length_role=length_role, role_options=role_options, role_descriptions=role_descriptions)
-        # return render_template('application.html', RoleId=RoleId, application_status_checked=application_status_checked, \
-        #     generalquestions_id=generalquestions_id, application_state=application_state, role_specific_question_answers=role_specific_question_answers, \
-        #         general_question_answers=general_question_answers, rolespecificquestions_id=rolespecificquestions_id, form=form, \
-        #             length_rolespecificquestions_to_display=length_rolespecificquestions_to_display, \
-        #                 rolespecificquestions_to_display=rolespecificquestions_to_display, length_general=length_general, length_role=length_role, \
-        #                     SelectedRole=applicant_role, ClubId=str(ClubId), role_options=role_options, role_descriptions=role_descriptions, \
-        #                         generalquestions=general_questions)
+        all_generalquestion_answers = []
+        all_rolespecificquestion_answers = []
+        for row1 in generalquestion_answers:
+            all_generalquestion_answers.append(row1.Answer)
+        for row2 in rolespecificquestion_answers:
+            all_rolespecificquestion_answers.append(row2.Answer)
+        return render_template('application.html', form=form, all_rolespecificquestion_answers=all_rolespecificquestion_answers, all_generalquestion_answers=all_generalquestion_answers, ClubId=ClubId, rolespecificquestions_ids=rolespecificquestions_ids, length_rolespecificquestions_to_display=length_rolespecificquestions_to_display, rolespecificquestions_to_display=rolespecificquestions_to_display, application_status_checked=application_status_checked, application_state=application_state, RoleIds=RoleIds, selectedrole_str=selectedrole_str, generalquestions=generalquestions_to_display, length_general=length_general, generalquestions_ids=generalquestions_ids, length_role=length_role, role_options=role_options, role_descriptions=role_descriptions)
 
     else:
         return 'error'
