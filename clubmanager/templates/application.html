@@ -45,13 +45,11 @@
                     <button class="nav-link" id="nav-selectrole-tab" data-bs-toggle="tab"
                         data-bs-target="#nav-selectrole" type='button' style='color: rgb(59, 84, 154)'>Select
                         Role</button>
-                    {% if SelectedRole != None and SelectedRole != '' %}
                     <button class="nav-link" id="nav-rolespecificquestionsanswers-tab" data-bs-toggle="tab"
                         data-bs-target="#nav-rolespecificquestionsanswers" type='button'
-                        style='color: rgb(59, 84, 154)'>{{ SelectedRole }}</button>
-                    {% endif %}
+                        style='color: rgb(59, 84, 154)'>{{ selectedrole_str }}</button>    
                 </div>
-                <form action='/clubs/{{ ClubId }}/applications?mode=save' method='POST'>
+                <form action='/clubs/{{ ClubId }}/applications/866639?mode=save' method='POST'>
                 <input type="checkbox" class="form-check-input" id='showsubmitapplication' name="SubmitApplication"
                     value="submitapplication" {{ application_status_checked }} {{ application_state }}>
                 <label class="form-check-label">Submit application to the club</label>
@@ -65,8 +63,8 @@
                         {% for i in range(length_general) %}
                         <div class='mb-3'>
                             <label for='l1' class='exampleFormControlInput1'>{{ generalquestions[i] }}</label>
-                            <textarea id='l1' class='form-control' type='text' maxlength='' rows='5' name='{{ generalquestions_id[i] }}GeneralQuestionAnswers'
-                                placeholder='Enter Answer' {{ application_state }}>{{ general_question_answers[i] }}</textarea>
+                            <textarea id='l1' class='form-control' type='text' maxlength='' rows='5' name='{{ generalquestions_ids[i] }}GeneralQuestionAnswers'
+                                placeholder='Enter Answer' {{ application_state }}>{{ generalquestion_answers.Answer }}</textarea>
                         </div>
                         {% endfor %}
                         {% if application_state != 'disabled' %}
@@ -82,8 +80,8 @@
                     {% for i in range(length_rolespecificquestions_to_display) %}
                     <div class='mb-3'>
                         <label for='l1' class='exampleFormControlInput1'>{{ rolespecificquestions_to_display[i] }}</label>
-                        <textarea id='l1' class='form-control' type='text' maxlength='' rows='5' name='{{ rolespecificquestions_id[i] }}RoleSpecificQuestionAnswers'
-                            placeholder='Enter Answer' {{ application_state }}>{{ role_specific_question_answers[i] }}</textarea>
+                        <textarea id='l1' class='form-control' type='text' maxlength='' rows='5' name='{{ rolespecificquestions_ids[i] }}RoleSpecificQuestionAnswers'
+                            placeholder='Enter Answer' {{ application_state }}>{{ rolespecificquestion_answers.Answer }}</textarea>
                     </div>
                     {% endfor %}
                     {% endif %}
@@ -98,7 +96,7 @@
             <div class="tab-pane fade" id="nav-selectrole">
                 <div class='row'>
                     <h1>Select Role</h1>
-                    <form action='/clubs/{{ ClubId }}/applications?mode=selectrole' method='POST'>
+                    <form action='/clubs/{{ ClubId }}/applications/866639?mode=selectrole' method='POST'>
                         {{ form.hidden_tag() }}
                         {% if role_options %}
                         <table class='row table table-borderless'>
@@ -111,7 +109,7 @@
                             <tbody>
                                 {% for i in range(length_role) %}
                                 <tr>
-                                    <td><input class='form-check-input' name="SelectRole" type="radio" value="{{ RoleId[i] }}" {{ application_state }}> {{
+                                    <td><input class='form-check-input' name="SelectRole" type="radio" value="{{ RoleIds[i] }}" {{ application_state }}> {{
                                         role_options[i] }}</td>
                                     <td>{{ role_descriptions[i] }}</td> 
                                 </tr>

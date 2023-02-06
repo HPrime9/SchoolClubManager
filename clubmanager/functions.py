@@ -25,22 +25,30 @@ def uniqueRoles(ClubId):
 def rolespecificquestions(RoleId):
     rolespecificquestions_db = ApplicationQuestions.query.filter(ApplicationQuestions.RoleId==str(RoleId)).all()
     rolespecificquestions = []
-    rolespecificquestions_id = []
+    rolespecificquestions_ids = []
     for row in rolespecificquestions_db:
         if row.Question != None:
             rolespecificquestions.append(row.Question)
-            rolespecificquestions_id.append(row.QuestionId)
-    return rolespecificquestions, rolespecificquestions_id
+            rolespecificquestions_ids.append(row.QuestionId)
+    return rolespecificquestions, rolespecificquestions_ids
 
 def generalquestions(ClubId):
-    db = ApplicationQuestions.query.filter(ApplicationQuestions.ClubId==str(ClubId))
+    db_query = ApplicationQuestions.query.filter(ApplicationQuestions.ClubId==str(ClubId), ApplicationQuestions.RoleId==None)
     generalquestions = []
-    generalquestions_id = []
-    for row in db:
-        if not (row.RoleId):
-            generalquestions.append(row.Question)
-            generalquestions_id.append(row.QuestionId)
-    return generalquestions, generalquestions_id
+    generalquestions_ids = []
+    for row in db_query:
+        generalquestions.append(row.Question)
+        generalquestions_ids.append(row.QuestionId)
+    return generalquestions, generalquestions_ids
+# def generalquestions(ClubId):
+#     db_query = ApplicationQuestions.query.filter(ApplicationQuestions.ClubId==str(ClubId))
+#     generalquestions = []
+#     generalquestions_id = []
+#     for row in db_query:
+#         if not (row.RoleId):
+#             generalquestions.append(row.Question)
+#             generalquestions_id.append(row.QuestionId)
+#     return generalquestions, generalquestions_id
 
 # Will return all the clubs logged in user owns  
 def getUserOwnedClubs(user):

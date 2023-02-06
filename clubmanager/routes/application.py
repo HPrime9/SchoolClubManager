@@ -17,7 +17,9 @@ from clubmanager.flaskforms import ClubApplicationForm
 @login_required
 def get_application(ClubId, StudentNum = ''):
     mode = request.args.get('mode')
+    global selectedrole_str, selectedrole_id
     roles_to_display = []
+    generalquestions_to_display = []
     club_to_display_responses = QuestionAnswer.query.filter(QuestionAnswer.ClubId == str(ClubId)).all()
     if mode == 'viewall':
         userClubCatalogue = getUserOwnedClubs(current_user.StudentNum)
@@ -31,68 +33,46 @@ def get_application(ClubId, StudentNum = ''):
                     print('error2')
         return render_template('responseoverview.html', userClubCatalogue=userClubCatalogue, club_to_display_responses=club_to_display_responses, roles_to_display=roles_to_display)
     elif mode == 'view' or mode == 'selectrole':
-        global selectedrole_id
         form = ClubApplicationForm()
-        role_options, role_descriptions, RoleId = uniqueRoles(ClubId)
-        general_questions, generalquestions_id = generalquestions(ClubId)
+        generalquestions_to_display, generalquestions_ids = generalquestions(ClubId)
+        role_options, role_descriptions, RoleIds = uniqueRoles(ClubId)
         length_role = len(role_options)
-        selectedrole_id = form.SelectRole.data
-        length_general = len(general_questions)
-        rolespecificquestions_to_display = []
-        length_rolespecificquestions_to_display = 0
-        applicant_role = ''
-        general_question_answers = []
-        role_specific_question_answers = []
-        generalanswers = QuestionAnswer.query.filter(QuestionAnswer.ClubId==str(ClubId))
-        check_application_state = QuestionAnswer.query.filter(QuestionAnswer.StudentNum==int(current_user.StudentNum)).all()
-        application_state = ''
-        application_status_checked = ''
-        rolespecificquestions_id = ''
-        for row in check_application_state:
+        length_general = len(generalquestions_to_display)
+        rolespecificquestions_to_display, rolespecificquestions_ids = rolespecificquestions(str(selectedrole_id))
+        length_rolespecificquestions_to_display = len(rolespecificquestions_to_display)
+        checkifsubmitted = QuestionAnswer.query.filter_by(StudentNum=StudentNum, Status='submitted')
+        generalquestion_answers = QuestionAnswer.query.filter_by(StudentNum=StudentNum, RoleId=None)
+        rolespecificquestion_answers = QuestionAnswer.query.filter_by(StudentNum=StudentNum, RoleId=str(selectedrole_id))
+        application_state, application_status_checked = '', ''
+        for row in checkifsubmitted:
             if row.Status == 'submitted':
                 application_state = 'disabled'
                 application_status_checked = 'checked'
-        for row in generalanswers:
-            if not row.RoleId:
-                general_question_answers.append(row.Answer)
-
-            roleexists = select(QuestionAnswer).where(QuestionAnswer.StudentNum == current_user.StudentNum, QuestionAnswer.RoleId!=None)
-            getroleidexists = QuestionAnswer.query.filter(QuestionAnswer.StudentNum==current_user.StudentNum, QuestionAnswer.RoleId!=None).first()
-            roleexistsexecute = db.session.execute(roleexists)
-            if getroleidexists and roleexistsexecute and not selectedrole_id:
-                selectedrole_id = str(getroleidexists.RoleId)
-                rolespecificanswers = QuestionAnswer.query.filter(QuestionAnswer.RoleId==str(selectedrole_id))
-                for row2 in rolespecificanswers:
-                    role_specific_question_answers.append(row2.Answer)
             else:
-                row = ClubRole.query.filter(ClubRole.RoleId==str(selectedrole_id)).first()
-                rolespecificanswers = QuestionAnswer.query.filter(QuestionAnswer.RoleId==str(selectedrole_id))
-                for row2 in rolespecificanswers:
-                    role_specific_question_answers.append(row2.Answer)
-                try:
-                    applicant_role = row.Role
-                except:
-                    print('error')
-                rolespecificquestions_to_display, rolespecificquestions_id = rolespecificquestions(str(selectedrole_id))
-                length_rolespecificquestions_to_display = len(rolespecificquestions_to_display)
-        
-        return render_template('application.html', RoleId=RoleId, application_status_checked=application_status_checked, \
-            generalquestions_id=generalquestions_id, application_state=application_state, role_specific_question_answers=role_specific_question_answers, \
-                general_question_answers=general_question_answers, rolespecificquestions_id=rolespecificquestions_id, form=form, \
-                    length_rolespecificquestions_to_display=length_rolespecificquestions_to_display, \
-                        rolespecificquestions_to_display=rolespecificquestions_to_display, length_general=length_general, length_role=length_role, \
-                            SelectedRole=applicant_role, ClubId=str(ClubId), role_options=role_options, role_descriptions=role_descriptions, \
-                                generalquestions=general_questions)
+                application_state = ''
+                application_status_checked = ''
+        return render_template('application.html', form=form, rolespecificquestion_answers=rolespecificquestion_answers, generalquestion_answers=generalquestion_answers, ClubId=ClubId, rolespecificquestions_ids=rolespecificquestions_ids, length_rolespecificquestions_to_display=length_rolespecificquestions_to_display, rolespecificquestions_to_display=rolespecificquestions_to_display, application_status_checked=application_status_checked, application_state=application_state, RoleIds=RoleIds, selectedrole_str=selectedrole_str, generalquestions=generalquestions_to_display, length_general=length_general, generalquestions_ids=generalquestions_ids, length_role=length_role, role_options=role_options, role_descriptions=role_descriptions)
+
+
+
+
+
+
+
+    #     class ClubApplicationForm(FlaskForm):
+    # SubmitApplication = StringField('General Question Answer', validators=[Length(max=1000)])
+    # GeneralQuestionAnswers = StringField('General Question Answer', validators=[InputRequired(), Length(max=1000)])
+    # SelectRole = StringField('Select Role', validators=[InputRequired(), Length(max=500)])
+    # RoleSpecificQuestionAnswers = StringField('Role Specific Question Answer', validators=[InputRequired(), Length(max=1000)])
     else:
         return 'error in application'
 
-
-@app.route('/clubs/<uuid:ClubId>/applications', methods=['POST'])
+@app.route('/clubs/<uuid:ClubId>/applications/<int:StudentNum>', methods=['POST'])
 @login_required
-def save_submit_application(ClubId):
+def save_submit_application(ClubId, StudentNum):
     mode = request.args.get('mode')
+    global selectedrole_str, selectedrole_id
     if mode == 'save':
-        global selectedrole_id
         form = ClubApplicationForm()
         if form.validate_on_submit:
             if request.method == 'POST':
@@ -142,8 +122,40 @@ def save_submit_application(ClubId):
                             db.session.add(new_application_save)
                             db.session.commit()
                 return redirect(url_for('dashboard'))
+    elif mode == 'selectrole':
+        form = ClubApplicationForm()
+        selectedrole_id = form.SelectRole.data
+        selectedrole_str = ClubRole.query.filter_by(RoleId=str(selectedrole_id)).first()
+        selectedrole_str = selectedrole_str.Role
+        generalquestions_to_display, generalquestions_ids = generalquestions(ClubId)
+        role_options, role_descriptions, RoleIds = uniqueRoles(ClubId)
+        length_role = len(role_options)
+        length_general = len(generalquestions_to_display)
+        rolespecificquestions_to_display, rolespecificquestions_ids = rolespecificquestions(str(selectedrole_id))
+        length_rolespecificquestions_to_display = len(rolespecificquestions_to_display)
+        checkifsubmitted = QuestionAnswer.query.filter_by(StudentNum=StudentNum, Status='submitted')
+        generalquestion_answers = QuestionAnswer.query.filter_by(StudentNum=StudentNum, RoleId=None)
+        rolespecificquestion_answers = QuestionAnswer.query.filter_by(StudentNum=StudentNum, RoleId=str(selectedrole_id))
+        application_state, application_status_checked = '', ''
+        for row in checkifsubmitted:
+            if row.Status == 'submitted':
+                application_state = 'disabled'
+                application_status_checked = 'checked'
+            else:
+                application_state = ''
+                application_status_checked = ''
+        return render_template('application.html', form=form, rolespecificquestion_answers=rolespecificquestion_answers, generalquestion_answers=generalquestion_answers, ClubId=ClubId, rolespecificquestions_ids=rolespecificquestions_ids, length_rolespecificquestions_to_display=length_rolespecificquestions_to_display, rolespecificquestions_to_display=rolespecificquestions_to_display, application_status_checked=application_status_checked, application_state=application_state, RoleIds=RoleIds, selectedrole_str=selectedrole_str, generalquestions=generalquestions_to_display, length_general=length_general, generalquestions_ids=generalquestions_ids, length_role=length_role, role_options=role_options, role_descriptions=role_descriptions)
+        # return render_template('application.html', RoleId=RoleId, application_status_checked=application_status_checked, \
+        #     generalquestions_id=generalquestions_id, application_state=application_state, role_specific_question_answers=role_specific_question_answers, \
+        #         general_question_answers=general_question_answers, rolespecificquestions_id=rolespecificquestions_id, form=form, \
+        #             length_rolespecificquestions_to_display=length_rolespecificquestions_to_display, \
+        #                 rolespecificquestions_to_display=rolespecificquestions_to_display, length_general=length_general, length_role=length_role, \
+        #                     SelectedRole=applicant_role, ClubId=str(ClubId), role_options=role_options, role_descriptions=role_descriptions, \
+        #                         generalquestions=general_questions)
+
     else:
         return 'error'
 
 # Global variables
 selectedrole_id = ''
+selectedrole_str = ''
