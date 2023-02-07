@@ -44,6 +44,7 @@ def get_application(ClubId, StudentNum = ''):
         generalquestion_answers = QuestionAnswer.query.filter_by(StudentNum=StudentNum, RoleId=None)
         rolespecificquestion_answers = QuestionAnswer.query.filter_by(StudentNum=StudentNum, RoleId=str(selectedrole_id))
         application_state, application_status_checked = '', ''
+        selectroletabvisibility = ''
         all_generalquestion_answers = []
         all_rolespecificquestion_answers = []
         for row1 in generalquestion_answers:
@@ -54,10 +55,11 @@ def get_application(ClubId, StudentNum = ''):
             if row.Status == 'submitted':
                 application_state = 'disabled'
                 application_status_checked = 'checked'
+                selectroletabvisibility = 'visibility: hidden;'
             else:
                 application_state = ''
                 application_status_checked = ''
-        return render_template('application.html', form=form, all_rolespecificquestion_answers=all_rolespecificquestion_answers, all_generalquestion_answers=all_generalquestion_answers, ClubId=ClubId, rolespecificquestions_ids=rolespecificquestions_ids, length_rolespecificquestions_to_display=length_rolespecificquestions_to_display, rolespecificquestions_to_display=rolespecificquestions_to_display, application_status_checked=application_status_checked, application_state=application_state, RoleIds=RoleIds, selectedrole_str=selectedrole_str, generalquestions=generalquestions_to_display, length_general=length_general, generalquestions_ids=generalquestions_ids, length_role=length_role, role_options=role_options, role_descriptions=role_descriptions)
+        return render_template('application.html', selectroletabvisibility=selectroletabvisibility, form=form, all_rolespecificquestion_answers=all_rolespecificquestion_answers, all_generalquestion_answers=all_generalquestion_answers, ClubId=ClubId, rolespecificquestions_ids=rolespecificquestions_ids, length_rolespecificquestions_to_display=length_rolespecificquestions_to_display, rolespecificquestions_to_display=rolespecificquestions_to_display, application_status_checked=application_status_checked, application_state=application_state, RoleIds=RoleIds, selectedrole_str=selectedrole_str, generalquestions=generalquestions_to_display, length_general=length_general, generalquestions_ids=generalquestions_ids, length_role=length_role, role_options=role_options, role_descriptions=role_descriptions)
 
 
 
@@ -81,53 +83,52 @@ def save_submit_application(ClubId, StudentNum):
     if mode == 'save':
         form = ClubApplicationForm()
         if form.validate_on_submit:
-            if request.method == 'POST':
-                general_questions, generalquestions_id = generalquestions(ClubId)
-                rolespecificquestions_to_display, rolespecificquestions_id = rolespecificquestions(str(selectedrole_id))
-                if request.form.get('SubmitApplication') == 'submitapplication':
-                    status = 'submitted'
-                else:
-                    status = 'draft'
-                for i in range(len(general_questions)):
-                    answer_generalquestion = request.form[str(generalquestions_id[i]) + 'GeneralQuestionAnswers']
-                    if answer_generalquestion.strip != '':
-                        generalquestiontobeupdated = select(QuestionAnswer).where(QuestionAnswer.StudentNum == current_user.StudentNum, QuestionAnswer.QuestionId == str(generalquestions_id[i]))
-                        generalquestionupdate = QuestionAnswer.query.filter_by(StudentNum=current_user.StudentNum, QuestionId=str(generalquestions_id[i])).first()
-                        rowgeneral = db.session.execute(generalquestiontobeupdated)
-                        if rowgeneral and generalquestionupdate:
-                            generalquestionupdate.Answer = answer_generalquestion
-                            generalquestionupdate.Status = status
-                            try:
-                                db.session.commit()
-                            except:
-                                return 'error'
-                        else:
-                            new_application_save = QuestionAnswer(AnswerId=generate_UUID(), StudentNum=current_user.StudentNum, ClubId=str(ClubId), Grade=current_user.Grade, Status=status, QuestionId=generalquestions_id[i], Answer=answer_generalquestion)
-                            db.session.add(new_application_save)
+            general_questions, generalquestions_id = generalquestions(ClubId)
+            rolespecificquestions_to_display, rolespecificquestions_id = rolespecificquestions(str(selectedrole_id))
+            if request.form.get('SubmitApplication') == 'submitapplication':
+                status = 'submitted'
+            else:
+                status = 'draft'
+            for i in range(len(general_questions)):
+                answer_generalquestion = request.form[str(generalquestions_id[i]) + 'GeneralQuestionAnswers']
+                if answer_generalquestion.strip != '':
+                    generalquestiontobeupdated = select(QuestionAnswer).where(QuestionAnswer.StudentNum == current_user.StudentNum, QuestionAnswer.QuestionId == str(generalquestions_id[i]))
+                    generalquestionupdate = QuestionAnswer.query.filter_by(StudentNum=current_user.StudentNum, QuestionId=str(generalquestions_id[i])).first()
+                    rowgeneral = db.session.execute(generalquestiontobeupdated)
+                    if rowgeneral and generalquestionupdate:
+                        generalquestionupdate.Answer = answer_generalquestion
+                        generalquestionupdate.Status = status
+                        try:
                             db.session.commit()
-                            try:
-                                db.session.commit()
-                            except:
-                                return 'there was problem updating'
-                for i in range(len(rolespecificquestions_to_display)):
-                    answer_rolespecificquestion = request.form[str(rolespecificquestions_id[i]) + 'RoleSpecificQuestionAnswers']
-                    roleid = ClubRole.query.filter_by(RoleId=rolespecificquestions_id[i]).first()
-                    if answer_rolespecificquestion.strip != '':
-                        rolespecificquestiontobeupdated = select(QuestionAnswer).where(QuestionAnswer.StudentNum == current_user.StudentNum, QuestionAnswer.QuestionId == str(rolespecificquestions_id[i]))
-                        rolespecificquestionupdate = QuestionAnswer.query.filter_by(StudentNum=current_user.StudentNum, QuestionId=str(rolespecificquestions_id[i])).first()
-                        rowrolespecfic = db.session.execute(rolespecificquestiontobeupdated)
-                        if rowrolespecfic and rolespecificquestionupdate:
-                            rolespecificquestionupdate.Answer = answer_rolespecificquestion
-                            rolespecificquestionupdate.Status = status
-                            try:
-                                db.session.commit()
-                            except:
-                                return 'error'
-                        else:
-                            new_application_save = QuestionAnswer(AnswerId=generate_UUID(), StudentNum=current_user.StudentNum, ClubId=str(ClubId), Grade=current_user.Grade, Status=status, RoleId=str(selectedrole_id), QuestionId=rolespecificquestions_id[i], Answer=answer_rolespecificquestion)
-                            db.session.add(new_application_save)
+                        except:
+                            return 'error'
+                    else:
+                        new_application_save = QuestionAnswer(AnswerId=generate_UUID(), StudentNum=current_user.StudentNum, ClubId=str(ClubId), Grade=current_user.Grade, Status=status, QuestionId=generalquestions_id[i], Answer=answer_generalquestion)
+                        db.session.add(new_application_save)
+                        db.session.commit()
+                        try:
                             db.session.commit()
-                return redirect(url_for('dashboard'))
+                        except:
+                            return 'there was problem updating'
+            for i in range(len(rolespecificquestions_to_display)):
+                answer_rolespecificquestion = request.form[str(rolespecificquestions_id[i]) + 'RoleSpecificQuestionAnswers']
+                roleid = ClubRole.query.filter_by(RoleId=rolespecificquestions_id[i]).first()
+                if answer_rolespecificquestion.strip != '':
+                    rolespecificquestiontobeupdated = select(QuestionAnswer).where(QuestionAnswer.StudentNum == current_user.StudentNum, QuestionAnswer.QuestionId == str(rolespecificquestions_id[i]))
+                    rolespecificquestionupdate = QuestionAnswer.query.filter_by(StudentNum=current_user.StudentNum, QuestionId=str(rolespecificquestions_id[i])).first()
+                    rowrolespecfic = db.session.execute(rolespecificquestiontobeupdated)
+                    if rowrolespecfic and rolespecificquestionupdate:
+                        rolespecificquestionupdate.Answer = answer_rolespecificquestion
+                        rolespecificquestionupdate.Status = status
+                        try:
+                            db.session.commit()
+                        except:
+                            return 'error'
+                    else:
+                        new_application_save = QuestionAnswer(AnswerId=generate_UUID(), StudentNum=current_user.StudentNum, ClubId=str(ClubId), Grade=current_user.Grade, Status=status, RoleId=str(selectedrole_id), QuestionId=rolespecificquestions_id[i], Answer=answer_rolespecificquestion)
+                        db.session.add(new_application_save)
+                        db.session.commit()
+            return redirect(url_for('dashboard'))
     elif mode == 'selectrole':
         form = ClubApplicationForm()
         selectedrole_id = form.SelectRole.data
@@ -144,10 +145,12 @@ def save_submit_application(ClubId, StudentNum):
         generalquestion_answers = QuestionAnswer.query.filter_by(StudentNum=StudentNum, RoleId=None)
         rolespecificquestion_answers = QuestionAnswer.query.filter_by(StudentNum=StudentNum, RoleId=str(selectedrole_id))
         application_state, application_status_checked = '', ''
+        selectroletabvisibility = ''
         for row in checkifsubmitted:
             if row.Status == 'submitted':
                 application_state = 'disabled'
                 application_status_checked = 'checked'
+                selectroletabvisibility = 'visibility: hidden;'
             else:
                 application_state = ''
                 application_status_checked = ''
@@ -157,7 +160,7 @@ def save_submit_application(ClubId, StudentNum):
             all_generalquestion_answers.append(row1.Answer)
         for row2 in rolespecificquestion_answers:
             all_rolespecificquestion_answers.append(row2.Answer)
-        return render_template('application.html', form=form, all_rolespecificquestion_answers=all_rolespecificquestion_answers, all_generalquestion_answers=all_generalquestion_answers, ClubId=ClubId, rolespecificquestions_ids=rolespecificquestions_ids, length_rolespecificquestions_to_display=length_rolespecificquestions_to_display, rolespecificquestions_to_display=rolespecificquestions_to_display, application_status_checked=application_status_checked, application_state=application_state, RoleIds=RoleIds, selectedrole_str=selectedrole_str, generalquestions=generalquestions_to_display, length_general=length_general, generalquestions_ids=generalquestions_ids, length_role=length_role, role_options=role_options, role_descriptions=role_descriptions)
+        return render_template('application.html', selectroletabvisibility=selectroletabvisibility, form=form, all_rolespecificquestion_answers=all_rolespecificquestion_answers, all_generalquestion_answers=all_generalquestion_answers, ClubId=ClubId, rolespecificquestions_ids=rolespecificquestions_ids, length_rolespecificquestions_to_display=length_rolespecificquestions_to_display, rolespecificquestions_to_display=rolespecificquestions_to_display, application_status_checked=application_status_checked, application_state=application_state, RoleIds=RoleIds, selectedrole_str=selectedrole_str, generalquestions=generalquestions_to_display, length_general=length_general, generalquestions_ids=generalquestions_ids, length_role=length_role, role_options=role_options, role_descriptions=role_descriptions)
 
     else:
         return 'error'
