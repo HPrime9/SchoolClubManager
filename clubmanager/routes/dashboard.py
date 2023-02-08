@@ -39,18 +39,33 @@ def create_login():
 @app.route('/register/dashboard', methods=['GET'])
 def get_registration():
     form = RegisterForm()
-    return render_template('register.html', form=form)
+    errors = ['', '', '']
+    return render_template('register.html', form=form, errors=errors)
 
 @app.route('/register/dashboard', methods=['POST'])
 def create_user():
     form = RegisterForm()
+    checkifusernameisunique = Student.query.filter_by(Username=form.Username.data).first()
+    checkifstudentnumisunique = Student.query.filter_by(StudentNum=form.StudentNum.data).first()
+    checkifemailisunique = Student.query.filter_by(Email=form.Email.data).first()
+    errors = ['', '', '']
+    if checkifusernameisunique != None:
+        errors[0] = ('Username is already taken')
+    if checkifstudentnumisunique != None:
+        errors[1] = ('Student Number is already taken')
+    if checkifemailisunique != None:
+        errors[2] = ('Email already exists')
+    condition = checkifusernameisunique == None and checkifstudentnumisunique == None and checkifemailisunique == None
     if form.validate_on_submit():
-        hashed_Password = generate_password_hash(form.Password.data, method='sha256')
-        new_user = Student(id=generate_UUID(), FirstName=form.FirstName.data, LastName=form.LastName.data, Username=form.Username.data, StudentNum=form.StudentNum.data, Email=form.Email.data, Password=hashed_Password, Grade=form.Grade.data, School=form.School.data)
-        db.session.add(new_user)
-        db.session.commit()
-        login_user(new_user, remember=True)
-        return redirect(url_for('dashboard'))
+        if condition:
+            hashed_Password = generate_password_hash(form.Password.data, method='sha256')
+            new_user = Student(id=generate_UUID(), FirstName=form.FirstName.data, LastName=form.LastName.data, Username=form.Username.data, StudentNum=form.StudentNum.data, Email=form.Email.data, Password=hashed_Password, Grade=form.Grade.data, School=form.School.data)
+            db.session.add(new_user)
+            db.session.commit()
+            login_user(new_user, remember=True)
+            return redirect(url_for('dashboard'))
+
+    return render_template('register.html', form=form, errors=errors)
 
 @app.route('/dashboard')
 @login_required

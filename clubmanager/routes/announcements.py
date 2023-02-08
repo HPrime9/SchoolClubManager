@@ -19,6 +19,7 @@ from clubmanager.flaskforms import ClubCreationForm, ClubGeneralQuestionForm, Cl
 def club_announcement(ClubId, AnnouncementId = ''):
     mode = request.args.get('mode')
     form = AnnouncementForm()
+    formClubCreationForm = ClubCreationForm()
     if mode == 'new':
         if form.validate_on_submit: 
             new_announcemnt = Announcement(AnnouncementId=generate_UUID(), ClubId=str(ClubId), Header=form.Header.data, Message=form.Message.data)
@@ -32,7 +33,7 @@ def club_announcement(ClubId, AnnouncementId = ''):
             updClubInfo = Club.query.get_or_404(str(ClubId))  
             questions_to_display = ApplicationQuestions.query.filter(ApplicationQuestions.ClubId==str(ClubId)) 
             Announcements = Announcement.query.filter(Announcement.ClubId==str(ClubId)).all()
-            return render_template('updateclub.html', RoleId=RoleId, ClubId=str(ClubId), length=length, roles=roles, role_descriptions=role_descriptions, Announcements=Announcements, length2 = 1, updClubInfo=updClubInfo,questions_to_display=questions_to_display)
+            return render_template('updateclub.html', formClubCreationForm=formClubCreationForm, RoleId=RoleId, ClubId=str(ClubId), length=length, roles=roles, role_descriptions=role_descriptions, Announcements=Announcements, length2 = 1, updClubInfo=updClubInfo,questions_to_display=questions_to_display)
     elif mode == 'delete':
         announcement_to_del = Announcement.query.get_or_404(str(AnnouncementId))
         db.session.delete(announcement_to_del)
@@ -42,7 +43,7 @@ def club_announcement(ClubId, AnnouncementId = ''):
         updClubInfo = Club.query.get_or_404(str(ClubId))  
         questions_to_display = ApplicationQuestions.query.filter(ApplicationQuestions.ClubId==str(ClubId)) 
         Announcements = Announcement.query.filter(Announcement.ClubId==str(ClubId)).all()
-        return render_template('updateclub.html', RoleId=RoleId, ClubId=str(ClubId), length=length, roles=roles, \
+        return render_template('updateclub.html', formClubCreationForm=formClubCreationForm, RoleId=RoleId, ClubId=str(ClubId), length=length, roles=roles, \
     role_descriptions=role_descriptions, Announcements=Announcements, length2 = 1, updClubInfo=updClubInfo,questions_to_display=questions_to_display)
     else:
         return 'not valid update not created yet'

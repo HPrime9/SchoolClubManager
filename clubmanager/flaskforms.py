@@ -1,7 +1,7 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, IntegerField, PasswordField
 from wtforms.validators import InputRequired, Email, Length, NumberRange
-from wtforms.fields import SelectField
+from wtforms.fields import SelectField, DateField
 
 # Create login form
 class LoginForm(FlaskForm):
@@ -23,9 +23,9 @@ class RegisterForm(FlaskForm):
 class ClubCreationForm(FlaskForm):
     ClubName = StringField('Club Name', validators=[InputRequired(), Length(min=2, max=50)])
     ClubDescription = StringField('Club Description', validators=[InputRequired(), Length(max=300)])
-    AppStartDate = StringField('Application Start Date', validators=[InputRequired(), Length(min=5, max=35)])
-    AppEndDate = StringField('Application End Date', validators=[InputRequired(), Length(min=5, max=35)])
-    ClubContactEmail = StringField('Club Contact Email', validators=[InputRequired(), Email(message='Invalid Email'), Length(max=55)])
+    AppStartDate = DateField('Application Start Date', validators=[InputRequired()], format='%Y-%m-%d')
+    AppEndDate = DateField('Application End Date', validators=[InputRequired()], format='%Y-%m-%d')
+    ClubContactEmail = StringField('Club Contact Email', validators=[InputRequired(), Email(), Length(max=75)])
 
 # Create class
 class ClubGeneralQuestionForm(FlaskForm):

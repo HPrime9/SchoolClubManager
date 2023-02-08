@@ -7,7 +7,7 @@ from sqlalchemy import delete
 from clubmanager import app, db
 from clubmanager.models import Club, ClubStudentMap, ApplicationQuestions, ClubRole, Announcement
 from clubmanager.functions import generate_UUID, uniqueRoles, rolespecificquestions
-from clubmanager.flaskforms import ClubGeneralQuestionForm
+from clubmanager.flaskforms import ClubGeneralQuestionForm, ClubCreationForm
 
 
 ############################## url is not found when creating new question why?
@@ -20,6 +20,7 @@ def create_update_delete_generalquestions(ClubId = '', QuestionId=''):
     GeneralQuestions = request.form.getlist('GeneralQuestions')
     GeneralQuestionsLengthOfResponse = request.form.getlist('GeneralQuestionsLengthOfResponse')
     GeneralQuestionOrderNumbers = request.form.getlist('GeneralQuestionOrderNumbers')
+    formClubCreationForm = ClubCreationForm()
     updClubInfo = Club.query.get_or_404(str(ClubId))   
     questions_to_display = ApplicationQuestions.query.filter(ApplicationQuestions.ClubId==str(ClubId))
     if mode == 'new':
@@ -54,7 +55,7 @@ def create_update_delete_generalquestions(ClubId = '', QuestionId=''):
                 updClubInfo = Club.query.get_or_404(str(ClubId))  
                 questions_to_display = ApplicationQuestions.query.filter(ApplicationQuestions.ClubId==str(ClubId)) 
                 Announcements = Announcement.query.filter(Announcement.ClubId==str(ClubId)).all() 
-                return render_template('updateclub.html', RoleId=RoleId, ClubId=str(ClubId), length=length, roles=roles, \
+                return render_template('updateclub.html', formClubCreationForm=formClubCreationForm, RoleId=RoleId, ClubId=str(ClubId), length=length, roles=roles, \
                 role_descriptions=role_descriptions, Announcements=Announcements, length2 = 5, updClubInfo=updClubInfo,questions_to_display=questions_to_display)
             except:
                 return 'there was problem updating'

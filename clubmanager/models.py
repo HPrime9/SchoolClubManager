@@ -23,9 +23,9 @@ class Club(UserMixin, db.Model):
     School = db.Column(db.String(40), nullable=False)
     ClubName = db.Column(db.String(50), nullable=False)
     ClubDescription = db.Column(db.String(300), nullable=False)
-    AppStartDate = db.Column(db.String(35), nullable=False)
-    AppEndDate = db.Column(db.String(35), nullable=False)
-    ClubContactEmail = db.Column(db.String(55), unique=True, nullable=False)
+    AppStartDate = db.Column(db.Date, nullable=False)
+    AppEndDate = db.Column(db.Date, nullable=False)
+    ClubContactEmail = db.Column(db.String(75), unique=True, nullable=False)
     Date_Club_Created = db.Column(db.Date, default=datetime.utcnow)
     
 # Create club-student data table

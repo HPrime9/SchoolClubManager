@@ -24,14 +24,18 @@
             <div class='row g-3'>
                 {{ wtf.form_field(form.Username) }}
             </div>
+            <span class='validate'>{{ errors[0] }}</span>
             <div class='row g-3'>
                 {{ wtf.form_field(form.StudentNum) }}
             </div>
+            <span class='validate'>{{ errors[1] }}</span>
+            <div class='row'></div>
             {{ form.Email.label }}
             {{ form.Email(class_='form-control') }}
-            {% for error in form.Email.errors %}
-            <span class='validate'>{{ error }}</span>
+            {% for error_in_email in form.Email.errors %}
+            <span class='validate'>{{ error_in_email }}</span>
             {% endfor %}
+            <span class='validate'>{{ errors[2] }}</span>
             <div class='row'></div>
             {{ form.Password.label }}
             {{ form.Password(class_='form-control', title='Must contain at least one

@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% import 'bootstrap/wtf.html' as wtf %}
 
+
 {% block head %}
 <title>♠ Manager</title>
 <link rel='stylesheet' href='/static/css/styleves.css'>
@@ -59,29 +60,30 @@
                 <div class="tab-pane fade show active" id="nav-generaldetails">
                     <h1>Create your club</h1>
                     <form class='formcolor' action='/clubs?mode=new' method='POST'>
-                        {{ form.csrf_token }}
+                        {{ formClubCreationForm.csrf_token }}
                         <div class='mb-3'>
-                            <label for='l1' class='exampleFormControlInput1'>Club Name</label>
-                            <input id='l1' class='form-control' type='text' name='ClubName'>
+                            {{ wtf.form_field(formClubCreationForm.ClubName) }}
                         </div>
                         <div class='mb-3'>
-                            <label for='l2' class='exampleFormControlInput1'>Club Description</label>
-                            <input id='l2' class='form-control' type='text' name='ClubDescription'>
+                            {{ wtf.form_field(formClubCreationForm.ClubDescription) }}
                         </div>
                         <div class='row g-3'>
                             <div class='col'>
-                                <label for='l3' class='exampleFormControlInput1'>Application Start Date</label>
-                                <input id='l3' class='form-control' type='date' name='AppStartDate'>
+                                {{ wtf.form_field(formClubCreationForm.AppStartDate) }}
                             </div>
                             <div class='col'>
-                                <label for='l4' class='exampleFormControlInput1'>Application End Date</label>
-                                <input id='l4' class='form-control' type='date' name='AppEndDate'>
+                                {{ wtf.form_field(formClubCreationForm.AppEndDate) }}
                             </div>
                         </div>
+                        <span class='validate'>{{ errors_in_clubcreation[0] }}</span>
                         <br>
                         <div class='mb-3'>
-                            <label for='l5' class='exampleFormControlInput1'>Club Contact Email</label>
-                            <input id='l5' class='form-control' type='email' name='ClubContactEmail'>
+                            {{ formClubCreationForm.ClubContactEmail.label }}
+                            {{ formClubCreationForm.ClubContactEmail(class_='form-control') }}
+                            {% for error in formClubCreationForm.ClubContactEmail.errors %}
+                            <span class='validate'>{{ error }}</span>
+                            {% endfor %}
+                            <span class='validate'>{{ errors_in_clubcreation[1] }}</span>
                         </div>
                         <input class='btn btn-primary' type='submit' value='Save'>
                 </div>

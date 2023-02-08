@@ -55,6 +55,21 @@ def getUserOwnedClubs(user):
     clubs = Club.query.filter(Club.StudentNum == user).all()
     return clubs
 
+# Functions that validate
+def validate_club_creation(FlaskForm):
+    from datetime import datetime
+    form = FlaskForm
+    errors_in_clubcreation = ['', '']
+    checkifclubemailisunique = Club.query.filter_by(ClubContactEmail=form.ClubContactEmail.data).first()
+    if form.AppStartDate.data >= form.AppEndDate.data or str(form.AppStartDate.data) < str(datetime.now().date()):
+        errors_in_clubcreation[0] = 'Invalid date'
+    if checkifclubemailisunique != None:
+        errors_in_clubcreation[1] = 'Email already exists'
+    condition_1_for_date = str(form.AppStartDate.data) >= str(datetime.now().date())
+    condition_2_for_date = form.AppStartDate.data < form.AppEndDate.data
+    condition_3_for_email = checkifclubemailisunique == None
+    return errors_in_clubcreation, condition_1_for_date, condition_2_for_date, condition_3_for_email
+
 #######################################
 # def updateroute(ClubId):
 #     roles, role_descriptions, RoleId = uniqueRoles(ClubId)

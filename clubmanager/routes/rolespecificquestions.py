@@ -10,7 +10,7 @@ from sqlalchemy import delete
 from clubmanager import app, db
 from clubmanager.models import Club, ClubStudentMap, ApplicationQuestions, ClubRole, Announcement
 from clubmanager.functions import generate_UUID, uniqueRoles, rolespecificquestions
-from clubmanager.flaskforms import RoleSpecificQuestionForm
+from clubmanager.flaskforms import RoleSpecificQuestionForm, ClubCreationForm
 
 @app.route('/clubs/<uuid:ClubId>/roles/<uuid:RoleId>/rolespecificquestions', methods=['POST'])
 @app.route('/clubs/<uuid:ClubId>/roles/<uuid:RoleId>/rolespecificquestions/<uuid:QuestionId>', methods=['POST'])
@@ -21,6 +21,7 @@ def create_update_delete_rolespecificquestion(ClubId, RoleId, QuestionId = ''):
     RoleSpecificQuestion = request.form.getlist('RoleSpecificQuestion')
     ResponseLength = request.form.getlist('LengthOfResponse')
     OrderNumber = request.form.getlist('RoleSpecificQuestionOrderNumber')
+    formClubCreationForm = ClubCreationForm()
     if mode == 'new':
         if form.validate_on_submit:
             if len(RoleSpecificQuestion) >= 1:
@@ -37,7 +38,7 @@ def create_update_delete_rolespecificquestion(ClubId, RoleId, QuestionId = ''):
                 updClubInfo = Club.query.get_or_404(str(ClubId))  
                 questions_to_display = ApplicationQuestions.query.filter(ApplicationQuestions.ClubId==str(ClubId)) 
                 Announcements = Announcement.query.filter(Announcement.ClubId==str(ClubId)).all() 
-                return render_template('updateclub.html', RoleId=RoleId, ClubId=str(ClubId), length=length, roles=roles, \
+                return render_template('updateclub.html', formClubCreationForm=formClubCreationForm, RoleId=RoleId, ClubId=str(ClubId), length=length, roles=roles, \
                 role_descriptions=role_descriptions, Announcements=Announcements, length2 = 5, updClubInfo=updClubInfo,questions_to_display=questions_to_display)
     elif mode == 'update':
         updClubQuestions = ApplicationQuestions.query.get_or_404(str(QuestionId))   
@@ -52,7 +53,7 @@ def create_update_delete_rolespecificquestion(ClubId, RoleId, QuestionId = ''):
                 updClubInfo = Club.query.get_or_404(str(ClubId))  
                 questions_to_display = ApplicationQuestions.query.filter(ApplicationQuestions.ClubId==str(ClubId)) 
                 Announcements = Announcement.query.filter(Announcement.ClubId==str(ClubId)).all() 
-                return render_template('updateclub.html', RoleId=RoleId, ClubId=str(ClubId), length=length, roles=roles, \
+                return render_template('updateclub.html', formClubCreationForm=formClubCreationForm, RoleId=RoleId, ClubId=str(ClubId), length=length, roles=roles, \
                 role_descriptions=role_descriptions, Announcements=Announcements, length2 = 5, updClubInfo=updClubInfo,questions_to_display=questions_to_display)
             except:
                 return 'there was problem updating'
@@ -65,7 +66,7 @@ def create_update_delete_rolespecificquestion(ClubId, RoleId, QuestionId = ''):
         updClubInfo = Club.query.get_or_404(str(ClubId))  
         questions_to_display = ApplicationQuestions.query.filter(ApplicationQuestions.ClubId==str(ClubId)) 
         Announcements = Announcement.query.filter(Announcement.ClubId==str(ClubId)).all() 
-        return render_template('updateclub.html', RoleId=RoleId, ClubId=str(ClubId), length=length, roles=roles, \
+        return render_template('updateclub.html', formClubCreationForm=formClubCreationForm, RoleId=RoleId, ClubId=str(ClubId), length=length, roles=roles, \
         role_descriptions=role_descriptions, Announcements=Announcements, length2 = 5, updClubInfo=updClubInfo,questions_to_display=questions_to_display)
     else:
         return 'error'
