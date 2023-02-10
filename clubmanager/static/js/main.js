@@ -44,9 +44,11 @@ function AddApplicationSubmitSaveButton() {
     if (SubmitApplicationCheckbox.checked) {
         document.getElementById('submitapplicationbutton1').value = 'Submit application'
         document.getElementById('submitapplicationbutton2').value = 'Submit application'
+        document.getElementById('makerequiredgq').required = true
     } else {
         document.getElementById('submitapplicationbutton1').value = 'Save Draft'
         document.getElementById('submitapplicationbutton2').value = 'Save Draft'
+        document.getElementById('makerequiredgq').required = false
     }
 }
 
