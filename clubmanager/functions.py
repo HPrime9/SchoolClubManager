@@ -33,6 +33,13 @@ def rolespecificquestions(RoleId):
             rolespecificquestions_ids.append(row.QuestionId)
     return rolespecificquestions, rolespecificquestions_ids
 
+def rolespecificquestion_maxlength(RoleId):
+    db_query = ApplicationQuestions.query.filter(ApplicationQuestions.RoleId==str(RoleId))
+    rolespecificquestion_maxlengths = []
+    for row in db_query:
+        rolespecificquestion_maxlengths.append(row.LengthOfResponse)
+    return rolespecificquestion_maxlengths
+
 def generalquestions(ClubId):
     db_query = ApplicationQuestions.query.filter(ApplicationQuestions.ClubId==str(ClubId), ApplicationQuestions.RoleId==None)
     generalquestions = []
@@ -41,6 +48,14 @@ def generalquestions(ClubId):
         generalquestions.append(row.Question)
         generalquestions_ids.append(row.QuestionId)
     return generalquestions, generalquestions_ids
+
+def generalquestions_maxlength(ClubId):
+    db_query = ApplicationQuestions.query.filter(ApplicationQuestions.ClubId==str(ClubId), ApplicationQuestions.RoleId==None)
+    generalquestions_maxlengths = []
+    for row in db_query:
+        generalquestions_maxlengths.append(row.LengthOfResponse)
+    return generalquestions_maxlengths
+
 # def generalquestions(ClubId):
 #     db_query = ApplicationQuestions.query.filter(ApplicationQuestions.ClubId==str(ClubId))
 #     generalquestions = []

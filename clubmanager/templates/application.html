@@ -63,7 +63,7 @@
                         {% for i in range(length_general) %}
                         <div class='mb-3'>
                             <label for='l1' class='exampleFormControlInput1'>{{ generalquestions[i] }}</label>
-                            <textarea id='l1' class='form-control' type='text' maxlength='' rows='5' name='{{ generalquestions_ids[i] }}GeneralQuestionAnswers'
+                            <textarea id='l1' class='form-control' type='text' maxlength='{{ generalquestions_maxlengths[i] }}' rows='5' name='{{ generalquestions_ids[i] }}GeneralQuestionAnswers'
                                 placeholder='Enter Answer' {{ application_state }}>{{ all_generalquestion_answers[i] }}</textarea>
                         </div>
                         {% endfor %}
@@ -80,7 +80,7 @@
                     {% for i in range(length_rolespecificquestions_to_display) %}
                     <div class='mb-3'>
                         <label for='l1' class='exampleFormControlInput1'>{{ rolespecificquestions_to_display[i] }}</label>
-                        <textarea id='l1' class='form-control' type='text' maxlength='' rows='5' name='{{ rolespecificquestions_ids[i] }}RoleSpecificQuestionAnswers'
+                        <textarea id='l1' class='form-control' type='text' maxlength='{{ rolespecificquestion_maxlengths[i] }}' rows='5' name='{{ rolespecificquestions_ids[i] }}RoleSpecificQuestionAnswers'
                             placeholder='Enter Answer' {{ application_state }}>{{ all_rolespecificquestion_answers[i] }}</textarea>
                     </div>
                     {% endfor %}

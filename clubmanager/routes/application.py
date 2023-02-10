@@ -9,7 +9,7 @@ from sqlalchemy import select
 # import custom models
 from clubmanager import app, db
 from clubmanager.models import ClubRole, QuestionAnswer
-from clubmanager.functions import generate_UUID, uniqueRoles, rolespecificquestions, generalquestions, getUserOwnedClubs
+from clubmanager.functions import generate_UUID, uniqueRoles, rolespecificquestions, generalquestions, getUserOwnedClubs, generalquestions_maxlength, rolespecificquestion_maxlength
 from clubmanager.flaskforms import ClubApplicationForm
 
 @app.route('/clubs/<uuid:ClubId>/applications', methods=['GET'])
@@ -47,6 +47,8 @@ def get_application(ClubId, StudentNum = ''):
         selectroletabvisibility = ''
         all_generalquestion_answers = []
         all_rolespecificquestion_answers = []
+        generalquestions_maxlengths = generalquestions_maxlength(ClubId)
+        rolespecificquestion_maxlengths = rolespecificquestion_maxlength(selectedrole_id)
         for row1 in generalquestion_answers:
             all_generalquestion_answers.append(row1.Answer)
         for row2 in rolespecificquestion_answers:
@@ -59,7 +61,7 @@ def get_application(ClubId, StudentNum = ''):
             else:
                 application_state = ''
                 application_status_checked = ''
-        return render_template('application.html', selectroletabvisibility=selectroletabvisibility, form=form, all_rolespecificquestion_answers=all_rolespecificquestion_answers, all_generalquestion_answers=all_generalquestion_answers, ClubId=ClubId, rolespecificquestions_ids=rolespecificquestions_ids, length_rolespecificquestions_to_display=length_rolespecificquestions_to_display, rolespecificquestions_to_display=rolespecificquestions_to_display, application_status_checked=application_status_checked, application_state=application_state, RoleIds=RoleIds, selectedrole_str=selectedrole_str, generalquestions=generalquestions_to_display, length_general=length_general, generalquestions_ids=generalquestions_ids, length_role=length_role, role_options=role_options, role_descriptions=role_descriptions)
+        return render_template('application.html', rolespecificquestion_maxlengths=rolespecificquestion_maxlengths, generalquestions_maxlengths=generalquestions_maxlengths, selectroletabvisibility=selectroletabvisibility, form=form, all_rolespecificquestion_answers=all_rolespecificquestion_answers, all_generalquestion_answers=all_generalquestion_answers, ClubId=ClubId, rolespecificquestions_ids=rolespecificquestions_ids, length_rolespecificquestions_to_display=length_rolespecificquestions_to_display, rolespecificquestions_to_display=rolespecificquestions_to_display, application_status_checked=application_status_checked, application_state=application_state, RoleIds=RoleIds, selectedrole_str=selectedrole_str, generalquestions=generalquestions_to_display, length_general=length_general, generalquestions_ids=generalquestions_ids, length_role=length_role, role_options=role_options, role_descriptions=role_descriptions)
 
 
 
