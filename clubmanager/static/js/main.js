@@ -44,11 +44,22 @@ function AddApplicationSubmitSaveButton() {
     if (SubmitApplicationCheckbox.checked) {
         document.getElementById('submitapplicationbutton1').value = 'Submit application'
         document.getElementById('submitapplicationbutton2').value = 'Submit application'
-        document.getElementById('makerequiredgq').required = true
+        document.querySelectorAll('.makerequiredgq').forEach(element => {
+            element.required = true;
+        });
+        document.querySelectorAll('.makerequiredrsq').forEach(element => {
+            element.required = true;
+        });
     } else {
         document.getElementById('submitapplicationbutton1').value = 'Save Draft'
         document.getElementById('submitapplicationbutton2').value = 'Save Draft'
-        document.getElementById('makerequiredgq').required = false
+        document.querySelectorAll('.makerequiredgq').forEach(element => {
+            element.required = false;
+        });
+        document.querySelectorAll('.makerequiredrsq').forEach(element => {
+            element.required = false;
+            alert(element.required);
+        });
     }
 }
 

@@ -62,9 +62,10 @@
                         {{ form.hidden_tag() }}
                         {% for i in range(length_general) %}
                         <div class='mb-3'>
-                            <label for='makerequiredgq' class='exampleFormControlInput1'>{{ generalquestions[i] }}</label>
-                            <textarea id='makerequiredgq' class='form-control' type='text' maxlength='{{ generalquestions_maxlengths[i] }}' rows='5' name='{{ generalquestions_ids[i] }}GeneralQuestionAnswers'
+                            <label for='l1' class='exampleFormControlInput1'>{{ generalquestions[i] }}</label>
+                            <textarea id='l1' class='form-control makerequiredgq' type='text' maxlength='{{ generalquestions_maxlengths[i] }}' minlength='1' rows='5' name='{{ generalquestions_ids[i] }}GeneralQuestionAnswers'
                                 placeholder='Enter Answer' {{ application_state }}>{{ all_generalquestion_answers[i] }}</textarea>
+                                
                         </div>
                         {% endfor %}
                         {% if application_state != 'disabled' %}
@@ -79,8 +80,8 @@
                     {% if SelectedRole != None %}
                     {% for i in range(length_rolespecificquestions_to_display) %}
                     <div class='mb-3'>
-                        <label for='l1' class='exampleFormControlInput1'>{{ rolespecificquestions_to_display[i] }}</label>
-                        <textarea id='l1' class='form-control' type='text' maxlength='{{ rolespecificquestion_maxlengths[i] }}' rows='5' name='{{ rolespecificquestions_ids[i] }}RoleSpecificQuestionAnswers'
+                        <label for='l2' class='exampleFormControlInput1'>{{ rolespecificquestions_to_display[i] }}</label>
+                        <textarea id='l2' class='form-control makerequiredrsq' type='text' maxlength='{{ rolespecificquestion_maxlengths[i] }}' minlength='1' rows='5' name='{{ rolespecificquestions_ids[i] }}RoleSpecificQuestionAnswers'
                             placeholder='Enter Answer' {{ application_state }}>{{ all_rolespecificquestion_answers[i] }}</textarea>
                     </div>
                     {% endfor %}
