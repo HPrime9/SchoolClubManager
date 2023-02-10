@@ -1,5 +1,6 @@
 # Import libraries
 import uuid
+from datetime import datetime
 
 # custom
 from clubmanager.models import ApplicationQuestions, ClubRole, Club
@@ -57,7 +58,6 @@ def getUserOwnedClubs(user):
 
 # Functions that validate
 def validate_club_creation(FlaskForm):
-    from datetime import datetime
     form = FlaskForm
     errors_in_clubcreation = ['', '']
     checkifclubemailisunique = Club.query.filter_by(ClubContactEmail=form.ClubContactEmail.data).first()

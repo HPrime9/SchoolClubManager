@@ -59,11 +59,11 @@ function AddGeneralQuestion() {
     </div>
     <div class='col-6'>
             <label>Maximum character length for the response?</label>
-            <input type='number' class='form-control' name='GeneralQuestionsLengthOfResponse'>
+            <input type='number' class='form-control' minlength='2' name='GeneralQuestionsLengthOfResponse'>
         </div>
     <div class='col-2'>
             <label>Enter Order Number</label>
-            <input type='text' class='form-control' name='GeneralQuestionOrderNumbers'>
+            <input type='number' class='form-control' minlength='1' name='GeneralQuestionOrderNumbers'>
     </div>
     </div>
     `)
@@ -78,7 +78,7 @@ function OnAddRoleSpecificQuestion() {
         </div>
         <div class='col-6'>
             <label>Maximum character length for the response?</label>
-            <input type='number' class='form-control' name='LengthOfResponse'>
+            <input type='number' class='form-control' min='2' name='LengthOfResponse'>
         </div>
         <div class='col-2'>
             <label>Question Order</label>

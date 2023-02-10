@@ -64,7 +64,6 @@ def create_user():
             db.session.commit()
             login_user(new_user, remember=True)
             return redirect(url_for('dashboard'))
-
     return render_template('register.html', form=form, errors=errors)
 
 @app.route('/dashboard')

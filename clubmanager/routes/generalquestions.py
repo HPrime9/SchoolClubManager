@@ -21,7 +21,8 @@ def create_update_delete_generalquestions(ClubId = '', QuestionId=''):
     GeneralQuestionsLengthOfResponse = request.form.getlist('GeneralQuestionsLengthOfResponse')
     GeneralQuestionOrderNumbers = request.form.getlist('GeneralQuestionOrderNumbers')
     formClubCreationForm = ClubCreationForm()
-    updClubInfo = Club.query.get_or_404(str(ClubId))   
+    updClubInfo = Club.query.get_or_404(str(ClubId))  
+    errors_in_clubcreation= ['', ''] 
     questions_to_display = ApplicationQuestions.query.filter(ApplicationQuestions.ClubId==str(ClubId))
     if mode == 'new':
         if form.validate_on_submit:
@@ -56,11 +57,11 @@ def create_update_delete_generalquestions(ClubId = '', QuestionId=''):
                 questions_to_display = ApplicationQuestions.query.filter(ApplicationQuestions.ClubId==str(ClubId)) 
                 Announcements = Announcement.query.filter(Announcement.ClubId==str(ClubId)).all() 
                 return render_template('updateclub.html', formClubCreationForm=formClubCreationForm, RoleId=RoleId, ClubId=str(ClubId), length=length, roles=roles, \
-                role_descriptions=role_descriptions, Announcements=Announcements, length2 = 5, updClubInfo=updClubInfo,questions_to_display=questions_to_display)
+                role_descriptions=role_descriptions, Announcements=Announcements, errors_in_clubcreation=errors_in_clubcreation, updClubInfo=updClubInfo,questions_to_display=questions_to_display)
             except:
                 return 'there was problem updating'
     elif mode == 'delete':
-        question_to_del = ApplicationQuestions.query.get_or_404(str(QuestionId))
+        question_to_del = ApplicationQuestions.query.filter_by(QuestionId=str(QuestionId)).first()
         db.session.delete(question_to_del)
         db.session.commit()
         roles, role_descriptions, RoleId = uniqueRoles(ClubId)
@@ -68,7 +69,7 @@ def create_update_delete_generalquestions(ClubId = '', QuestionId=''):
         updClubInfo = Club.query.get_or_404(str(ClubId))  
         questions_to_display = ApplicationQuestions.query.filter(ApplicationQuestions.ClubId==str(ClubId)) 
         Announcements = Announcement.query.filter(Announcement.ClubId==str(ClubId)).all() 
-        return render_template('updateclub.html', RoleId=RoleId, ClubId=str(ClubId), length=length, roles=roles, \
-        role_descriptions=role_descriptions, Announcements=Announcements, length2 = 5, updClubInfo=updClubInfo,questions_to_display=questions_to_display)
+        return render_template('updateclub.html', formClubCreationForm=formClubCreationForm, RoleId=RoleId, ClubId=str(ClubId), length=length, roles=roles, \
+        role_descriptions=role_descriptions, Announcements=Announcements, errors_in_clubcreation=errors_in_clubcreation, updClubInfo=updClubInfo,questions_to_display=questions_to_display)
     else:
         return 'error'

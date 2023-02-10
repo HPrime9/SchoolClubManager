@@ -1,7 +1,7 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, IntegerField, PasswordField
 from wtforms.validators import InputRequired, Email, Length, NumberRange
-from wtforms.fields import SelectField, DateField
+from wtforms.fields import SelectField, DateField, EmailField
 
 # Create login form
 class LoginForm(FlaskForm):
@@ -14,7 +14,7 @@ class RegisterForm(FlaskForm):
     LastName = StringField('Last Name', validators=[InputRequired(), Length(max=100)])
     Username = StringField('Username', validators=[InputRequired(), Length(min=3, max=36)])
     StudentNum = IntegerField('Student Number', validators=[InputRequired(), NumberRange(min=0)])
-    Email = StringField('Email', validators=[InputRequired(), Email(), Length(max=75)])
+    Email = EmailField('Email', validators=[InputRequired(), Email(), Length(max=75)])
     Password = PasswordField('Password', validators=[InputRequired(), Length(min=1, max=80)]) # remeber to change min to 8
     Grade = SelectField('Select Grade', choices=['3', '4', '5', '6', '7', '8', '9', '10', '11', '12'])
     School = SelectField('Select School', choices=['Turner Fenton Secondary School', 'Roberta Bondar Public School', 'T. L. Kennedy Secondary School'])
@@ -25,13 +25,13 @@ class ClubCreationForm(FlaskForm):
     ClubDescription = StringField('Club Description', validators=[InputRequired(), Length(max=300)])
     AppStartDate = DateField('Application Start Date', validators=[InputRequired()], format='%Y-%m-%d')
     AppEndDate = DateField('Application End Date', validators=[InputRequired()], format='%Y-%m-%d')
-    ClubContactEmail = StringField('Club Contact Email', validators=[InputRequired(), Email(), Length(max=75)])
+    ClubContactEmail = EmailField('Club Contact Email', validators=[InputRequired(), Email(), Length(max=75)])
 
 # Create class
 class ClubGeneralQuestionForm(FlaskForm):
     GeneralQuestions = StringField('General Questions', validators=[Length(max=1000)])
-    GeneralQuestionsLengthOfResponse = IntegerField('Length Of Response')
-    GeneralQuestionOrderNumbers = IntegerField('Question Order')
+    GeneralQuestionsLengthOfResponse = IntegerField('Length Of Response', validators=[InputRequired()])
+    GeneralQuestionOrderNumbers = IntegerField('Question Order', validators=[InputRequired()])
 
 class ClubRoleForm(FlaskForm):
     Role = StringField('Roles', validators=[Length(max=500)])
@@ -50,5 +50,5 @@ class ClubApplicationForm(FlaskForm):
 
 # Create announcement form
 class AnnouncementForm(FlaskForm):
-    Header = StringField('Title', validators=[InputRequired(), Length(max=100)])
-    Message = StringField('Write a Message', validators=[InputRequired(), Length(max=2000)])
+    Header = StringField('Title', validators=[InputRequired(), Length(min=2, max=100)])
+    Message = StringField('Write a Message', validators=[InputRequired(), Length(min=2, max=2000)])

@@ -72,37 +72,31 @@
             <div class="tab-pane fade show active" id="nav-generaldetails">
                 <h1>Update your club</h1>
                 <form class='formcolor' action='/clubs/{{ updClubInfo.ClubId }}?mode=update' method='POST'>
+                    {{ formClubCreationForm.csrf_token }}
                     <div class='mb-3'>
-                        {{ formClubCreationForm.ClubName.label }}
-                        {{ formClubCreationForm.ClubName(class_='form-control', value='updClubInfo.ClubName') }}
-                        <!-- <input id='l1' class='form-control' type='text' name='ClubName'
-                            value='{{ updClubInfo.ClubName }}'> -->
+                        {{ wtf.form_field(formClubCreationForm.ClubName, value=updClubInfo.ClubName) }}
                     </div>
                     <div class='mb-3'>
-                        <label for='l2' class='exampleFormControlInput1'>Club Description</label>
-                        <input id='l2' class='form-control' type='text' name='ClubDescription'
-                            value='{{ updClubInfo.ClubDescription }}'>
+                        {{ wtf.form_field(formClubCreationForm.ClubDescription, value=updClubInfo.ClubDescription) }}
                     </div>
                     <div class='row g-3'>
                         <div class='col'>
-                            <label for='l3' class='exampleFormControlInput1'>Application End Date</label>
-                            <input id='l3' class='form-control' type='date' name='AppStartDate'
-                                value='{{ updClubInfo.AppStartDate }}'>
+                            {{ wtf.form_field(formClubCreationForm.AppStartDate, value=updClubInfo.AppStartDate) }}
                         </div>
                         <div class='col'>
-                            <label for='l4' class='exampleFormControlInput1'>Application End Date</label>
-                            <input id='l4' class='form-control' type='date' name='AppEndDate'
-                                value='{{ updClubInfo.AppEndDate }}'>
+                            {{ wtf.form_field(formClubCreationForm.AppEndDate, value=updClubInfo.AppEndDate) }}
                         </div>
                     </div>
                     <span class='validate'>{{ errors_in_clubcreation[0] }}</span>
                     <br>
                     <div class='mb-3'>
-                        <label for='l5' class='exampleFormControlInput1'>Club Contact Email</label>
-                        <input id='l5' class='form-control' type='email' name='ClubContactEmail'
-                            value='{{ updClubInfo.ClubContactEmail }}'>
+                        {{ formClubCreationForm.ClubContactEmail.label }}
+                        {{ formClubCreationForm.ClubContactEmail(class_='form-control', value=updClubInfo.ClubContactEmail) }}
+                        {% for error in formClubCreationForm.ClubContactEmail.errors %}
+                        <span class='validate'>{{ error }}</span>
+                        {% endfor %}
+                        <span class='validate'>{{ errors_in_clubcreation[1] }}</span>
                     </div>
-                    <span class='validate'>{{ errors_in_clubcreation[1] }}</span>
                     <div class='row'></div>
                     <input class='btn btn-primary' type='submit' value='Save'>
                 </form>
@@ -509,12 +503,10 @@
                 <form action='/clubs/{{ ClubId }}/announcements?mode=new' method='POST'>
                     <div class='row mb-3'>
                         <div class='col-4'>
-                            <label>Enter Title</label>
-                            <input class='form-control' type='text' name='Header'>
+                            {{ wtf.form_field(formAnnouncement.Header) }}
                         </div>
                         <div class='col-6'>
-                            <label>Enter Body of Announcement</label>
-                            <input class='form-control' type='text' name='Message'>
+                            {{ wtf.form_field(formAnnouncement.Message) }}
                         </div>
                         <div class='col-2'>
                             <input type='submit' style='margin: 20px;' class='btn btn-dark'>
