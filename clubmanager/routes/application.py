@@ -5,10 +5,11 @@ from wtforms import StringField
 from wtforms.validators import InputRequired, Length
 from flask_login import login_required, current_user
 from sqlalchemy import select
+from datetime import datetime
 
 # import custom models
 from clubmanager import app, db
-from clubmanager.models import ClubRole, QuestionAnswer
+from clubmanager.models import Club, ClubRole, QuestionAnswer
 from clubmanager.functions import generate_UUID, uniqueRoles, rolespecificquestions, generalquestions, getUserOwnedClubs, generalquestions_maxlength, rolespecificquestion_maxlength
 from clubmanager.flaskforms import ClubApplicationForm
 
@@ -33,36 +34,39 @@ def get_application(ClubId, StudentNum = ''):
                     print('error2')
         return render_template('responseoverview.html', userClubCatalogue=userClubCatalogue, club_to_display_responses=club_to_display_responses, roles_to_display=roles_to_display)
     elif mode == 'view' or mode == 'selectrole':
-        form = ClubApplicationForm()
-        generalquestions_to_display, generalquestions_ids = generalquestions(ClubId)
-        role_options, role_descriptions, RoleIds = uniqueRoles(ClubId)
-        length_role = len(role_options)
-        length_general = len(generalquestions_to_display)
-        rolespecificquestions_to_display, rolespecificquestions_ids = rolespecificquestions(str(selectedrole_id))
-        length_rolespecificquestions_to_display = len(rolespecificquestions_to_display)
-        checkifsubmitted = QuestionAnswer.query.filter_by(StudentNum=StudentNum, Status='submitted')
-        generalquestion_answers = QuestionAnswer.query.filter_by(StudentNum=StudentNum, RoleId=None)
-        rolespecificquestion_answers = QuestionAnswer.query.filter_by(StudentNum=StudentNum, RoleId=str(selectedrole_id))
-        application_state, application_status_checked = '', ''
-        selectroletabvisibility = ''
-        all_generalquestion_answers = []
-        all_rolespecificquestion_answers = []
-        generalquestions_maxlengths = generalquestions_maxlength(ClubId)
-        rolespecificquestion_maxlengths = rolespecificquestion_maxlength(selectedrole_id)
-        for row1 in generalquestion_answers:
-            all_generalquestion_answers.append(row1.Answer)
-        for row2 in rolespecificquestion_answers:
-            all_rolespecificquestion_answers.append(row2.Answer)
-        for row in checkifsubmitted:
-            if row.Status == 'submitted':
-                application_state = 'disabled'
-                application_status_checked = 'checked'
-                selectroletabvisibility = 'visibility: hidden;'
-            else:
-                application_state = ''
-                application_status_checked = ''
-        return render_template('application.html', rolespecificquestion_maxlengths=rolespecificquestion_maxlengths, generalquestions_maxlengths=generalquestions_maxlengths, selectroletabvisibility=selectroletabvisibility, form=form, all_rolespecificquestion_answers=all_rolespecificquestion_answers, all_generalquestion_answers=all_generalquestion_answers, ClubId=ClubId, rolespecificquestions_ids=rolespecificquestions_ids, length_rolespecificquestions_to_display=length_rolespecificquestions_to_display, rolespecificquestions_to_display=rolespecificquestions_to_display, application_status_checked=application_status_checked, application_state=application_state, RoleIds=RoleIds, selectedrole_str=selectedrole_str, generalquestions=generalquestions_to_display, length_general=length_general, generalquestions_ids=generalquestions_ids, length_role=length_role, role_options=role_options, role_descriptions=role_descriptions)
-
+        checkapplicationstartdate = Club.query.filter_by(ClubId=str(ClubId)).first().AppStartDate
+        if checkapplicationstartdate == datetime.now().date():
+            form = ClubApplicationForm()
+            generalquestions_to_display, generalquestions_ids = generalquestions(ClubId)
+            role_options, role_descriptions, RoleIds = uniqueRoles(ClubId)
+            length_role = len(role_options)
+            length_general = len(generalquestions_to_display)
+            rolespecificquestions_to_display, rolespecificquestions_ids = rolespecificquestions(str(selectedrole_id))
+            length_rolespecificquestions_to_display = len(rolespecificquestions_to_display)
+            checkifsubmitted = QuestionAnswer.query.filter_by(StudentNum=StudentNum, Status='submitted')
+            generalquestion_answers = QuestionAnswer.query.filter_by(StudentNum=StudentNum, RoleId=None)
+            rolespecificquestion_answers = QuestionAnswer.query.filter_by(StudentNum=StudentNum, RoleId=str(selectedrole_id))
+            application_state, application_status_checked = '', ''
+            selectroletabvisibility = ''
+            all_generalquestion_answers = []
+            all_rolespecificquestion_answers = []
+            generalquestions_maxlengths = generalquestions_maxlength(ClubId)
+            rolespecificquestion_maxlengths = rolespecificquestion_maxlength(selectedrole_id)
+            for row1 in generalquestion_answers:
+                all_generalquestion_answers.append(row1.Answer)
+            for row2 in rolespecificquestion_answers:
+                all_rolespecificquestion_answers.append(row2.Answer)
+            for row in checkifsubmitted:
+                if row.Status == 'submitted':
+                    application_state = 'disabled'
+                    application_status_checked = 'checked'
+                    selectroletabvisibility = 'visibility: hidden;'
+                else:
+                    application_state = ''
+                    application_status_checked = ''
+            return render_template('application.html', rolespecificquestion_maxlengths=rolespecificquestion_maxlengths, generalquestions_maxlengths=generalquestions_maxlengths, selectroletabvisibility=selectroletabvisibility, form=form, all_rolespecificquestion_answers=all_rolespecificquestion_answers, all_generalquestion_answers=all_generalquestion_answers, ClubId=ClubId, rolespecificquestions_ids=rolespecificquestions_ids, length_rolespecificquestions_to_display=length_rolespecificquestions_to_display, rolespecificquestions_to_display=rolespecificquestions_to_display, application_status_checked=application_status_checked, application_state=application_state, RoleIds=RoleIds, selectedrole_str=selectedrole_str, generalquestions=generalquestions_to_display, length_general=length_general, generalquestions_ids=generalquestions_ids, length_role=length_role, role_options=role_options, role_descriptions=role_descriptions)
+        else:
+            return redirect(url_for('get_club', ClubId=str(ClubId)) + '?mode=view')
 
 
 

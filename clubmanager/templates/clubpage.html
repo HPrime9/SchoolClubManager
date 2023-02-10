@@ -25,7 +25,7 @@
                                         aria-expanded="false">My Clubs</a>
                                     <ul class="dropdown-menu">
                                         <a class="dropdown-item" href="/dashboard">Dashboard</a>
-                                        <a class="dropdown-item" href="/club/basicinformation">Create a club</a>
+                                        <a class="dropdown-item" href="/clubs?mode=new">Create a club</a>
                                     </ul>
                                 </li>
                                 <a class="nav-link" href='/clubs?mode=viewall'>View Clubs</a>
@@ -93,7 +93,8 @@
                             {% if Announcements %}
                             <div id='annoucementarea'>
                                 {% for announcement in Announcements %}
-                                <div class='p-3 bg-info bg-opacity-10 border border-info border-start-0 rounded-end border rounded-pill'>
+                                <div
+                                    class='p-3 bg-info bg-opacity-10 border border-info border-start-0 rounded-end border rounded-pill'>
                                     <h1>{{ announcement.Header }}</h1>
                                     <p>{{ announcement.Message }}</p>
                                 </div>
@@ -111,8 +112,8 @@
                     <div class='col'></div>
                     <div class='col-3'>
                         <h2 id='Application'>Application</h2>
-                        <p class='applicationinline'>Applications are closed!</p><button
-                            class='applicationinline btn btn-primary'><a style='color:rgb(255, 255, 255);'
+                        <p class='applicationinline'>{{ applicationstatetext }}</p><button
+                            class='applicationinline btn btn-primary' {{applicationbttnstate}}><a style='color:rgb(255, 255, 255);'
                                 href='/clubs/{{ club_to_display.ClubId }}/applications/{{ StudentNumUrl }}?mode=view'>Click
                                 to
                                 Apply</a></button>
