@@ -25,7 +25,7 @@ def create_update_delete_generalquestions(ClubId = '', QuestionId=''):
     errors_in_clubcreation= ['', ''] 
     questions_to_display = ApplicationQuestions.query.filter(ApplicationQuestions.ClubId==str(ClubId))
     if mode == 'new':
-        if form.validate_on_submit:
+        if form.validate_on_submit():
             for i in range(len(GeneralQuestions)):
                 if GeneralQuestions[i].strip() != '' and GeneralQuestionsLengthOfResponse[i].strip() != '' and GeneralQuestionOrderNumbers[i].strip() != '':
                     new_general_question = ApplicationQuestions(QuestionId=generate_UUID(), ClubId=str(ClubId), Question=GeneralQuestions[i], LengthOfResponse=GeneralQuestionsLengthOfResponse[i], OrderNumber=GeneralQuestionOrderNumbers[i])
@@ -42,7 +42,7 @@ def create_update_delete_generalquestions(ClubId = '', QuestionId=''):
             # return render_template('updateclub.html', RoleId=RoleId, ClubId=str(ClubId), length=length, roles=roles, \
             # role_descriptions=role_descriptions, Announcements=Announcements, length2 = 5, updClubInfo=updClubInfo,questions_to_display=questions_to_display)
         else:
-            return 'invalid information'
+            return redirect(url_for('get_club', ClubId=str(ClubId)) + '?mode=update#nav-generalquestions')
     elif mode == 'update':
         if form.validate_on_submit:
             updClubQuestions = ApplicationQuestions.query.get_or_404(str(QuestionId))    

@@ -8,6 +8,7 @@
 {% endblock %}
 
 {% block body %}
+
 <body>
     <header id='header' class='fixed-top d-flex align-items-center'>
         <div class="container d-flex align-items-center justify-content-between">
@@ -31,7 +32,8 @@
                                     aria-expanded="false">Applicants</a>
                                 <ul class="dropdown-menu">
                                     {% for club in userClubCatalogue %}
-                                    <a class="dropdown-item" href="/clubs/{{ club.ClubId }}/applications?mode=viewall">{{ club.ClubName
+                                    <a class="dropdown-item"
+                                        href="/clubs/{{ club.ClubId }}/applications?mode=viewall">{{ club.ClubName
                                         }}</a>
                                     {% endfor %}
                                 </ul>
@@ -48,34 +50,38 @@
     <main class='container'>
         <div class='row'>
             {% if total_length_of_rows != 0 %}
-            <table class='table table-dark table-hover'>
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>Student Number</th>
-                        <th>Grade</th>
-                        <th>View Application</th>
-                        <th>Make notes</th>
-                        <th>Role applying for</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% set counter2 = 1 %}
-                    {% for i in range(total_length_of_rows) %}
-                    <tr>
-                        <td>{{ counter2 }}</td>
-                        <td>{{ all_studentnums_to_display[i] }}</td>
-                        <td>{{ all_grades_to_display[i] }}</td>
-                        <td><a href='/clubs/{{ ClubId }}/applications/866639?mode=view' target='_blank'>Full Application</a></td>
-                        <td><textarea class='form-control' style='width: 180px;'></textarea></td>
-                        <td><input type='checkbox' class='form-check-input'><label>{{ all_roles_to_display[i] }}</label></td>
-                        <td><input type='submit' class='btn btn-light' value='Send Results'></td>
-                    </tr>
-                    {% set counter2 = counter2 + 1 %}
-                    {% endfor %}
-                </tbody>
-            </table>
+            <form method='POST' action='/clubs/{{ ClubId }}/results?mode=sendall'>
+                <td><input type='submit' class='btn btn-info' value='Send Results To All'></td>
+                <br>
+                <table class='table table-dark table-hover'>
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Student Number</th>
+                            <th>Grade</th>
+                            <th>View Application</th>
+                            <th>Make notes</th>
+                            <th>Role applying for</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% set counter2 = 1 %}
+                        {% for i in range(total_length_of_rows) %}
+                        <tr>
+                            <td>{{ counter2 }}</td>
+                            <td>{{ all_studentnums_to_display[i] }}</td>
+                            <td>{{ all_grades_to_display[i] }}</td>
+                            <td><a href='/clubs/{{ ClubId }}/applications/866639?mode=view' target='_blank'>Full
+                                    Application</a></td>
+                            <td><textarea class='form-control' style='width: 180px;'></textarea></td>
+                            <td><input value='test' type='checkbox' class='form-check-input'><label>{{ all_roles_to_display[i]
+                                    }}</label></td>
+                        </tr>
+                        {% set counter2 = counter2 + 1 %}
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </form>
             {% else %}
             <h1>No responses have been recorded yet!</h1>
             {% endif %}

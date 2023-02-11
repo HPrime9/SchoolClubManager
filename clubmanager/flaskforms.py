@@ -52,3 +52,6 @@ class ClubApplicationForm(FlaskForm):
 class AnnouncementForm(FlaskForm):
     Header = StringField('Title', validators=[InputRequired(), Length(min=2, max=100)])
     Message = StringField('Write a Message', validators=[InputRequired(), Length(min=2, max=2000)])
+
+class FinalApplicationResultForm(FlaskForm):
+    test = StringField()
