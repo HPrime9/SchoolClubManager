@@ -10,7 +10,7 @@ from datetime import datetime
 # import custom models
 from clubmanager import app, db
 from clubmanager.models import Club, ClubRole, QuestionAnswer
-from clubmanager.functions import generate_UUID, uniqueRoles, rolespecificquestions, generalquestions, getUserOwnedClubs, generalquestions_maxlength, rolespecificquestion_maxlength
+from clubmanager.functions import generate_UUID, show_club_applications, uniqueRoles, rolespecificquestions, generalquestions, getUserOwnedClubs, generalquestions_maxlength, rolespecificquestion_maxlength
 from clubmanager.flaskforms import ClubApplicationForm
 
 @app.route('/clubs/<uuid:ClubId>/applications', methods=['GET'])
@@ -19,23 +19,17 @@ from clubmanager.flaskforms import ClubApplicationForm
 def get_application(ClubId, StudentNum = ''):
     mode = request.args.get('mode')
     global selectedrole_str, selectedrole_id
-    roles_to_display = []
+    all_studentnums_to_display, all_grades_to_display, all_roleids_to_display, all_roles_to_display, total_length_of_rows = [], [], [], [], 0
     generalquestions_to_display = []
-    club_to_display_responses = QuestionAnswer.query.filter(QuestionAnswer.ClubId == str(ClubId)).all()
+    generalquestions_maxlengths = generalquestions_maxlength(ClubId) 
     if mode == 'viewall':
         userClubCatalogue = getUserOwnedClubs(current_user.StudentNum)
-        for row in club_to_display_responses:
-            if row.Status != 'draft':
-                name_role = ClubRole.query.filter(ClubRole.RoleId==str(row.RoleId)).first()
-                try:
-                    for row in name_role:
-                        roles_to_display.append(row.Role)
-                except:
-                    print('error2')
-        return render_template('responseoverview.html', userClubCatalogue=userClubCatalogue, club_to_display_responses=club_to_display_responses, roles_to_display=roles_to_display)
+        all_studentnums_to_display, all_grades_to_display, all_roleids_to_display, all_roles_to_display, total_length_of_rows = show_club_applications(ClubId)
+        return render_template('responseoverview.html', userClubCatalogue=userClubCatalogue, ClubId=ClubId, all_studentnums_to_display=all_studentnums_to_display, all_grades_to_display=all_grades_to_display, all_roleids_to_display=all_roleids_to_display, all_roles_to_display=all_roles_to_display, total_length_of_rows=total_length_of_rows)
     elif mode == 'view' or mode == 'selectrole':
         checkapplicationstartdate = Club.query.filter_by(ClubId=str(ClubId)).first().AppStartDate
-        if checkapplicationstartdate == datetime.now().date():
+        checkapplicationenddate = Club.query.filter_by(ClubId=str(ClubId)).first().AppEndDate
+        if datetime.now().date() >= checkapplicationstartdate and datetime.now().date() <= checkapplicationenddate:
             form = ClubApplicationForm()
             generalquestions_to_display, generalquestions_ids = generalquestions(ClubId)
             role_options, role_descriptions, RoleIds = uniqueRoles(ClubId)
@@ -50,7 +44,6 @@ def get_application(ClubId, StudentNum = ''):
             selectroletabvisibility = ''
             all_generalquestion_answers = []
             all_rolespecificquestion_answers = []
-            generalquestions_maxlengths = generalquestions_maxlength(ClubId)
             rolespecificquestion_maxlengths = rolespecificquestion_maxlength(selectedrole_id)
             for row1 in generalquestion_answers:
                 all_generalquestion_answers.append(row1.Answer)
@@ -86,6 +79,8 @@ def get_application(ClubId, StudentNum = ''):
 def save_submit_application(ClubId, StudentNum):
     mode = request.args.get('mode')
     global selectedrole_str, selectedrole_id
+    generalquestions_maxlengths = generalquestions_maxlength(ClubId)
+    rolespecificquestion_maxlengths = rolespecificquestion_maxlength(selectedrole_id)
     if mode == 'save':
         form = ClubApplicationForm()
         if form.validate_on_submit:
@@ -166,7 +161,7 @@ def save_submit_application(ClubId, StudentNum):
             all_generalquestion_answers.append(row1.Answer)
         for row2 in rolespecificquestion_answers:
             all_rolespecificquestion_answers.append(row2.Answer)
-        return render_template('application.html', selectroletabvisibility=selectroletabvisibility, form=form, all_rolespecificquestion_answers=all_rolespecificquestion_answers, all_generalquestion_answers=all_generalquestion_answers, ClubId=ClubId, rolespecificquestions_ids=rolespecificquestions_ids, length_rolespecificquestions_to_display=length_rolespecificquestions_to_display, rolespecificquestions_to_display=rolespecificquestions_to_display, application_status_checked=application_status_checked, application_state=application_state, RoleIds=RoleIds, selectedrole_str=selectedrole_str, generalquestions=generalquestions_to_display, length_general=length_general, generalquestions_ids=generalquestions_ids, length_role=length_role, role_options=role_options, role_descriptions=role_descriptions)
+        return render_template('application.html', rolespecificquestion_maxlengths = rolespecificquestion_maxlengths, selectroletabvisibility=selectroletabvisibility, generalquestions_maxlengths=generalquestions_maxlengths, form=form, all_rolespecificquestion_answers=all_rolespecificquestion_answers, all_generalquestion_answers=all_generalquestion_answers, ClubId=ClubId, rolespecificquestions_ids=rolespecificquestions_ids, length_rolespecificquestions_to_display=length_rolespecificquestions_to_display, rolespecificquestions_to_display=rolespecificquestions_to_display, application_status_checked=application_status_checked, application_state=application_state, RoleIds=RoleIds, selectedrole_str=selectedrole_str, generalquestions=generalquestions_to_display, length_general=length_general, generalquestions_ids=generalquestions_ids, length_role=length_role, role_options=role_options, role_descriptions=role_descriptions)
 
     else:
         return 'error'

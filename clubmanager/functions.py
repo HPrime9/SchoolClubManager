@@ -3,7 +3,7 @@ import uuid
 from datetime import datetime
 
 # custom
-from clubmanager.models import ApplicationQuestions, ClubRole, Club
+from clubmanager.models import ApplicationQuestions, ClubRole, Club, QuestionAnswer
 
 # Create UUID generator function
 def generate_UUID():
@@ -74,3 +74,31 @@ def validate_club_creation(FlaskForm):
     condition_2_for_date = form.AppStartDate.data < form.AppEndDate.data
     condition_3_for_email = checkifclubemailisunique == None
     return errors_in_clubcreation, condition_1_for_date, condition_2_for_date, condition_3_for_email
+
+def show_club_applications(ClubId):
+    db_query_questionans = QuestionAnswer.query.filter(QuestionAnswer.ClubId==str(ClubId), QuestionAnswer.Status=='submitted', QuestionAnswer.RoleId!=None)
+    all_studentnums = []
+    all_studentnums_to_display = []
+    all_grades_to_display = []
+    all_roleids_to_display = []
+    all_roles_to_display = []
+    total_length_of_rows = 0
+
+    for row in db_query_questionans:
+         if all_studentnums.count(row.StudentNum) == 0:
+            all_studentnums_to_display.append(row.StudentNum)
+     
+    for i in range(len(all_studentnums_to_display)):
+        db_deeper_query_questionans = QuestionAnswer.query.filter(QuestionAnswer.StudentNum==all_studentnums_to_display[i], QuestionAnswer.ClubId==str(ClubId), QuestionAnswer.Status=='submitted', QuestionAnswer.RoleId!=None).first()
+        all_grades_to_display.append(db_deeper_query_questionans.Grade)
+        all_roleids_to_display.append(db_deeper_query_questionans.RoleId)
+
+    for i in range(len(all_roleids_to_display)):
+        role = ClubRole.query.filter_by(RoleId=str(all_roleids_to_display[i])).first().Role
+        all_roles_to_display.append(role)
+
+    total_length_of_rows = len(all_roles_to_display)
+
+    
+    return all_studentnums_to_display, all_grades_to_display, all_roleids_to_display, all_roles_to_display, total_length_of_rows
+

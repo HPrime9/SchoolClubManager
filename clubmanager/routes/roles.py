@@ -10,7 +10,7 @@ from sqlalchemy import delete
 from clubmanager import app, db
 from clubmanager.models import Club, ApplicationQuestions, ClubRole, Announcement
 from clubmanager.functions import generate_UUID, uniqueRoles, rolespecificquestions
-from clubmanager.flaskforms import ClubRoleForm, ClubCreationForm
+from clubmanager.flaskforms import ClubRoleForm, ClubCreationForm, AnnouncementForm
 
 @app.route('/clubs/<uuid:ClubId>/roles', methods=['POST'])
 @app.route('/clubs/<uuid:ClubId>/roles/<uuid:RoleId>', methods=['POST'])
@@ -21,6 +21,8 @@ def create_update_delete_roles(ClubId, RoleId = ''):
     Role = request.form.getlist('Role')
     RoleDescription = request.form.getlist('RoleDescription')
     formClubCreationForm = ClubCreationForm()
+    errors_in_clubcreation = ['', '']
+    formAnnouncement = AnnouncementForm()
     if mode == 'new':
         if form.validate_on_submit:
             for i in range(len(Role)):
@@ -40,7 +42,7 @@ def create_update_delete_roles(ClubId, RoleId = ''):
             # info_to_display = ApplicationQuestions.query.filter(ApplicationQuestions.RoleId==str(RoleIdInUrl)) 
             # role_specific_questions_to_display, ids = rolespecificquestions(RoleIdInUrl) role_specific_questions_to_display=info_to_display
             # length2 = len(role_specific_questions_to_display) length2=length2
-            return render_template('updateclub.html', formClubCreationForm=formClubCreationForm, RoleId=RoleId, ClubId=str(ClubId), length=length, roles=roles, \
+            return render_template('updateclub.html', formAnnouncement=formAnnouncement, errors_in_clubcreation=errors_in_clubcreation, formClubCreationForm=formClubCreationForm, RoleId=RoleId, ClubId=str(ClubId), length=length, roles=roles, \
                 role_descriptions=role_descriptions, Announcements=Announcements, length2 = 1, updClubInfo=updClubInfo,questions_to_display=questions_to_display)
     elif mode == 'update':
         if form.validate_on_submit: 
@@ -58,7 +60,7 @@ def create_update_delete_roles(ClubId, RoleId = ''):
                     # info_to_display = ApplicationQuestions.query.filter(ApplicationQuestions.RoleId==str(RoleIdInUrl)) 
                     # role_specific_questions_to_display, ids = rolespecificquestions(RoleIdInUrl) role_specific_questions_to_display=info_to_display
                     # length2 = len(role_specific_questions_to_display) length2=length2
-                    return render_template('updateclub.html', formClubCreationForm=formClubCreationForm, RoleId=RoleId, ClubId=str(ClubId), length=length, roles=roles, \
+                    return render_template('updateclub.html', formAnnouncement=formAnnouncement, errors_in_clubcreation=errors_in_clubcreation, formClubCreationForm=formClubCreationForm, RoleId=RoleId, ClubId=str(ClubId), length=length, roles=roles, \
                         role_descriptions=role_descriptions, Announcements=Announcements, length2 = 1, updClubInfo=updClubInfo,questions_to_display=questions_to_display)
                 except:
                     return 'there was problem updating'
@@ -78,7 +80,7 @@ def create_update_delete_roles(ClubId, RoleId = ''):
             # info_to_display = ApplicationQuestions.query.filter(ApplicationQuestions.RoleId==str(RoleIdInUrl)) 
             # role_specific_questions_to_display, ids = rolespecificquestions(RoleIdInUrl) role_specific_questions_to_display=info_to_display
             # length2 = len(role_specific_questions_to_display) length2=length2
-            return render_template('updateclub.html', formClubCreationForm=formClubCreationForm, RoleId=RoleId, ClubId=str(ClubId), length=length, roles=roles, \
+            return render_template('updateclub.html', errors_in_clubcreation=errors_in_clubcreation, formClubCreationForm=formClubCreationForm, RoleId=RoleId, ClubId=str(ClubId), length=length, roles=roles, \
                 role_descriptions=role_descriptions, Announcements=Announcements, length2 = 1, updClubInfo=updClubInfo,questions_to_display=questions_to_display)
         except:
             return 'sorry could not delete'

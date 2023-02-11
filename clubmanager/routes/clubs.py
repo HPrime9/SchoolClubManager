@@ -42,10 +42,11 @@ def get_club(ClubId = ''):
         club_to_display = Club.query.get_or_404(str(ClubId))
         Announcements = Announcement.query.filter(Announcement.ClubId==str(ClubId)).all() 
         checkapplicationstartdate = Club.query.filter_by(ClubId=str(ClubId)).first().AppStartDate
+        checkapplicationenddate = Club.query.filter_by(ClubId=str(ClubId)).first().AppEndDate
         print(checkapplicationstartdate, datetime.now().date())
         applicationbttnstate = 'disabled'
         applicationstatetext = ''
-        if checkapplicationstartdate == datetime.now().date():
+        if datetime.now().date() >= checkapplicationstartdate and datetime.now().date() <= checkapplicationenddate:
             applicationbttnstate = ''
             applicationstatetext = 'Applications Open! Apply Now!'
         else:
