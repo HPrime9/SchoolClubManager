@@ -85,7 +85,8 @@ def show_club_applications(ClubId):
     total_length_of_rows = 0
 
     for row in db_query_questionans:
-         if all_studentnums.count(row.StudentNum) == 0:
+        if all_studentnums.count(row.StudentNum) == 0:
+            all_studentnums.append(row.StudentNum)
             all_studentnums_to_display.append(row.StudentNum)
      
     for i in range(len(all_studentnums_to_display)):

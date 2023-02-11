@@ -66,9 +66,18 @@ class ClubRole(UserMixin, db.Model):
     RoleDescription = db.Column(db.String(500), nullable=True)
     Date_Role_Created = db.Column(db.Date, default=datetime.utcnow)
 
-# Create announcement form
+# Create announcement table
 class Announcement(UserMixin, db.Model):
     AnnouncementId = db.Column(db.String(36), primary_key=True)
     ClubId = db.Column(db.String(36), nullable=False)
     Header = db.Column(db.String(100), nullable=False)
     Message = db.Column(db.String(2000), nullable=False)
+
+# Create final application results table
+class FinalApplicationResult(UserMixin, db.Model):
+    FinalApplicationResultId = db.Column(db.String(36), primary_key=True)
+    ClubId = db.Column(db.String(36), nullable=False)
+    StudentId = db.Column(db.Integer, nullable=False)
+    RoleId = db.Column(db.String(36), nullable=False)
+    Status = db.Column(db.String(100), nullable=False)
+    Date_Selected = db.Column(db.Date, default=datetime.utcnow)

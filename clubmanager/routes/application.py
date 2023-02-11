@@ -80,7 +80,6 @@ def save_submit_application(ClubId, StudentNum):
     mode = request.args.get('mode')
     global selectedrole_str, selectedrole_id
     generalquestions_maxlengths = generalquestions_maxlength(ClubId)
-    rolespecificquestion_maxlengths = rolespecificquestion_maxlength(selectedrole_id)
     if mode == 'save':
         form = ClubApplicationForm()
         if form.validate_on_submit:
@@ -145,6 +144,7 @@ def save_submit_application(ClubId, StudentNum):
         checkifsubmitted = QuestionAnswer.query.filter_by(StudentNum=StudentNum, Status='submitted')
         generalquestion_answers = QuestionAnswer.query.filter_by(StudentNum=StudentNum, RoleId=None)
         rolespecificquestion_answers = QuestionAnswer.query.filter_by(StudentNum=StudentNum, RoleId=str(selectedrole_id))
+        rolespecificquestion_maxlengths = rolespecificquestion_maxlength(selectedrole_id)
         application_state, application_status_checked = '', ''
         selectroletabvisibility = ''
         for row in checkifsubmitted:
@@ -161,7 +161,7 @@ def save_submit_application(ClubId, StudentNum):
             all_generalquestion_answers.append(row1.Answer)
         for row2 in rolespecificquestion_answers:
             all_rolespecificquestion_answers.append(row2.Answer)
-        return render_template('application.html', rolespecificquestion_maxlengths = rolespecificquestion_maxlengths, selectroletabvisibility=selectroletabvisibility, generalquestions_maxlengths=generalquestions_maxlengths, form=form, all_rolespecificquestion_answers=all_rolespecificquestion_answers, all_generalquestion_answers=all_generalquestion_answers, ClubId=ClubId, rolespecificquestions_ids=rolespecificquestions_ids, length_rolespecificquestions_to_display=length_rolespecificquestions_to_display, rolespecificquestions_to_display=rolespecificquestions_to_display, application_status_checked=application_status_checked, application_state=application_state, RoleIds=RoleIds, selectedrole_str=selectedrole_str, generalquestions=generalquestions_to_display, length_general=length_general, generalquestions_ids=generalquestions_ids, length_role=length_role, role_options=role_options, role_descriptions=role_descriptions)
+        return render_template('application.html', rolespecificquestion_maxlengths=rolespecificquestion_maxlengths, selectroletabvisibility=selectroletabvisibility, generalquestions_maxlengths=generalquestions_maxlengths, form=form, all_rolespecificquestion_answers=all_rolespecificquestion_answers, all_generalquestion_answers=all_generalquestion_answers, ClubId=ClubId, rolespecificquestions_ids=rolespecificquestions_ids, length_rolespecificquestions_to_display=length_rolespecificquestions_to_display, rolespecificquestions_to_display=rolespecificquestions_to_display, application_status_checked=application_status_checked, application_state=application_state, RoleIds=RoleIds, selectedrole_str=selectedrole_str, generalquestions=generalquestions_to_display, length_general=length_general, generalquestions_ids=generalquestions_ids, length_role=length_role, role_options=role_options, role_descriptions=role_descriptions)
 
     else:
         return 'error'
