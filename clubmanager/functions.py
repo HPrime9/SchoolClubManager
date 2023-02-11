@@ -56,16 +56,6 @@ def generalquestions_maxlength(ClubId):
         generalquestions_maxlengths.append(row.LengthOfResponse)
     return generalquestions_maxlengths
 
-# def generalquestions(ClubId):
-#     db_query = ApplicationQuestions.query.filter(ApplicationQuestions.ClubId==str(ClubId))
-#     generalquestions = []
-#     generalquestions_id = []
-#     for row in db_query:
-#         if not (row.RoleId):
-#             generalquestions.append(row.Question)
-#             generalquestions_id.append(row.QuestionId)
-#     return generalquestions, generalquestions_id
-
 # Will return all the clubs logged in user owns  
 def getUserOwnedClubs(user):
     clubs = Club.query.filter(Club.StudentNum == user).all()
@@ -84,12 +74,3 @@ def validate_club_creation(FlaskForm):
     condition_2_for_date = form.AppStartDate.data < form.AppEndDate.data
     condition_3_for_email = checkifclubemailisunique == None
     return errors_in_clubcreation, condition_1_for_date, condition_2_for_date, condition_3_for_email
-
-#######################################
-# def updateroute(ClubId):
-#     roles, role_descriptions, RoleId = uniqueRoles(ClubId)
-#     length = len(roles)
-#     updClubInfo = Club.query.get_or_404(str(ClubId))  
-#     questions_to_display = ApplicationQuestions.query.filter(ApplicationQuestions.ClubId==str(ClubId)) 
-#     Announcements = Announcement.query.filter(Announcement.ClubId==str(ClubId)).all()
-#     return roles, role_descriptions, RoleId, length, updClubInfo, questions_to_display, Announcements
