@@ -9,9 +9,9 @@ from datetime import datetime
 
 # import custom models
 from clubmanager import app, db
-from clubmanager.models import Clubs, ClubRoles, QuestionAnswers, Applications, ApplicationQuestions
+from clubmanager.models import Clubs, ClubRoles, QuestionAnswers, Applications, ApplicationQuestions, ClubStudentMaps
 from clubmanager.functions import generate_UUID, uniqueRoles, rolespecificquestions, generalquestions, getUserOwnedClubs, generalquestions_maxlength, rolespecificquestion_maxlength
-from clubmanager.flaskforms import ClubApplicationForm, FinalApplicationResultForm
+from clubmanager.flaskforms import ClubApplicationForm, ApplicationSelectForm
 
 @app.route('/clubs/<uuid:ClubId>/applications', methods=['GET'])
 @app.route('/clubs/<uuid:ClubId>/applications/<uuid:StudentId>', methods=['GET'])
@@ -23,7 +23,9 @@ def get_application(ClubId, StudentId = ''):
     generalquestions_maxlengths = generalquestions_maxlength(ClubId) 
     if mode == 'viewall':
         userClubCatalogue = getUserOwnedClubs(current_user.id)
-        return render_template('responseoverview.html', userClubCatalogue=userClubCatalogue, ClubId=ClubId)
+        all_club_applications = Applications.query.filter_by(ClubId=str(ClubId)).all()
+
+        return render_template('responseoverview.html', form=form, all_club_applications=all_club_applications, userClubCatalogue=userClubCatalogue, ClubId=ClubId)
     elif mode == 'view' or mode == 'selectrole':
         if Applications.query.filter_by(StudentId=str(StudentId)).first() == None:
             selectedrole_id = ''
@@ -33,9 +35,18 @@ def get_application(ClubId, StudentId = ''):
             selectedrole_str = ClubRoles.query.filter_by(RoleId=str(selectedrole_id)).first()
             selectedrole_str = selectedrole_str.Role
 
-        if str(current_user.id) == str(StudentId):
-            checkapplicationstartdate = Clubs.query.filter_by(ClubId=str(ClubId)).first().AppStartDate
-            checkapplicationenddate = Clubs.query.filter_by(ClubId=str(ClubId)).first().AppEndDate
+        checkapplicationstartdate = Clubs.query.filter_by(ClubId=str(ClubId)).first().AppStartDate
+        checkapplicationenddate = Clubs.query.filter_by(ClubId=str(ClubId)).first().AppEndDate
+        
+        query = ClubStudentMaps.query.filter_by(StudentId=str(current_user.id), ClubId=str(ClubId)).first()
+        if query == None:
+            query = None
+        else:
+            query = str(query.StudentId)
+
+        condition = datetime.now().date() > checkapplicationenddate and str(current_user.id) == query
+
+        if str(current_user.id) == str(StudentId) or condition:
             if datetime.now().date() >= checkapplicationstartdate and datetime.now().date() <= checkapplicationenddate:
                 form = ClubApplicationForm()
                 generalquestions_to_display, generalquestions_ids = generalquestions(ClubId)

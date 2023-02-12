@@ -11,13 +11,14 @@ from datetime import datetime
 from clubmanager import app, db
 # from clubmanager.models import FinalApplicationResult
 from clubmanager.functions import generate_UUID, uniqueRoles, rolespecificquestions, generalquestions, getUserOwnedClubs, generalquestions_maxlength, rolespecificquestion_maxlength
-from clubmanager.flaskforms import FinalApplicationResultForm
+from clubmanager.flaskforms import ApplicationSelectForm
 
-@app.route('/clubs/<uuid:ClubId>/results', methods=['POST'])
+@app.route('/clubs/<uuid:ClubId>/applications/results', methods=['POST'])
 def sendresults(ClubId):
-    form = FinalApplicationResultForm()
+    form = ApplicationSelectForm()
     mode = request.args.get('mode')
     if mode == 'sendall':
-        return 'good send all'
+        stuff = request.form.getlist('SelectedApplicants')
+        return stuff 
     else:
         return 'wrong mode'

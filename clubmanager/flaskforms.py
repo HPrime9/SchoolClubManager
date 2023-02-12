@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, IntegerField, PasswordField
+from wtforms import StringField, IntegerField, PasswordField, HiddenField, TextAreaField
 from wtforms.validators import InputRequired, Email, Length, NumberRange
 from wtforms.fields import SelectField, DateField, EmailField, FieldList
 
@@ -53,5 +53,7 @@ class AnnouncementForm(FlaskForm):
     Header = StringField('Title', validators=[InputRequired(), Length(min=2, max=100)])
     Message = StringField('Write a Message', validators=[InputRequired(), Length(min=2, max=2000)])
 
-class FinalApplicationResultForm(FlaskForm):
-    test = StringField()
+class ApplicationSelectForm(FlaskForm):
+    ApplicationId = HiddenField('Application Id', validators=[InputRequired(), Length(max=36)])
+    ClubOwnerNotes = TextAreaField('Club Owner Notes', validators=[Length(max=100)])
+    RoleIdSelectedFor = StringField('Role Id', validators=[InputRequired(), Length(max=36)])
