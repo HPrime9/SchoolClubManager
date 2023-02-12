@@ -59,7 +59,7 @@ def get_club(ClubId = ''):
         if club_to_display:
             return render_template('clubpage.html', applicationstatetext=applicationstatetext, StudentNumUrl=int(current_user.StudentNum), applicationbttnstate=applicationbttnstate, club_to_display=club_to_display, Announcements=Announcements)
     else:
-        return 'errerer'
+        return redirect(url_for('dashboard'))
 
 # POST routes for creating, updating and deleting a club
 @app.route('/clubs', methods=['POST'])
@@ -78,12 +78,14 @@ def create_update_delete_club(ClubId = ''):
                 new_clubstudentmap = ClubStudentMap(ClubStudentMapId=generate_UUID(), StudentId = current_user.id, ClubId=dummy_id)
                 db.session.add(new_club)
                 db.session.add(new_clubstudentmap)
-                db.session.commit()
+                try:
+                    db.session.commit()
+                except:
+                    return redirect(url_for('dashboard'))
                 return redirect(url_for('dashboard'))
         return render_template('club.html', formClubCreationForm=form, errors_in_clubcreation=errors_in_clubcreation)
     elif mode == 'update':
         updClubInfo = Club.query.get_or_404(str(ClubId))
-        roles, role_descriptions, rolesId = uniqueRoles(ClubId)
         clubappstartdate = Club.query.filter_by(ClubId=str(ClubId)).first().AppStartDate
         clubappenddate = Club.query.filter_by(ClubId=str(ClubId)).first().AppEndDate
         newappstartdate = form.AppStartDate.data
@@ -109,14 +111,20 @@ def create_update_delete_club(ClubId = ''):
                     updClubInfo.AppStartDate = datetime.strptime(request.form['AppStartDate'], '%Y-%m-%d') 
                     updClubInfo.AppEndDate = datetime.strptime(request.form['AppEndDate'], '%Y-%m-%d')  
                     updClubInfo.ClubContactEmail = request.form['ClubContactEmail']
-                    db.session.commit()
-        return render_template('updateclub.html', formClubCreationForm=form, updClubInfo=updClubInfo, errors_in_clubcreation=errors_in_clubcreation, RoleId=rolesId, rolesId=rolesId, roles=roles, length=len(roles))
+                    try:
+                        db.session.commit()
+                    except:
+                        return redirect(url_for('get_club', ClubId=str(ClubId)) + '?mode=update#nav-generaldetails')
+        return redirect(url_for('get_club', ClubId=str(ClubId)) + '?mode=update#nav-generaldetails')
     elif mode == 'delete':
         club_to_del = Club.query.get_or_404(str(ClubId))
         club_to_del_from_cs_map = ClubStudentMap.query.filter_by(ClubId=str(ClubId)).first()
         db.session.delete(club_to_del)
         db.session.delete(club_to_del_from_cs_map)
-        db.session.commit()
+        try:
+            db.session.commit()
+        except:
+            return redirect(url_for('dashboard'))
         return redirect(url_for('dashboard'))
     else:
-        return 404
+        return redirect(url_for('dashboard'))

@@ -63,12 +63,12 @@
                                     <p class='card-text'>{{ club.ClubDescription }}</p>
                                     <a href="/clubs/{{ club.ClubId }}?mode=update"><button
                                             class='btn btn-primary'>Update</button></a>
-                                    <button type="button" data-bs-toggle="modal" data-bs-target="#exampleModal"
+                                    <button type="button" data-bs-toggle="modal" data-bs-target="#exampleModal{{ club.ClubId }}"
                                         class='btn btn-danger'>Delete</button>
                                 </div>
                             </div>
                         </div>
-                        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+                        <div class="modal fade" id="exampleModal{{ club.ClubId }}" tabindex="-1" aria-labelledby="exampleModalLabel"
                             aria-hidden="true">
                             <div class="modal-dialog">
                                 <div class="modal-content">
