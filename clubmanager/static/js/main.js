@@ -8,18 +8,6 @@ const AddRoleSpecificQuestionparent = document.querySelector('#insertrolespecifi
 
 const SubmitApplicationCheckbox = document.querySelector('#showsubmitapplication')
 
-
-// const BttnDeleteClub = document.getElementsByClassName('deleteclub')
-// const BttnUpdateClub = document.getElementsByClassName('updateclub')
-
-// if (BttnDeleteClub) {
-//     BttnDeleteClub.addEventListener('click', DeleteClub);
-// }
-
-// if (BttnUpdateClub) {
-//     BttnUpdateClub.addEventListener('click', UpdateClub);
-// }
-
 if (BttnAddGeneralQuestion) {
     BttnAddGeneralQuestion.addEventListener('click', AddGeneralQuestion);
 }
@@ -30,15 +18,6 @@ if (BttnAddRole) {
 if (SubmitApplicationCheckbox) {
     SubmitApplicationCheckbox.addEventListener('change', AddApplicationSubmitSaveButton);
 }
-
-// function UpdateClub() {
-//     document.getElementsByClassName('UpdateDeleteClubHiddenClass').value = 'PUT'
-// }
-
-// function DeleteClub() {
-//     document.getElementsByClassName('UpdateDeleteClubHiddenClass').value = 'DELETE'
-// }
-
 
 function AddApplicationSubmitSaveButton() {
     if (SubmitApplicationCheckbox.checked) {
@@ -62,7 +41,7 @@ function AddApplicationSubmitSaveButton() {
         });
     }
 }
-{{ wtf.form_field(form.FirstName) }}
+
 function AddGeneralQuestion() {
     generalQuestionparent.insertAdjacentHTML('afterbegin', `
     <div class='row mb-3'>
@@ -81,9 +60,11 @@ function AddGeneralQuestion() {
     </div>
     `)
 }
-
-function OnAddRoleSpecificQuestion() {
-    AddRoleSpecificQuestionparent.insertAdjacentHTML('afterbegin', `
+function OnAddRoleSpecificQuestion(button) {
+    z = button.parentElement.parentElement.parentElement.parentElement.children
+    x = z[2].children
+    y = x[0]
+    y.insertAdjacentHTML('afterbegin', `
     <div class='row mb-2'>
         <div class='col-4'>
             <label>Enter a question</label>

@@ -1,6 +1,8 @@
 # Import libraries
 from flask_login import UserMixin
 from datetime import datetime
+
+# Import custom libraries
 from clubmanager import db
 
 # Create student data table
@@ -57,7 +59,6 @@ class QuestionAnswer(UserMixin, db.Model):
     Status = db.Column(db.String(100), nullable=False)
     Date_Answer_Created = db.Column(db.Date, default=datetime.utcnow)
     
-
 # Create role data table
 class ClubRole(UserMixin, db.Model):
     RoleId = db.Column(db.String(36), primary_key=True)
