@@ -4,7 +4,7 @@ from flask_login import login_required
 
 # Import custom libraries
 from clubmanager import app, db
-from clubmanager.models import Club, ApplicationQuestions
+from clubmanager.models import ApplicationQuestions
 from clubmanager.functions import generate_UUID
 from clubmanager.flaskforms import ClubGeneralQuestionForm, ClubCreationForm
 

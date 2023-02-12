@@ -6,7 +6,7 @@ from datetime import datetime
 
 # Import custom libraries
 from clubmanager import app, db
-from clubmanager.models import Club, ClubStudentMap, ApplicationQuestions, ClubRole, Announcement
+from clubmanager.models import Clubs, ClubStudentMaps, ApplicationQuestions, ClubRoles, Announcements
 from clubmanager.functions import generate_UUID, uniqueRoles, rolespecificquestions, validate_club_creation
 from clubmanager.flaskforms import ClubCreationForm, ClubGeneralQuestionForm, ClubRoleForm, AnnouncementForm
 
@@ -31,22 +31,22 @@ def get_club(ClubId = ''):
             db_query_application_questions = ApplicationQuestions.query.filter(ApplicationQuestions.RoleId==str(RoleId[i])).all()
             all_role_specific_questions_to_display.append(db_query_application_questions)
         length = len(roles)
-        updClubInfo = Club.query.get_or_404(str(ClubId))  
+        updClubInfo = Clubs.query.get_or_404(str(ClubId))  
         questions_to_display = ApplicationQuestions.query.filter(ApplicationQuestions.ClubId==str(ClubId)) 
-        Announcements = Announcement.query.filter(Announcement.ClubId==str(ClubId)).all() 
+        Announcements_var = Announcements.query.filter(Announcements.ClubId==str(ClubId)).all() 
         return render_template('updateclub.html', formAnnouncement=formAnnouncement, formCreateGeneralQuestions=formCreateGeneralQuestions, formClubCreationForm=formClubCreationForm, RoleId=RoleId, ClubId=str(ClubId), length=length, roles=roles, \
-            role_descriptions=role_descriptions, errors_in_clubcreation=errors_in_clubcreation, all_role_specific_questions_to_display=all_role_specific_questions_to_display, Announcements=Announcements, updClubInfo=updClubInfo,questions_to_display=questions_to_display)
+            role_descriptions=role_descriptions, errors_in_clubcreation=errors_in_clubcreation, all_role_specific_questions_to_display=all_role_specific_questions_to_display, Announcements=Announcements_var, updClubInfo=updClubInfo,questions_to_display=questions_to_display)
     elif mode == 'viewall':
-        clubs = Club.query.filter(Club.School == current_user.School).all()
+        clubs = Clubs.query.filter(Clubs.School == current_user.School).all()
         truthy = True
         if clubs:
             truthy = False
         return render_template('viewclubs.html', School=current_user.School, truthy=truthy, ClubCatalogue=clubs)
     elif mode == 'view':
-        club_to_display = Club.query.get_or_404(str(ClubId))
-        Announcements = Announcement.query.filter(Announcement.ClubId==str(ClubId)).all() 
-        checkapplicationstartdate = Club.query.filter_by(ClubId=str(ClubId)).first().AppStartDate
-        checkapplicationenddate = Club.query.filter_by(ClubId=str(ClubId)).first().AppEndDate
+        club_to_display = Clubs.query.get_or_404(str(ClubId))
+        Announcements_var = Announcements.query.filter(Announcements.ClubId==str(ClubId)).all() 
+        checkapplicationstartdate = Clubs.query.filter_by(ClubId=str(ClubId)).first().AppStartDate
+        checkapplicationenddate = Clubs.query.filter_by(ClubId=str(ClubId)).first().AppEndDate
         print(checkapplicationstartdate, datetime.now().date())
         applicationbttnstate = 'disabled'
         applicationstatetext = ''
@@ -57,7 +57,7 @@ def get_club(ClubId = ''):
             checkapplicationstartdate = 'disabled'
             applicationstatetext = 'Applications are closed!'
         if club_to_display:
-            return render_template('clubpage.html', applicationstatetext=applicationstatetext, StudentNumUrl=int(current_user.StudentNum), applicationbttnstate=applicationbttnstate, club_to_display=club_to_display, Announcements=Announcements)
+            return render_template('clubpage.html', applicationstatetext=applicationstatetext, StudentNumUrl=int(current_user.StudentNum), applicationbttnstate=applicationbttnstate, club_to_display=club_to_display, Announcements=Announcements_var)
     else:
         return redirect(url_for('dashboard'))
 
@@ -74,8 +74,8 @@ def create_update_delete_club(ClubId = ''):
         if form.validate_on_submit():
             if condition_1_for_date and condition_2_for_date and condition_3_for_email:
                 dummy_id = generate_UUID()
-                new_club = Club(ClubId=dummy_id, StudentNum=current_user.StudentNum, School=current_user.School, ClubName=form.ClubName.data, ClubDescription=form.ClubDescription.data, AppStartDate=form.AppStartDate.data, AppEndDate=form.AppEndDate.data, ClubContactEmail=form.ClubContactEmail.data)
-                new_clubstudentmap = ClubStudentMap(ClubStudentMapId=generate_UUID(), StudentId = current_user.id, ClubId=dummy_id)
+                new_club = Clubs(ClubId=dummy_id, StudentNum=current_user.StudentNum, School=current_user.School, ClubName=form.ClubName.data, ClubDescription=form.ClubDescription.data, AppStartDate=form.AppStartDate.data, AppEndDate=form.AppEndDate.data, ClubContactEmail=form.ClubContactEmail.data)
+                new_clubstudentmap = ClubStudentMaps(ClubStudentMapId=generate_UUID(), StudentId = current_user.id, ClubId=dummy_id)
                 db.session.add(new_club)
                 db.session.add(new_clubstudentmap)
                 try:
@@ -85,17 +85,17 @@ def create_update_delete_club(ClubId = ''):
                 return redirect(url_for('dashboard'))
         return render_template('club.html', formClubCreationForm=form, errors_in_clubcreation=errors_in_clubcreation)
     elif mode == 'update':
-        updClubInfo = Club.query.get_or_404(str(ClubId))
-        clubappstartdate = Club.query.filter_by(ClubId=str(ClubId)).first().AppStartDate
-        clubappenddate = Club.query.filter_by(ClubId=str(ClubId)).first().AppEndDate
+        updClubInfo = Clubs.query.get_or_404(str(ClubId))
+        clubappstartdate = Clubs.query.filter_by(ClubId=str(ClubId)).first().AppStartDate
+        clubappenddate = Clubs.query.filter_by(ClubId=str(ClubId)).first().AppEndDate
         newappstartdate = form.AppStartDate.data
         newappenddate = form.AppEndDate.data
         errors_in_clubcreation, condition_1_for_date, condition_2_for_date, condition_3_for_email = validate_club_creation(form)
         condition_3_for_date, condition_4_for_date = str(newappstartdate) == str(clubappstartdate), str(newappenddate) == str(clubappenddate)
         condition_5_for_email = False
         emailuserupdatingto = form.ClubContactEmail.data
-        getclubemail = Club.query.filter_by(ClubId=str(ClubId)).first()
-        checkifemailunique = Club.query.filter_by(ClubContactEmail=emailuserupdatingto).first()
+        getclubemail = Clubs.query.filter_by(ClubId=str(ClubId)).first()
+        checkifemailunique = Clubs.query.filter_by(ClubContactEmail=emailuserupdatingto).first()
         if emailuserupdatingto == getclubemail.ClubContactEmail or checkifemailunique == None:
             condition_5_for_email = True
             errors_in_clubcreation[1] = ''
@@ -117,8 +117,8 @@ def create_update_delete_club(ClubId = ''):
                         return redirect(url_for('get_club', ClubId=str(ClubId)) + '?mode=update#nav-generaldetails')
         return redirect(url_for('get_club', ClubId=str(ClubId)) + '?mode=update#nav-generaldetails')
     elif mode == 'delete':
-        club_to_del = Club.query.get_or_404(str(ClubId))
-        club_to_del_from_cs_map = ClubStudentMap.query.filter_by(ClubId=str(ClubId)).first()
+        club_to_del = Clubs.query.get_or_404(str(ClubId))
+        club_to_del_from_cs_map = ClubStudentMaps.query.filter_by(ClubId=str(ClubId)).first()
         db.session.delete(club_to_del)
         db.session.delete(club_to_del_from_cs_map)
         try:

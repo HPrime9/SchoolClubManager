@@ -9,7 +9,7 @@ from datetime import datetime
 
 # import custom models
 from clubmanager import app, db
-from clubmanager.models import FinalApplicationResult
+# from clubmanager.models import FinalApplicationResult
 from clubmanager.functions import generate_UUID, show_club_applications, uniqueRoles, rolespecificquestions, generalquestions, getUserOwnedClubs, generalquestions_maxlength, rolespecificquestion_maxlength
 from clubmanager.flaskforms import FinalApplicationResultForm
 
@@ -18,15 +18,6 @@ def sendresults(ClubId):
     form = FinalApplicationResultForm()
     mode = request.args.get('mode')
     if mode == 'sendall':
-        get_selected_students = request.form.getlist('SelectedApplicants')
-        print(get_selected_students)
-        StudentId = 0
-        RoleId = 0
-        new_result = FinalApplicationResult(FinalApplicationResultId=generate_UUID(), ClubId=str(ClubId), StudentId=str(StudentId), RoleId=str(RoleId))
-        db.session.add(new_result)
-        try:
-            db.session.commit()
-        except:
-            return 'error'
+        return 'good send all'
     else:
         return 'wrong mode'

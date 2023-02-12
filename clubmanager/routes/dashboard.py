@@ -5,7 +5,7 @@ from flask_login import LoginManager, login_user, login_required, logout_user, c
 
 # Import custom libraries
 from clubmanager import app, db
-from clubmanager.models import Student
+from clubmanager.models import Students
 from clubmanager.functions import generate_UUID, getUserOwnedClubs
 from clubmanager.flaskforms import LoginForm, RegisterForm
 
@@ -16,7 +16,7 @@ login_manager.login_view = 'get_login'
 
 @login_manager.user_loader
 def load_user(user_id):
-    return Student.query.get(user_id)
+    return Students.query.get(user_id)
 
 # Create routes
 @app.route('/login/dashboard', methods=['GET'])
@@ -34,7 +34,7 @@ def create_login():
 
     # check if the user exists in the database
     if form.validate_on_submit():
-        user = Student.query.filter_by(StudentNum=form.StudentNum.data).first()
+        user = Students.query.filter_by(StudentNum=form.StudentNum.data).first()
         if user:
             if check_password_hash(user.Password, form.Password.data):
                 login_user(user, remember=True)
@@ -59,9 +59,9 @@ def get_registration():
 def create_user():
     # initialize form and other variables associated with checking the validity of the registration information
     form = RegisterForm()
-    checkifusernameisunique = Student.query.filter_by(Username=form.Username.data).first()
-    checkifstudentnumisunique = Student.query.filter_by(StudentNum=form.StudentNum.data).first()
-    checkifemailisunique = Student.query.filter_by(Email=form.Email.data).first()
+    checkifusernameisunique = Students.query.filter_by(Username=form.Username.data).first()
+    checkifstudentnumisunique = Students.query.filter_by(StudentNum=form.StudentNum.data).first()
+    checkifemailisunique = Students.query.filter_by(Email=form.Email.data).first()
     errors = ['', '', '']
 
     # check the validity of the registration information entered and display errors accordingly
@@ -77,7 +77,7 @@ def create_user():
     if form.validate_on_submit():
         if condition:
             hashed_Password = generate_password_hash(form.Password.data, method='sha256')
-            new_user = Student(id=generate_UUID(), FirstName=form.FirstName.data, LastName=form.LastName.data, Username=form.Username.data, StudentNum=form.StudentNum.data, Email=form.Email.data, Password=hashed_Password, Grade=form.Grade.data, School=form.School.data)
+            new_user = Students(id=generate_UUID(), FirstName=form.FirstName.data, LastName=form.LastName.data, Username=form.Username.data, StudentNum=form.StudentNum.data, Email=form.Email.data, Password=hashed_Password, Grade=form.Grade.data, School=form.School.data)
             db.session.add(new_user)
             db.session.commit()
             login_user(new_user, remember=True)

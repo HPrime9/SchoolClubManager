@@ -4,7 +4,7 @@ from flask_login import login_required
 
 # Import custom libraries
 from clubmanager import app, db
-from clubmanager.models import Announcement
+from clubmanager.models import Announcements
 from clubmanager.functions import generate_UUID
 from clubmanager.flaskforms import AnnouncementForm
 
@@ -21,7 +21,7 @@ def club_announcement(ClubId, AnnouncementId = ''):
 
     # create a new announcement
     if mode == 'new':
-        new_announcement = Announcement(AnnouncementId=generate_UUID(), ClubId=str(ClubId), Header=form.Header.data, Message=form.Message.data)
+        new_announcement = Announcements(AnnouncementId=generate_UUID(), ClubId=str(ClubId), Header=form.Header.data, Message=form.Message.data)
         db.session.add(new_announcement)
         try:
             db.session.commit()
@@ -30,7 +30,7 @@ def club_announcement(ClubId, AnnouncementId = ''):
     
     # delete announcement
     elif mode == 'delete':
-        announcement_to_del = Announcement.query.filter_by(AnnouncementId=str(AnnouncementId)).first()
+        announcement_to_del = Announcements.query.filter_by(AnnouncementId=str(AnnouncementId)).first()
         db.session.delete(announcement_to_del)
         try:
             db.session.commit()

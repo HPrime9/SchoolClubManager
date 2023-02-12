@@ -6,7 +6,7 @@ from datetime import datetime
 from clubmanager import db
 
 # Create student data table
-class Student(UserMixin, db.Model):
+class Students(UserMixin, db.Model):
     id = db.Column(db.String(36), primary_key=True)
     FirstName = db.Column(db.String(75), nullable=False)
     LastName = db.Column(db.String(100), nullable=False)
@@ -19,7 +19,7 @@ class Student(UserMixin, db.Model):
     Date_Joined = db.Column(db.Date, default=datetime.utcnow)
 
 # Create club data table
-class Club(UserMixin, db.Model):
+class Clubs(UserMixin, db.Model):
     ClubId = db.Column(db.String(36), primary_key=True)
     StudentNum = db.Column(db.Integer, nullable=False)
     School = db.Column(db.String(40), nullable=False)
@@ -31,7 +31,7 @@ class Club(UserMixin, db.Model):
     Date_Club_Created = db.Column(db.Date, default=datetime.utcnow)
     
 # Create club-student data table
-class ClubStudentMap(UserMixin, db.Model):
+class ClubStudentMaps(UserMixin, db.Model):
     ClubStudentMapId = db.Column(db.String(36), primary_key=True)
     StudentId = db.Column(db.String(36), nullable=False)
     ClubId = db.Column(db.String(36), unique=True, nullable=False)
@@ -48,7 +48,7 @@ class ApplicationQuestions(UserMixin, db.Model):
     Date_Question_Created = db.Column(db.Date, default=datetime.utcnow)
 
 # Create answer data table
-class QuestionAnswer(UserMixin, db.Model):
+class QuestionAnswers(UserMixin, db.Model):
     AnswerId = db.Column(db.String(36), primary_key=True)
     StudentNum = db.Column(db.Integer, nullable=False)
     Grade = db.Column(db.Integer, nullable=False)
@@ -60,7 +60,7 @@ class QuestionAnswer(UserMixin, db.Model):
     Date_Answer_Created = db.Column(db.Date, default=datetime.utcnow)
     
 # Create role data table
-class ClubRole(UserMixin, db.Model):
+class ClubRoles(UserMixin, db.Model):
     RoleId = db.Column(db.String(36), primary_key=True)
     ClubId = db.Column(db.String(36), nullable=True)
     Role = db.Column(db.String(100), nullable=True)
@@ -68,16 +68,12 @@ class ClubRole(UserMixin, db.Model):
     Date_Role_Created = db.Column(db.Date, default=datetime.utcnow)
 
 # Create announcement table
-class Announcement(UserMixin, db.Model):
+class Announcements(UserMixin, db.Model):
     AnnouncementId = db.Column(db.String(36), primary_key=True)
     ClubId = db.Column(db.String(36), nullable=False)
     Header = db.Column(db.String(100), nullable=False)
     Message = db.Column(db.String(2000), nullable=False)
 
-# Create final application results table
-class FinalApplicationResult(UserMixin, db.Model):
-    FinalApplicationResultId = db.Column(db.String(36), primary_key=True)
-    ClubId = db.Column(db.String(36), nullable=False)
-    StudentId = db.Column(db.Integer, nullable=False)
-    RoleId = db.Column(db.String(36), nullable=False)
-    Date_Selected = db.Column(db.Date, default=datetime.utcnow)
+# Create applicants table
+# class Applicants(UserMixin, db.Model):
+
