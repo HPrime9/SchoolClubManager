@@ -25,13 +25,17 @@ def get_club(ClubId = ''):
         return render_template('club.html', formClubCreationForm=formClubCreationForm, errors_in_clubcreation=errors_in_clubcreation)
     elif mode == 'update':
         errors_in_clubcreation = ['', '']
+        all_role_specific_questions_to_display = []
         roles, role_descriptions, RoleId = uniqueRoles(ClubId)
+        for i in range(len(RoleId)):
+            db_query_application_questions = ApplicationQuestions.query.filter(ApplicationQuestions.RoleId==str(RoleId[i])).all()
+            all_role_specific_questions_to_display.append(db_query_application_questions)
         length = len(roles)
         updClubInfo = Club.query.get_or_404(str(ClubId))  
         questions_to_display = ApplicationQuestions.query.filter(ApplicationQuestions.ClubId==str(ClubId)) 
         Announcements = Announcement.query.filter(Announcement.ClubId==str(ClubId)).all() 
         return render_template('updateclub.html', formAnnouncement=formAnnouncement, formCreateGeneralQuestions=formCreateGeneralQuestions, formClubCreationForm=formClubCreationForm, RoleId=RoleId, ClubId=str(ClubId), length=length, roles=roles, \
-            role_descriptions=role_descriptions, errors_in_clubcreation=errors_in_clubcreation, Announcements=Announcements, updClubInfo=updClubInfo,questions_to_display=questions_to_display)
+            role_descriptions=role_descriptions, errors_in_clubcreation=errors_in_clubcreation, all_role_specific_questions_to_display=all_role_specific_questions_to_display, Announcements=Announcements, updClubInfo=updClubInfo,questions_to_display=questions_to_display)
     elif mode == 'viewall':
         clubs = Club.query.filter(Club.School == current_user.School).all()
         truthy = True

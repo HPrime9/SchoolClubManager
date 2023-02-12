@@ -49,7 +49,7 @@
                     <ul class="dropdown-menu">
                         <a href='#nav-generalquestions'>
                             <button class="nav-link dropdown-item" id="nav-generalquestions-tab" data-bs-toggle="tab"
-                                data-bs-target="#nav-generalquestions" type="button">Create 
+                                data-bs-target="#nav-generalquestions" type="button">Create
                                 General
                                 Questions</button>
                         </a>
@@ -65,18 +65,17 @@
                         aria-expanded="false">Create Role Specific Questions</a>
                     <ul class="dropdown-menu">
                         {% for i in range(length) %}
-                        <button class="nav-link dropdown-item" id="nav-rolespecificquestions{{ i }}-tab"
-                            data-bs-toggle="tab" data-bs-target="#nav-rolespecificquestions{{ i }}" type="button"
-                            href='#nav-rolespecificquestions{{ i }}'>{{
-                            roles[i] }}</button>
+                        <a href='#nav-rolespecificquestions{{ RoleId[i] }}'><button class="nav-link dropdown-item" id="nav-rolespecificquestions{{ RoleId[i] }}-tab"
+                                data-bs-toggle="tab" data-bs-target="#nav-rolespecificquestions{{ RoleId[i] }}" type="button">{{
+                                roles[i] }}</button></a>
                         {% endfor %}
                     </ul>
                 </li>
                 {% endif %}
 
                 <li class='nav-item'>
-                    <a href='#nav-announcements'><button class="nav-link" id="nav-announcements-tab" data-bs-toggle="tab"
-                        data-bs-target="#nav-announcements" >Announcements</button></a>
+                    <a href='#nav-announcements'><button class="nav-link" id="nav-announcements-tab"
+                            data-bs-toggle="tab" data-bs-target="#nav-announcements">Announcements</button></a>
                 </li>
             </ul>
         </nav>
@@ -377,7 +376,7 @@
 
 
             {% for i in range(length) %}
-            <div class="tab-pane fade" id="nav-rolespecificquestions{{ i }}">
+            <div class="tab-pane fade" id="nav-rolespecificquestions{{ RoleId[i] }}">
                 <div>
                     <div class='row'>
                         <div class='col-2'>
@@ -390,7 +389,8 @@
                     </div>
                     <br>
                 </div>
-                {% if role_specific_questions_to_display %}
+                {% if all_role_specific_questions_to_display[i] != None %}
+                {% set role_specific_questions_to_display = all_role_specific_questions_to_display[i] %}
                 <div class='row table table-striped'>
                     <table>
                         <thead>
