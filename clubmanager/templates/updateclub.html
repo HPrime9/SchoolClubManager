@@ -150,12 +150,12 @@
                                 question.LengthOfResponse %}
                                 <td>
                                     <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                                        data-bs-target="#staticBackdropUpdate{{ question.QuestionId }}">Update</button>
+                                        data-bs-target="#staticBackdropUpdate{{ question.ApplicationQuestionId }}">Update</button>
                                     <button type="button" data-bs-toggle="modal"
-                                        data-bs-target="#exampleModalDelete{{ question.QuestionId }}"
+                                        data-bs-target="#exampleModalDelete{{ question.ApplicationQuestionId }}"
                                         class='btn btn-danger'>Delete</button>
                                     <aside>
-                                        <div class="modal fade" id="staticBackdropUpdate{{ question.QuestionId }}"
+                                        <div class="modal fade" id="staticBackdropUpdate{{ question.ApplicationQuestionId }}"
                                             data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
                                             aria-labelledby="staticBackdropLabel" aria-hidden="true">
                                             <div style='background-color: rgb(77, 171, 169)' class="modal-dialog">
@@ -169,7 +169,7 @@
                                                     </div>
                                                     <div class="modal-body">
                                                         <form
-                                                            action='/clubs/{{ question.ClubId }}/generalquestions/{{ question.QuestionId }}?mode=update'
+                                                            action='/clubs/{{ question.ClubId }}/generalquestions/{{ question.ApplicationQuestionId }}?mode=update'
                                                             method='POST'>
                                                             <div class='row'>
                                                                 <label>Enter General Question</label>
@@ -206,7 +206,7 @@
 
 
 
-                                        <div class="modal fade" id="exampleModalDelete{{ question.QuestionId }}"
+                                        <div class="modal fade" id="exampleModalDelete{{ question.ApplicationQuestionId }}"
                                             tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                             <div class="modal-dialog">
                                                 <div class="modal-content">
@@ -221,7 +221,7 @@
                                                     </div>
                                                     <div class="modal-footer">
                                                         <form method='POST'
-                                                            action='/clubs/{{ question.ClubId }}/generalquestions/{{ question.QuestionId }}?mode=delete'>
+                                                            action='/clubs/{{ question.ClubId }}/generalquestions/{{ question.ApplicationQuestionId }}?mode=delete'>
                                                             <button type="submit" class="btn btn-danger">
                                                                 Delete
                                                             </button>
@@ -417,11 +417,11 @@
                                 question.Question != None %}
                                 <td>
                                     <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                                        data-bs-target="#staticBackdropUpdate{{ question.QuestionId }}">Update</button>
+                                        data-bs-target="#staticBackdropUpdate{{ question.ApplicationQuestionId }}">Update</button>
                                     <button class='btn btn-danger' type="button" data-bs-toggle="modal"
-                                        data-bs-target="#exampleModalDelete{{ question.QuestionId }}">Delete</button>
+                                        data-bs-target="#exampleModalDelete{{ question.ApplicationQuestionId }}">Delete</button>
                                     <aside>
-                                        <div class="modal fade" id="staticBackdropUpdate{{ question.QuestionId }}"
+                                        <div class="modal fade" id="staticBackdropUpdate{{ question.ApplicationQuestionId }}"
                                             data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
                                             aria-labelledby="staticBackdropLabel" aria-hidden="true">
                                             <div style='background-color: rgb(77, 171, 169)' class="modal-dialog">
@@ -434,7 +434,7 @@
                                                     </div>
                                                     <div class="modal-body">
                                                         <form
-                                                            action='/clubs/{{ ClubId }}/roles/{{ RoleId[i] }}/rolespecificquestions/{{ question.QuestionId }}?mode=update'
+                                                            action='/clubs/{{ ClubId }}/roles/{{ RoleId[i] }}/rolespecificquestions/{{ question.ApplicationQuestionId }}?mode=update'
                                                             method='POST'>
                                                             <div class='row'>
                                                                 <label>Enter Role Specific Question</label>
@@ -469,7 +469,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="modal fade" id="exampleModalDelete{{ question.QuestionId }}"
+                                        <div class="modal fade" id="exampleModalDelete{{ question.ApplicationQuestionId }}"
                                             tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                             <div class="modal-dialog">
                                                 <div class="modal-content">
@@ -484,7 +484,7 @@
                                                     </div>
                                                     <div class="modal-footer">
                                                         <form method='POST'
-                                                            action='/clubs/{{ question.ClubId }}/roles/{{ RoleId[i] }}/rolespecificquestions/{{ question.QuestionId }}?mode=delete'>
+                                                            action='/clubs/{{ question.ClubId }}/roles/{{ RoleId[i] }}/rolespecificquestions/{{ question.ApplicationQuestionId }}?mode=delete'>
                                                             <button type="submit" class="btn btn-danger">
                                                                 Delete
                                                             </button>

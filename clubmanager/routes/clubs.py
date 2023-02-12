@@ -74,7 +74,7 @@ def create_update_delete_club(ClubId = ''):
         if form.validate_on_submit():
             if condition_1_for_date and condition_2_for_date and condition_3_for_email:
                 dummy_id = generate_UUID()
-                new_club = Clubs(ClubId=dummy_id, StudentNum=current_user.StudentNum, School=current_user.School, ClubName=form.ClubName.data, ClubDescription=form.ClubDescription.data, AppStartDate=form.AppStartDate.data, AppEndDate=form.AppEndDate.data, ClubContactEmail=form.ClubContactEmail.data)
+                new_club = Clubs(ClubId=dummy_id, StudentId=current_user.id, School=current_user.School, ClubName=form.ClubName.data, ClubDescription=form.ClubDescription.data, AppStartDate=form.AppStartDate.data, AppEndDate=form.AppEndDate.data, ClubContactEmail=form.ClubContactEmail.data)
                 new_clubstudentmap = ClubStudentMaps(ClubStudentMapId=generate_UUID(), StudentId = current_user.id, ClubId=dummy_id)
                 db.session.add(new_club)
                 db.session.add(new_clubstudentmap)

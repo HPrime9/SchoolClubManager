@@ -21,7 +21,7 @@ class Students(UserMixin, db.Model):
 # Create club data table
 class Clubs(UserMixin, db.Model):
     ClubId = db.Column(db.String(36), primary_key=True)
-    StudentNum = db.Column(db.Integer, nullable=False)
+    StudentId = db.Column(db.Integer, nullable=False)
     School = db.Column(db.String(40), nullable=False)
     ClubName = db.Column(db.String(50), nullable=False)
     ClubDescription = db.Column(db.String(300), nullable=False)
@@ -50,15 +50,13 @@ class ApplicationQuestions(UserMixin, db.Model):
 # Create answer data table
 class QuestionAnswers(UserMixin, db.Model):
     QuestionAnswerId = db.Column(db.String(36), primary_key=True)
-    StudentNum = db.Column(db.Integer, nullable=False)
-    Grade = db.Column(db.Integer, nullable=False)
-    ClubId = db.Column(db.String(36), nullable=True)
-    RoleId = db.Column(db.String(36))
-    ApplicationQuestionId = db.Column(db.String(36))
+    StudentId = db.Column(db.String(36), nullable=False)
+    ClubId = db.Column(db.String(36), nullable=False)
+    RoleId = db.Column(db.String(36), nullable=True)
+    ApplicationQuestionId = db.Column(db.String(36), nullable=False)
     Answer = db.Column(db.String(5000), nullable=True)
-    Status = db.Column(db.String(100), nullable=False)
     Date_Answer_Created = db.Column(db.Date, default=datetime.utcnow)
-    
+
 # Create role data table
 class ClubRoles(UserMixin, db.Model):
     RoleId = db.Column(db.String(36), primary_key=True)
@@ -75,17 +73,13 @@ class Announcements(UserMixin, db.Model):
     Message = db.Column(db.String(2000), nullable=False)
 
 # Create applicants table
-# class Applications(UserMixin, db.Model):
-#     ApplicationId = db.Column(db.String(36), primary_key=True)
-#     StudentId = db.Column(db.String(36), nullable=False)
-#     ClubId = db.Column(db.String(36), nullable=False)
-#     RoleId = db.Column(db.String(36), nullable=False)
-#     ApplicationState = db.Column(db.String(100), nullable=False)
-
-
-
-# 	ApplicationState (draft, submitted)
-# 	RoleId (role for which an applicant is selected. Null if applicant is not selected)
-# 	ClubOwnerNotes
-# 	EmailSent? (yes/no) Default value = No. Not Null
+class Applications(UserMixin, db.Model):
+    ApplicationId = db.Column(db.String(36), primary_key=True)
+    StudentId = db.Column(db.String(36), nullable=False)
+    ClubId = db.Column(db.String(36), nullable=False)
+    RoleIdApplyingFor = db.Column(db.String(36), nullable=False)
+    ApplicationState = db.Column(db.String(100), nullable=False) #draft submitted, accepted
+    RoleIdSelectedFor = db.Column(db.String(36), nullable=True)
+    ClubOwnerNotes = db.Column(db.String(500), nullable=False)
+    EmailSent = db.Column(db.String(5), nullable=False)
 

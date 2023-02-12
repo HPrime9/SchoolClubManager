@@ -58,7 +58,7 @@ def generalquestions_maxlength(ClubId):
 
 # Will return all the clubs logged in user owns  
 def getUserOwnedClubs(user):
-    clubs = Clubs.query.filter(Clubs.StudentNum == user).all()
+    clubs = Clubs.query.filter(Clubs.StudentId == user).all()
     return clubs
 
 # Functions that validate
@@ -75,36 +75,6 @@ def validate_club_creation(FlaskForm):
     condition_3_for_email = checkifclubemailisunique == None
     return errors_in_clubcreation, condition_1_for_date, condition_2_for_date, condition_3_for_email
 
-def show_club_applications(ClubId):
-    db_query_questionans = QuestionAnswers.query.filter(QuestionAnswers.ClubId==str(ClubId), QuestionAnswers.Status=='submitted', QuestionAnswers.RoleId!=None)
-    all_studentnums = []
-    all_studentnums_to_display = []
-    all_studentnums_ids_to_display = []
-    all_grades_to_display = []
-    all_roleids_to_display = []
-    all_roles_to_display = []
-    total_length_of_rows = 0
-
-    for row in db_query_questionans:
-        if all_studentnums.count(row.StudentNum) == 0:
-            all_studentnums.append(row.StudentNum)
-            all_studentnums_to_display.append(row.StudentNum)
+# def show_club_applications(ClubId):
     
-    for i in range(len(all_studentnums_to_display)):
-        student_id = Students.query.filter_by(StudentNum=all_studentnums_to_display[i]).first().id
-        all_studentnums_ids_to_display.append(student_id)
-
-    for i in range(len(all_studentnums_to_display)):
-        db_deeper_query_questionans = QuestionAnswers.query.filter(QuestionAnswers.StudentNum==all_studentnums_to_display[i], QuestionAnswers.ClubId==str(ClubId), QuestionAnswers.Status=='submitted', QuestionAnswers.RoleId!=None).first()
-        all_grades_to_display.append(db_deeper_query_questionans.Grade)
-        all_roleids_to_display.append(db_deeper_query_questionans.RoleId)
-
-    for i in range(len(all_roleids_to_display)):
-        role = ClubRoles.query.filter_by(RoleId=str(all_roleids_to_display[i])).first().Role
-        all_roles_to_display.append(role)
-
-    total_length_of_rows = len(all_roles_to_display)
-
-    
-    return all_studentnums_to_display, all_grades_to_display, all_roleids_to_display, all_roles_to_display, total_length_of_rows
 

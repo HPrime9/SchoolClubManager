@@ -10,7 +10,7 @@ from datetime import datetime
 # import custom models
 from clubmanager import app, db
 # from clubmanager.models import FinalApplicationResult
-from clubmanager.functions import generate_UUID, show_club_applications, uniqueRoles, rolespecificquestions, generalquestions, getUserOwnedClubs, generalquestions_maxlength, rolespecificquestion_maxlength
+from clubmanager.functions import generate_UUID, uniqueRoles, rolespecificquestions, generalquestions, getUserOwnedClubs, generalquestions_maxlength, rolespecificquestion_maxlength
 from clubmanager.flaskforms import FinalApplicationResultForm
 
 @app.route('/clubs/<uuid:ClubId>/results', methods=['POST'])

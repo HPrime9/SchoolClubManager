@@ -16,10 +16,6 @@ def create_update_delete_generalquestions(ClubId = '', QuestionId=''):
     # Get mode in the url
     mode = request.args.get('mode') 
 
-    # initialize forms
-    form = ClubGeneralQuestionForm()
-    formClubCreationForm = ClubCreationForm()
-
     # get general questions that are created
     GeneralQuestions = request.form.getlist('GeneralQuestions')
     GeneralQuestionsLengthOfResponse = request.form.getlist('GeneralQuestionsLengthOfResponse')

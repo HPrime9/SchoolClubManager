@@ -10,64 +10,35 @@ from datetime import datetime
 # import custom models
 from clubmanager import app, db
 from clubmanager.models import Clubs, ClubRoles, QuestionAnswers
-from clubmanager.functions import generate_UUID, show_club_applications, uniqueRoles, rolespecificquestions, generalquestions, getUserOwnedClubs, generalquestions_maxlength, rolespecificquestion_maxlength
+from clubmanager.functions import generate_UUID, uniqueRoles, rolespecificquestions, generalquestions, getUserOwnedClubs, generalquestions_maxlength, rolespecificquestion_maxlength
 from clubmanager.flaskforms import ClubApplicationForm, FinalApplicationResultForm
 
 @app.route('/clubs/<uuid:ClubId>/applications', methods=['GET'])
-@app.route('/clubs/<uuid:ClubId>/applications/<int:StudentNum>', methods=['GET'])
+@app.route('/clubs/<uuid:ClubId>/applications/<uuid:StudentId>', methods=['GET'])
 @login_required
-def get_application(ClubId, StudentNum = ''):
+def get_application(ClubId, StudentId = ''):
     mode = request.args.get('mode')
     global selectedrole_str, selectedrole_id
-    all_studentnums_to_display, all_grades_to_display, all_roleids_to_display, all_roles_to_display, total_length_of_rows = [], [], [], [], 0
     generalquestions_to_display = []
     generalquestions_maxlengths = generalquestions_maxlength(ClubId) 
     if mode == 'viewall':
-        userClubCatalogue = getUserOwnedClubs(current_user.StudentNum)
-        FinalApplicationResultForm_todisplay = FinalApplicationResultForm()
-        all_studentnums_to_display, all_grades_to_display, all_roleids_to_display, all_roles_to_display, total_length_of_rows = show_club_applications(ClubId)
-        return render_template('responseoverview.html', FinalApplicationResultForm_todisplay=FinalApplicationResultForm_todisplay, userClubCatalogue=userClubCatalogue, ClubId=ClubId, all_studentnums_to_display=all_studentnums_to_display, all_grades_to_display=all_grades_to_display, all_roleids_to_display=all_roleids_to_display, all_roles_to_display=all_roles_to_display, total_length_of_rows=total_length_of_rows)
+        userClubCatalogue = getUserOwnedClubs(current_user.id)
+        return render_template('responseoverview.html', userClubCatalogue=userClubCatalogue, ClubId=ClubId)
     elif mode == 'view' or mode == 'selectrole':
-        if current_user.StudentNum == StudentNum:
+        if current_user.id == StudentId:
             checkapplicationstartdate = Clubs.query.filter_by(ClubId=str(ClubId)).first().AppStartDate
             checkapplicationenddate = Clubs.query.filter_by(ClubId=str(ClubId)).first().AppEndDate
             if datetime.now().date() >= checkapplicationstartdate and datetime.now().date() <= checkapplicationenddate:
-                form = ClubApplicationForm()
-                generalquestions_to_display, generalquestions_ids = generalquestions(ClubId)
-                role_options, role_descriptions, RoleIds = uniqueRoles(ClubId)
-                length_role = len(role_options)
-                length_general = len(generalquestions_to_display)
-                rolespecificquestions_to_display, rolespecificquestions_ids = rolespecificquestions(str(selectedrole_id))
-                length_rolespecificquestions_to_display = len(rolespecificquestions_to_display)
-                checkifsubmitted = QuestionAnswers.query.filter_by(StudentNum=StudentNum, Status='submitted')
-                generalquestion_answers = QuestionAnswers.query.filter_by(StudentNum=StudentNum, RoleId=None)
-                rolespecificquestion_answers = QuestionAnswers.query.filter_by(StudentNum=StudentNum, RoleId=str(selectedrole_id))
-                application_state, application_status_checked = '', ''
-                selectroletabvisibility = ''
-                all_generalquestion_answers = []
-                all_rolespecificquestion_answers = []
-                rolespecificquestion_maxlengths = rolespecificquestion_maxlength(selectedrole_id)
-                for row1 in generalquestion_answers:
-                    all_generalquestion_answers.append(row1.Answer)
-                for row2 in rolespecificquestion_answers:
-                    all_rolespecificquestion_answers.append(row2.Answer)
-                for row in checkifsubmitted:
-                    if row.Status == 'submitted':
-                        application_state = 'disabled'
-                        application_status_checked = 'checked'
-                        selectroletabvisibility = 'visibility: hidden;'
-                    else:
-                        application_state = ''
-                        application_status_checked = ''
-                return render_template('application.html', rolespecificquestion_maxlengths=rolespecificquestion_maxlengths, generalquestions_maxlengths=generalquestions_maxlengths, selectroletabvisibility=selectroletabvisibility, form=form, all_rolespecificquestion_answers=all_rolespecificquestion_answers, all_generalquestion_answers=all_generalquestion_answers, ClubId=ClubId, rolespecificquestions_ids=rolespecificquestions_ids, length_rolespecificquestions_to_display=length_rolespecificquestions_to_display, rolespecificquestions_to_display=rolespecificquestions_to_display, application_status_checked=application_status_checked, application_state=application_state, RoleIds=RoleIds, selectedrole_str=selectedrole_str, generalquestions=generalquestions_to_display, length_general=length_general, generalquestions_ids=generalquestions_ids, length_role=length_role, role_options=role_options, role_descriptions=role_descriptions)
-            else:
-                return redirect(url_for('get_club', ClubId=str(ClubId)) + '?mode=view')
-        else:
-            return 'wrong user'
-
-
-
-
+                return 'abx'
+    #             Applications(UserMixin, db.Model):
+    # ApplicationId = db.Column(db.String(36), primary_key=True)
+    # StudentId = db.Column(db.String(36), nullable=False)
+    # ClubId = db.Column(db.String(36), nullable=False)
+    # RoleIdApplyingFor = db.Column(db.String(36), nullable=False)
+    # ApplicationState = db.Column(db.String(100), nullable=False) #draft submitted, accepted
+    # RoleIdSelectedFor = db.Column(db.String(36), nullable=True)
+    # ClubOwnerNotes = db.Column(db.String(500), nullable=False)
+    # EmailSent = db.Column(db.String(5), nullable=False)
     else:
         return 'error in application'
 

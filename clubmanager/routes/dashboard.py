@@ -90,7 +90,7 @@ def create_user():
 @login_required
 def dashboard():
     # get all the clubs the user owns to display on their dashboard
-    userClubCatalogue = getUserOwnedClubs(current_user.StudentNum)
+    userClubCatalogue = getUserOwnedClubs(current_user.id)
 
     # initialize variable
     truthy = True
