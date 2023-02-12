@@ -91,7 +91,7 @@ def show_club_applications(ClubId):
             all_studentnums_to_display.append(row.StudentNum)
     
     for i in range(len(all_studentnums_to_display)):
-        student_id = Student.query.filter_by(StudentNum=all_studentnums_to_display[i]).first().id
+        student_id = Students.query.filter_by(StudentNum=all_studentnums_to_display[i]).first().id
         all_studentnums_ids_to_display.append(student_id)
 
     for i in range(len(all_studentnums_to_display)):
