@@ -9,7 +9,7 @@ from datetime import datetime
 
 # import custom models
 from clubmanager import app, db
-from clubmanager.models import Clubs, ClubRoles, QuestionAnswers, Applications, ApplicationQuestions, ClubStudentMaps
+from clubmanager.models import Clubs, ClubRoles, QuestionAnswers, Applications, ApplicationQuestions, ClubStudentMaps, Students
 from clubmanager.functions import generate_UUID, uniqueRoles, rolespecificquestions, generalquestions, getUserOwnedClubs, generalquestions_maxlength, rolespecificquestion_maxlength
 from clubmanager.flaskforms import ClubApplicationForm, ApplicationSelectForm
 
@@ -24,8 +24,24 @@ def get_application(ClubId, StudentId = ''):
     if mode == 'viewall':
         userClubCatalogue = getUserOwnedClubs(current_user.id)
         all_club_applications = Applications.query.filter_by(ClubId=str(ClubId)).all()
+        form = ApplicationSelectForm()
+        # checkapplicationenddate = Clubs.query.filter_by(ClubId=str(ClubId)).first().AppEndDate
+        # showsendresultsbttn = False
+        # if datetime.now().date() > checkapplicationenddate:
+        #     showsendresultsbttn = True
+        # else:
+        #     showsendresultsbttn = False  CHANGE THIS AFTER TO SHOW or not BUTTON
+        showsendresultsbttn = True
 
-        return render_template('responseoverview.html', form=form, all_club_applications=all_club_applications, userClubCatalogue=userClubCatalogue, ClubId=ClubId)
+        stmt = select(Applications.ApplicationId, Applications.RoleIdApplyingFor, Applications.EmailSent, Applications.ClubOwnerNotes, Students.id, Students.FirstName, \
+            Students.LastName, Students.StudentNum, Students.Grade, \
+            ClubRoles.Role)\
+                .select_from(Applications)\
+                .join(Students, Applications.StudentId == Students.id)\
+                .join(ClubRoles, Applications.RoleIdApplyingFor == ClubRoles.RoleId) \
+                .where(Applications.ApplicationState == 'submitted')
+        data = db.session.execute(stmt)
+        return render_template('responseoverview.html', data=data, showsendresultsbttn=showsendresultsbttn, form=form, userClubCatalogue=userClubCatalogue, ClubId=ClubId)
     elif mode == 'view' or mode == 'selectrole':
         if Applications.query.filter_by(StudentId=str(StudentId)).first() == None:
             selectedrole_id = ''

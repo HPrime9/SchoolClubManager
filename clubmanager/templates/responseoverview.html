@@ -49,43 +49,41 @@
     <br><br><br><br><br>
     <main class='container'>
         <div class='row'>
-            <form method='POST' action='/clubs/{{ ClubId }}/applications/results?mode=sendall'>
+            <form method='POST' action='/clubs/{{ ClubId }}/selectionresults?mode=sendall'>
                 {{ form.csrf_token }}
+                {% if showsendresultsbttn %}
                 <td><input type='submit' class='btn btn-info' value='Send Results To All'></td>
+                {% endif %}
                 <br>
-                {% if all_club_applications %}
+                {% if data %}
                 <table class='table table-dark table-hover'>
                     <thead>
                         <tr>
-                            <th>#</th>
-                            <th>First Name</th>
-                            <th>Last Name</th>
+                            <th>Applicant</th>
                             <th>Student Number</th>
                             <th>Grade</th>
                             <th>View Application</th>
-                            <th>Make notes</th>
-                            <th>Role applying for</th>
-                            <th>Email Status</th>
+                            <th>Make Notes</th>
+                            <th>Role Applying For</th>
+                            <th>Student Notified?</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {% set counter = 1 %}
-                        {% for row in all_club_applications %}
+                        {% for row in data %}
                         <tr>
                             <input type='hidden' value='{{ row.ApplicationId }}' name='ApplicationId'>
-                            <td>{{ counter }}</td>
-                            <td>f</td>
-                            <td>l</td>
-                            <td>num</td>
-                            <td>Grade</td>
-                            <td><a href='/clubs/{{ ClubId }}/applications/{{ row.StudentId }}?mode=view'
-                                    target='_blank'>Full
+                            <td>{{ row.FirstName }} {{ row.LastName }}</td>
+                            <td>{{ row.StudentNum }}</td>
+                            <td>{{ row.Grade }}</td>
+                            <td><a href='/clubs/{{ ClubId }}/applications/{{ row.id }}?mode=view' target='_blank'>Full
                                     Application</a></td>
-                            <td>{{ form.ClubOwnerNotes(class_='form-control') }}</td>
-                            <td><input name='RoleIdSelectedFor' type='checkbox'
-                                    class='form-check-input' value='{{ row.RoleIdApplyingFor }}'><label></label></td>
+                            <td><input type='text' class='form-control' name='ClubOwnerNotes' value='{{ row.ClubOwnerNotes }}'>
+                            </td>
+                            <td><select name='RoleIdSelectedFor'>
+                            <option value='None' selected></option>
+                            <option value='{{ row.RoleIdApplyingFor }}'>{{ row.Role }}</option>
+                            </select></td>
                             <td>{{ row.EmailSent }}</td>
-                            {% set counter = counter + 1 %}
                         </tr>
                         {% endfor %}
                     </tbody>
