@@ -79,5 +79,4 @@ class FinalApplicationResult(UserMixin, db.Model):
     ClubId = db.Column(db.String(36), nullable=False)
     StudentId = db.Column(db.Integer, nullable=False)
     RoleId = db.Column(db.String(36), nullable=False)
-    Status = db.Column(db.String(100), nullable=False)
     Date_Selected = db.Column(db.Date, default=datetime.utcnow)

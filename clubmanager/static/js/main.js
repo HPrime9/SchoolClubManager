@@ -62,7 +62,7 @@ function AddApplicationSubmitSaveButton() {
         });
     }
 }
-
+{{ wtf.form_field(form.FirstName) }}
 function AddGeneralQuestion() {
     generalQuestionparent.insertAdjacentHTML('afterbegin', `
     <div class='row mb-3'>

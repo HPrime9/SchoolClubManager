@@ -1,7 +1,7 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, IntegerField, PasswordField
 from wtforms.validators import InputRequired, Email, Length, NumberRange
-from wtforms.fields import SelectField, DateField, EmailField
+from wtforms.fields import SelectField, DateField, EmailField, FieldList
 
 # Create login form
 class LoginForm(FlaskForm):
@@ -29,7 +29,7 @@ class ClubCreationForm(FlaskForm):
 
 # Create class
 class ClubGeneralQuestionForm(FlaskForm):
-    GeneralQuestions = StringField('General Questions', validators=[Length(max=1000)])
+    GeneralQuestions = FieldList(StringField('General Questions', validators=[Length(max=1000)]))
     GeneralQuestionsLengthOfResponse = IntegerField('Length Of Response', validators=[InputRequired()])
     GeneralQuestionOrderNumbers = IntegerField('Question Order', validators=[InputRequired()])
 

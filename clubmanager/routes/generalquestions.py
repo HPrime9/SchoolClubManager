@@ -1,75 +1,60 @@
 # Import libraries
-from flask import render_template, redirect, url_for, request
-from flask_login import login_required, current_user
-from sqlalchemy import delete
+from flask import redirect, url_for, request, flash
+from flask_login import login_required
 
 # Import custom libraries
 from clubmanager import app, db
-from clubmanager.models import Club, ClubStudentMap, ApplicationQuestions, ClubRole, Announcement
-from clubmanager.functions import generate_UUID, uniqueRoles, rolespecificquestions
+from clubmanager.models import Club, ApplicationQuestions
+from clubmanager.functions import generate_UUID
 from clubmanager.flaskforms import ClubGeneralQuestionForm, ClubCreationForm
 
-
-############################## url is not found when creating new question why?
+# Create app routes
 @app.route('/clubs/<uuid:ClubId>/generalquestions', methods=['POST'])
 @app.route('/clubs/<uuid:ClubId>/generalquestions/<uuid:QuestionId>', methods=['POST'])
 @login_required
 def create_update_delete_generalquestions(ClubId = '', QuestionId=''):
+    # Get mode in the url
     mode = request.args.get('mode') 
+
+    # initialize forms
     form = ClubGeneralQuestionForm()
+    formClubCreationForm = ClubCreationForm()
+
+    # get general questions that are created
     GeneralQuestions = request.form.getlist('GeneralQuestions')
     GeneralQuestionsLengthOfResponse = request.form.getlist('GeneralQuestionsLengthOfResponse')
     GeneralQuestionOrderNumbers = request.form.getlist('GeneralQuestionOrderNumbers')
-    formClubCreationForm = ClubCreationForm()
-    updClubInfo = Club.query.get_or_404(str(ClubId))  
-    errors_in_clubcreation= ['', ''] 
-    questions_to_display = ApplicationQuestions.query.filter(ApplicationQuestions.ClubId==str(ClubId))
+
+    # create a new entry in the table if a new general question is being created
     if mode == 'new':
-        if form.validate_on_submit():
-            for i in range(len(GeneralQuestions)):
-                if GeneralQuestions[i].strip() != '' and GeneralQuestionsLengthOfResponse[i].strip() != '' and GeneralQuestionOrderNumbers[i].strip() != '':
-                    new_general_question = ApplicationQuestions(QuestionId=generate_UUID(), ClubId=str(ClubId), Question=GeneralQuestions[i], LengthOfResponse=GeneralQuestionsLengthOfResponse[i], OrderNumber=GeneralQuestionOrderNumbers[i])
-                    db.session.add(new_general_question)
-                    try:
-                        db.session.commit()
-                    except:
-                        return 'there was problem adding general question'
-            roles, role_descriptions, RoleId = uniqueRoles(ClubId)
-            length = len(roles)
-            questions_to_display = ApplicationQuestions.query.filter(ApplicationQuestions.ClubId==str(ClubId)) 
-            Announcements = Announcement.query.filter(Announcement.ClubId==str(ClubId)).all() 
-            return redirect(url_for('get_club', ClubId=str(ClubId)) + '?mode=update#nav-generalquestions')
-            # return render_template('updateclub.html', RoleId=RoleId, ClubId=str(ClubId), length=length, roles=roles, \
-            # role_descriptions=role_descriptions, Announcements=Announcements, length2 = 5, updClubInfo=updClubInfo,questions_to_display=questions_to_display)
-        else:
-            return redirect(url_for('get_club', ClubId=str(ClubId)) + '?mode=update#nav-generalquestions')
+        for i in range(len(GeneralQuestions)):
+            if GeneralQuestions[i].strip() != '' and GeneralQuestionsLengthOfResponse[i].strip() != '' and GeneralQuestionOrderNumbers[i].strip() != '':
+                new_general_question = ApplicationQuestions(QuestionId=generate_UUID(), ClubId=str(ClubId), Question=GeneralQuestions[i], LengthOfResponse=GeneralQuestionsLengthOfResponse[i], OrderNumber=GeneralQuestionOrderNumbers[i])
+                db.session.add(new_general_question)
+                try:
+                    db.session.commit()
+                except:
+                    flash('Could not add general question(s). Please try again!', 'error')
+
+    # update the already existing entry in the table if a general question is being updated
     elif mode == 'update':
-        if form.validate_on_submit:
-            updClubQuestions = ApplicationQuestions.query.get_or_404(str(QuestionId))    
-            updClubQuestions.Question = request.form['GeneralQuestions']
-            updClubQuestions.LengthOfResponse = request.form['GeneralQuestionsLengthOfResponse']
-            updClubQuestions.OrderNumber = request.form['GeneralQuestionOrderNumbers']
-            try:
-                db.session.commit()
-                roles, role_descriptions, RoleId = uniqueRoles(ClubId)
-                length = len(roles)
-                updClubInfo = Club.query.get_or_404(str(ClubId))  
-                questions_to_display = ApplicationQuestions.query.filter(ApplicationQuestions.ClubId==str(ClubId)) 
-                Announcements = Announcement.query.filter(Announcement.ClubId==str(ClubId)).all() 
-                return render_template('updateclub.html', formClubCreationForm=formClubCreationForm, RoleId=RoleId, ClubId=str(ClubId), length=length, roles=roles, \
-                role_descriptions=role_descriptions, Announcements=Announcements, errors_in_clubcreation=errors_in_clubcreation, updClubInfo=updClubInfo,questions_to_display=questions_to_display)
-            except:
-                return 'there was problem updating'
+        updClubQuestions = ApplicationQuestions.query.get_or_404(str(QuestionId))    
+        updClubQuestions.Question = request.form['GeneralQuestions']
+        updClubQuestions.LengthOfResponse = request.form['GeneralQuestionsLengthOfResponse']
+        updClubQuestions.OrderNumber = request.form['GeneralQuestionOrderNumbers']
+        try:
+            db.session.commit()
+        except:
+            flash('Could not update general question(s). Please try again!', 'error')
+    
+    # delete the already existing entry in the table if a general question is being deleted
     elif mode == 'delete':
         question_to_del = ApplicationQuestions.query.filter_by(QuestionId=str(QuestionId)).first()
         db.session.delete(question_to_del)
-        db.session.commit()
-        roles, role_descriptions, RoleId = uniqueRoles(ClubId)
-        length = len(roles)
-        updClubInfo = Club.query.get_or_404(str(ClubId))  
-        questions_to_display = ApplicationQuestions.query.filter(ApplicationQuestions.ClubId==str(ClubId)) 
-        Announcements = Announcement.query.filter(Announcement.ClubId==str(ClubId)).all() 
-        return render_template('updateclub.html', formClubCreationForm=formClubCreationForm, RoleId=RoleId, ClubId=str(ClubId), length=length, roles=roles, \
-        role_descriptions=role_descriptions, Announcements=Announcements, errors_in_clubcreation=errors_in_clubcreation, updClubInfo=updClubInfo,questions_to_display=questions_to_display)
-    else:
-        return 'error'
+        try:
+            db.session.commit()
+        except:
+            flash('Could not delete general question(s). Please try again!', 'error')
+    
+    # load the same page again
+    return redirect(url_for('get_club', ClubId=str(ClubId)) + '?mode=update#nav-generalquestions')

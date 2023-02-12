@@ -3,7 +3,7 @@ import uuid
 from datetime import datetime
 
 # custom
-from clubmanager.models import ApplicationQuestions, ClubRole, Club, QuestionAnswer
+from clubmanager.models import ApplicationQuestions, ClubRole, Club, QuestionAnswer, Student
 
 # Create UUID generator function
 def generate_UUID():
@@ -79,6 +79,7 @@ def show_club_applications(ClubId):
     db_query_questionans = QuestionAnswer.query.filter(QuestionAnswer.ClubId==str(ClubId), QuestionAnswer.Status=='submitted', QuestionAnswer.RoleId!=None)
     all_studentnums = []
     all_studentnums_to_display = []
+    all_studentnums_ids_to_display = []
     all_grades_to_display = []
     all_roleids_to_display = []
     all_roles_to_display = []
@@ -88,7 +89,11 @@ def show_club_applications(ClubId):
         if all_studentnums.count(row.StudentNum) == 0:
             all_studentnums.append(row.StudentNum)
             all_studentnums_to_display.append(row.StudentNum)
-     
+    
+    for i in range(len(all_studentnums_to_display)):
+        student_id = Student.query.filter_by(StudentNum=all_studentnums_to_display[i]).first().id
+        all_studentnums_ids_to_display.append(student_id)
+
     for i in range(len(all_studentnums_to_display)):
         db_deeper_query_questionans = QuestionAnswer.query.filter(QuestionAnswer.StudentNum==all_studentnums_to_display[i], QuestionAnswer.ClubId==str(ClubId), QuestionAnswer.Status=='submitted', QuestionAnswer.RoleId!=None).first()
         all_grades_to_display.append(db_deeper_query_questionans.Grade)
