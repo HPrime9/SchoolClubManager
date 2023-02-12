@@ -1,91 +1,62 @@
 # Import libraries
-from flask import render_template, redirect, url_for, request
-from flask_wtf import FlaskForm
-from wtforms import StringField, IntegerField
-from wtforms.validators import InputRequired, Email, Length
-from flask_login import login_required, current_user
+from flask import redirect, url_for, request, flash
+from flask_login import login_required
 from sqlalchemy import delete
 
 # Import custom libraries
 from clubmanager import app, db
-from clubmanager.models import Club, ApplicationQuestions, ClubRole, Announcement
-from clubmanager.functions import generate_UUID, uniqueRoles, rolespecificquestions
-from clubmanager.flaskforms import ClubRoleForm, ClubCreationForm, AnnouncementForm
+from clubmanager.models import ApplicationQuestions, ClubRole
+from clubmanager.functions import generate_UUID
+from clubmanager.flaskforms import ClubRoleForm
 
+# Create app routes
 @app.route('/clubs/<uuid:ClubId>/roles', methods=['POST'])
 @app.route('/clubs/<uuid:ClubId>/roles/<uuid:RoleId>', methods=['POST'])
 @login_required
 def create_update_delete_roles(ClubId, RoleId = ''):
-    mode = request.args.get('mode') 
-    form = ClubRoleForm() 
+    # get the mode in the url
+    mode = request.args.get('mode')
+
+    # get roles and role descriptions the user entered 
     Role = request.form.getlist('Role')
     RoleDescription = request.form.getlist('RoleDescription')
-    formClubCreationForm = ClubCreationForm()
-    errors_in_clubcreation = ['', '']
-    formAnnouncement = AnnouncementForm()
+
+    # add a role and its description in the table ClubRole if the user is creating a role
     if mode == 'new':
-        if form.validate_on_submit:
-            for i in range(len(Role)):
-                if Role[i].strip() != '' and RoleDescription[i].strip() != '':
-                    roleid = generate_UUID()
-                    new_role_and_description = ClubRole(RoleId=roleid, ClubId=str(ClubId), Role=Role[i], RoleDescription=RoleDescription[i]) 
-                    db.session.add(new_role_and_description)
-                    try:
-                        db.session.commit()
-                    except:
-                        return 'there was problem adding role and description'
-            roles, role_descriptions, RoleId = uniqueRoles(ClubId)
-            length = len(roles)
-            updClubInfo = Club.query.get_or_404(str(ClubId))  
-            questions_to_display = ApplicationQuestions.query.filter(ApplicationQuestions.ClubId==str(ClubId)) 
-            Announcements = Announcement.query.filter(Announcement.ClubId==str(ClubId)).all() 
-            # info_to_display = ApplicationQuestions.query.filter(ApplicationQuestions.RoleId==str(RoleIdInUrl)) 
-            # role_specific_questions_to_display, ids = rolespecificquestions(RoleIdInUrl) role_specific_questions_to_display=info_to_display
-            # length2 = len(role_specific_questions_to_display) length2=length2
-            return render_template('updateclub.html', formAnnouncement=formAnnouncement, errors_in_clubcreation=errors_in_clubcreation, formClubCreationForm=formClubCreationForm, RoleId=RoleId, ClubId=str(ClubId), length=length, roles=roles, \
-                role_descriptions=role_descriptions, Announcements=Announcements, length2 = 1, updClubInfo=updClubInfo,questions_to_display=questions_to_display)
-    elif mode == 'update':
-        if form.validate_on_submit: 
-            if request.form['Role'].strip() != '' and request.form['RoleDescription'].strip() != '':
-                updClubRole = ClubRole.query.get_or_404(str(RoleId))
-                updClubRole.Role = request.form['Role']
-                updClubRole.RoleDescription = request.form['RoleDescription']
+        for i in range(len(Role)):
+            if Role[i].strip() != '' and RoleDescription[i].strip() != '':
+                roleid = generate_UUID()
+                new_role_and_description = ClubRole(RoleId=roleid, ClubId=str(ClubId), Role=Role[i], RoleDescription=RoleDescription[i]) 
+                db.session.add(new_role_and_description)
                 try:
                     db.session.commit()
-                    roles, role_descriptions, RoleId = uniqueRoles(ClubId)
-                    length = len(roles)
-                    updClubInfo = Club.query.get_or_404(str(ClubId))  
-                    questions_to_display = ApplicationQuestions.query.filter(ApplicationQuestions.ClubId==str(ClubId)) 
-                    Announcements = Announcement.query.filter(Announcement.ClubId==str(ClubId)).all() 
-                    # info_to_display = ApplicationQuestions.query.filter(ApplicationQuestions.RoleId==str(RoleIdInUrl)) 
-                    # role_specific_questions_to_display, ids = rolespecificquestions(RoleIdInUrl) role_specific_questions_to_display=info_to_display
-                    # length2 = len(role_specific_questions_to_display) length2=length2
-                    return render_template('updateclub.html', formAnnouncement=formAnnouncement, errors_in_clubcreation=errors_in_clubcreation, formClubCreationForm=formClubCreationForm, RoleId=RoleId, ClubId=str(ClubId), length=length, roles=roles, \
-                        role_descriptions=role_descriptions, Announcements=Announcements, length2 = 1, updClubInfo=updClubInfo,questions_to_display=questions_to_display)
                 except:
-                    return 'there was problem updating'
+                    flash('Could not add role(s). Please try again!', 'error')
+    
+    # update the role and/or its description
+    elif mode == 'update':
+        if request.form['Role'].strip() != '' and request.form['RoleDescription'].strip() != '':
+            updClubRole = ClubRole.query.filter_by(RoleId=str(RoleId)).first()
+            updClubRole.Role = request.form['Role']
+            updClubRole.RoleDescription = request.form['RoleDescription']
+            try:
+                db.session.commit()
+            except:
+                flash('Could not update role(s). Please try again!', 'error')
+    
+    # delete the role and its description
     elif mode == 'delete':
         delete_rows = delete(ApplicationQuestions).where(ApplicationQuestions.RoleId == str(RoleId))
         role_to_del = ClubRole.query.filter_by(RoleId=str(RoleId)).first()
         try:
             db.session.delete(role_to_del)
+            db.session.execute(delete_rows)
             db.session.commit()
-            rows = db.session.execute(delete_rows)
-            print(rows)
-            roles, role_descriptions, RoleId = uniqueRoles(ClubId)
-            length = len(roles)
-            updClubInfo = Club.query.get_or_404(str(ClubId))  
-            questions_to_display = ApplicationQuestions.query.filter(ApplicationQuestions.ClubId==str(ClubId)) 
-            Announcements = Announcement.query.filter(Announcement.ClubId==str(ClubId)).all() 
-            # info_to_display = ApplicationQuestions.query.filter(ApplicationQuestions.RoleId==str(RoleIdInUrl)) 
-            # role_specific_questions_to_display, ids = rolespecificquestions(RoleIdInUrl) role_specific_questions_to_display=info_to_display
-            # length2 = len(role_specific_questions_to_display) length2=length2
-            return render_template('updateclub.html', errors_in_clubcreation=errors_in_clubcreation, formClubCreationForm=formClubCreationForm, RoleId=RoleId, ClubId=str(ClubId), length=length, roles=roles, \
-                role_descriptions=role_descriptions, Announcements=Announcements, length2 = 1, updClubInfo=updClubInfo,questions_to_display=questions_to_display)
         except:
-            return 'sorry could not delete'
-    else:
-        return 'error'
+            flash('Could not delete role(s). Please try again!', 'error')
+    
+    # load the same page again
+    return redirect(url_for('get_club', ClubId=str(ClubId)) + '?mode=update#nav-roles')
 
 
 
