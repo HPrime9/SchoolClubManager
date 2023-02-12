@@ -49,12 +49,16 @@
     <br><br><br><br><br>
     <main class='container'>
         <div class='row'>
+            {% if data %}
+            <h2 style='text-align:center;'>{{ ClubName_to_display }}</h2>
+            {% endif %}
             <form method='POST' action='/clubs/{{ ClubId }}/selectionresults?mode=sendall'>
                 {{ form.csrf_token }}
+                <br>
                 {% if showsendresultsbttn %}
                 <td><input type='submit' class='btn btn-info' value='Send Results To All'></td>
                 {% endif %}
-                <br>
+                <br><br>
                 {% if data %}
                 <table class='table table-dark table-hover'>
                     <thead>
@@ -79,9 +83,14 @@
                                     Application</a></td>
                             <td><input type='text' class='form-control' name='ClubOwnerNotes' value='{{ row.ClubOwnerNotes }}'>
                             </td>
-                            <td><select name='RoleIdSelectedFor'>
-                            <option value='None' selected></option>
+                            <td><select name='RoleIdSelectedFor' class="form-select">
+                            {% if row.RoleIdSelectedFor != 'None' %}
+                            <option value='None'>None</option>
+                            <option value='{{ row.RoleIdApplyingFor }}' selected>{{ row.Role }}</option>
+                            {% else %}
+                            <option value='None' selected>None</option>
                             <option value='{{ row.RoleIdApplyingFor }}'>{{ row.Role }}</option>
+                            {% endif %}
                             </select></td>
                             <td>{{ row.EmailSent }}</td>
                         </tr>
@@ -90,7 +99,7 @@
                 </table>
             </form>
             {% else %}
-            <h1>No responses have been recorded yet!</h1>
+            <h1>No responses have been recorded for {{ ClubName_to_display }}!</h1>
             {% endif %}
         </div>
     </main>

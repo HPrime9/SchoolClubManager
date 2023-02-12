@@ -33,7 +33,7 @@ def get_application(ClubId, StudentId = ''):
         #     showsendresultsbttn = False  CHANGE THIS AFTER TO SHOW or not BUTTON
         showsendresultsbttn = True
 
-        stmt = select(Applications.ApplicationId, Applications.RoleIdApplyingFor, Applications.EmailSent, Applications.ClubOwnerNotes, Students.id, Students.FirstName, \
+        stmt = select(Applications.ApplicationId, Applications.RoleIdApplyingFor, Applications.RoleIdSelectedFor, Applications.EmailSent, Applications.ClubOwnerNotes, Students.id, Students.FirstName, \
             Students.LastName, Students.StudentNum, Students.Grade, \
             ClubRoles.Role)\
                 .select_from(Applications)\
@@ -41,7 +41,8 @@ def get_application(ClubId, StudentId = ''):
                 .join(ClubRoles, Applications.RoleIdApplyingFor == ClubRoles.RoleId) \
                 .where(Applications.ApplicationState == 'submitted')
         data = db.session.execute(stmt)
-        return render_template('responseoverview.html', data=data, showsendresultsbttn=showsendresultsbttn, form=form, userClubCatalogue=userClubCatalogue, ClubId=ClubId)
+        ClubName_to_display = Clubs.query.filter_by(ClubId=str(ClubId)).first().ClubName
+        return render_template('responseoverview.html', ClubName_to_display=ClubName_to_display, data=data, showsendresultsbttn=showsendresultsbttn, form=form, userClubCatalogue=userClubCatalogue, ClubId=ClubId)
     elif mode == 'view' or mode == 'selectrole':
         if Applications.query.filter_by(StudentId=str(StudentId)).first() == None:
             selectedrole_id = ''
