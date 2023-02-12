@@ -47,7 +47,6 @@ def get_club(ClubId = ''):
         Announcements_var = Announcements.query.filter(Announcements.ClubId==str(ClubId)).all() 
         checkapplicationstartdate = Clubs.query.filter_by(ClubId=str(ClubId)).first().AppStartDate
         checkapplicationenddate = Clubs.query.filter_by(ClubId=str(ClubId)).first().AppEndDate
-        print(checkapplicationstartdate, datetime.now().date())
         applicationbttnstate = 'disabled'
         applicationstatetext = ''
         if datetime.now().date() >= checkapplicationstartdate and datetime.now().date() <= checkapplicationenddate:
@@ -57,7 +56,7 @@ def get_club(ClubId = ''):
             checkapplicationstartdate = 'disabled'
             applicationstatetext = 'Applications are closed!'
         if club_to_display:
-            return render_template('clubpage.html', applicationstatetext=applicationstatetext, StudentNumUrl=int(current_user.StudentNum), applicationbttnstate=applicationbttnstate, club_to_display=club_to_display, Announcements=Announcements_var)
+            return render_template('clubpage.html', applicationstatetext=applicationstatetext, applicationbttnstate=applicationbttnstate, club_to_display=club_to_display, Announcements=Announcements_var)
     else:
         return redirect(url_for('dashboard'))
 

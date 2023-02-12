@@ -42,16 +42,20 @@
                     <a href='#nav-generalquestionanswers'><button class="nav-link active" id="nav-generalquestionanswers-tab" data-bs-toggle="tab"
                         data-bs-target="#nav-generalquestionanswers" type="button"
                         style='color: rgb(59, 84, 154)'>General Questions</button></a>
+                    {% if selectroletabvisibility != 'hidden' %}
                     <a href='#nav-selectrole'><button class="nav-link" id="nav-selectrole-tab" data-bs-toggle="tab"
-                        data-bs-target="#nav-selectrole" type='button' style='color: rgb(59, 84, 154);{{ selectroletabvisibility }}'>Select
+                        data-bs-target="#nav-selectrole" type='button' style='color: rgb(59, 84, 154);'>Select
                         Role</button></a>
+                    {% endif %}
+                    {% if selectedrole_str %}
                     <a href='#nav-rolespecificquestionsanswers'><button class="nav-link" id="nav-rolespecificquestionsanswers-tab" data-bs-toggle="tab"
                         data-bs-target="#nav-rolespecificquestionsanswers" type='button'
-                        style='color: rgb(59, 84, 154)'>{{ selectedrole_str }}</button></a>    
+                        style='color: rgb(59, 84, 154)'>{{ selectedrole_str }}</button></a>   
+                    {% endif %} 
                 </div>
-                <form action='/clubs/{{ ClubId }}/applications/866639?mode=save' method='POST'>
+                <form action='/clubs/{{ ClubId }}/applications/{{ StudentId }}?mode=save' method='POST'>
                 <input type="checkbox" class="form-check-input" id='showsubmitapplication' name="SubmitApplication"
-                    value="submitapplication" {{ application_status_checked }} {{ application_state }}>
+                    value="submitapplication" {{ application_state_checked }} {{ application_state }}>
                 <label class="form-check-label">Submit application to the club</label>
             </nav>
             <div class="tab-content" id="nav-tabContent">
@@ -97,9 +101,9 @@
             <div class="tab-pane fade" id="nav-selectrole">
                 <div class='row'>
                     <h1>Select Role</h1>
-                    <form action='/clubs/{{ ClubId }}/applications/866639?mode=selectrole' method='POST'>
+                    <form action='/clubs/{{ ClubId }}/applications/{{  StudentId }}?mode=selectrole' method='POST'>
                         {{ form.hidden_tag() }}
-                        {% if role_options %}
+                        {% if role_options_descriptions_ids %}
                         <table class='row table table-borderless'>
                             <thead>
                                 <tr>
@@ -108,11 +112,11 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                {% for i in range(length_role) %}
+                                {% for row in role_options_descriptions_ids %}
                                 <tr>
-                                    <td><input class='form-check-input' name="SelectRole" type="radio" value="{{ RoleIds[i] }}" {{ application_state }}> {{
-                                        role_options[i] }}</td>
-                                    <td>{{ role_descriptions[i] }}</td> 
+                                    <td><input class='form-check-input' name="SelectRole" type="radio" value="{{ row.RoleId }}" {{ application_state }}> {{
+                                        row.Role }}</td>
+                                    <td>{{ row.RoleDescription }}</td> 
                                 </tr>
                                 {% endfor %}
                             </tbody>
