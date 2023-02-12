@@ -31,7 +31,7 @@ def create_update_delete_roles(ClubId, RoleId = ''):
                 try:
                     db.session.commit()
                 except:
-                    flash('Could not add role(s). Please try again!', 'error')
+                    return redirect(url_for('get_club', ClubId=str(ClubId)) + '?mode=update#nav-generalquestions')
     
     # update the role and/or its description
     elif mode == 'update':
@@ -42,7 +42,7 @@ def create_update_delete_roles(ClubId, RoleId = ''):
             try:
                 db.session.commit()
             except:
-                flash('Could not update role(s). Please try again!', 'error')
+                return redirect(url_for('get_club', ClubId=str(ClubId)) + '?mode=update#nav-generalquestions')
     
     # delete the role and its description
     elif mode == 'delete':
@@ -53,7 +53,7 @@ def create_update_delete_roles(ClubId, RoleId = ''):
             db.session.execute(delete_rows)
             db.session.commit()
         except:
-            flash('Could not delete role(s). Please try again!', 'error')
+            return redirect(url_for('get_club', ClubId=str(ClubId)) + '?mode=update#nav-generalquestions')
     
     # load the same page again
     return redirect(url_for('get_club', ClubId=str(ClubId)) + '?mode=update#nav-roles')

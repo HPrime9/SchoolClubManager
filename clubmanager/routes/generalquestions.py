@@ -34,7 +34,7 @@ def create_update_delete_generalquestions(ClubId = '', QuestionId=''):
                 try:
                     db.session.commit()
                 except:
-                    flash('Could not add general question(s). Please try again!', 'error')
+                    return redirect(url_for('get_club', ClubId=str(ClubId)) + '?mode=update#nav-generalquestions')
 
     # update the already existing entry in the table if a general question is being updated
     elif mode == 'update':
@@ -45,7 +45,7 @@ def create_update_delete_generalquestions(ClubId = '', QuestionId=''):
         try:
             db.session.commit()
         except:
-            flash('Could not update general question(s). Please try again!', 'error')
+            return redirect(url_for('get_club', ClubId=str(ClubId)) + '?mode=update#nav-generalquestions')
     
     # delete the already existing entry in the table if a general question is being deleted
     elif mode == 'delete':
@@ -54,7 +54,7 @@ def create_update_delete_generalquestions(ClubId = '', QuestionId=''):
         try:
             db.session.commit()
         except:
-            flash('Could not delete general question(s). Please try again!', 'error')
+            return redirect(url_for('get_club', ClubId=str(ClubId)) + '?mode=update#nav-generalquestions')
     
     # load the same page again
     return redirect(url_for('get_club', ClubId=str(ClubId)) + '?mode=update#nav-generalquestions')
