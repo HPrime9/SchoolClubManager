@@ -25,7 +25,7 @@ def create_update_delete_rolespecificquestion(ClubId, RoleId, QuestionId = ''):
         if len(RoleSpecificQuestion) >= 1:
             for i in range(len(RoleSpecificQuestion)):
                 if RoleSpecificQuestion[i].strip() != '' and ResponseLength[i].strip() != '' and OrderNumber[i].strip() != '':
-                    new_rolespecificquestion = ApplicationQuestions(QuestionId=generate_UUID(), ClubId=str(ClubId), RoleId=str(RoleId), OrderNumber=OrderNumber[i], Question=RoleSpecificQuestion[i], LengthOfResponse=ResponseLength[i])
+                    new_rolespecificquestion = ApplicationQuestions(ApplicationQuestionId=generate_UUID(), ClubId=str(ClubId), RoleId=str(RoleId), OrderNumber=OrderNumber[i], Question=RoleSpecificQuestion[i], LengthOfResponse=ResponseLength[i])
                     db.session.add(new_rolespecificquestion)
                     try:
                         db.session.commit()

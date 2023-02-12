@@ -37,7 +37,6 @@ function AddApplicationSubmitSaveButton() {
         });
         document.querySelectorAll('.makerequiredrsq').forEach(element => {
             element.required = false;
-            alert(element.required);
         });
     }
 }

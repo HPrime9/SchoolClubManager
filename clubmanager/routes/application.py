@@ -88,8 +88,8 @@ def save_submit_application(ClubId, StudentNum):
         for i in range(len(general_questions)):
             answer_generalquestion = request.form[str(generalquestions_id[i]) + 'GeneralQuestionAnswers']
             if answer_generalquestion.strip != '':
-                generalquestiontobeupdated = select(QuestionAnswers).where(QuestionAnswers.StudentNum == current_user.StudentNum, QuestionAnswers.QuestionId == str(generalquestions_id[i]))
-                generalquestionupdate = QuestionAnswers.query.filter_by(StudentNum=current_user.StudentNum, QuestionId=str(generalquestions_id[i])).first()
+                generalquestiontobeupdated = select(QuestionAnswers).where(QuestionAnswers.StudentNum == current_user.StudentNum, QuestionAnswers.ApplicationQuestionId == str(generalquestions_id[i]))
+                generalquestionupdate = QuestionAnswers.query.filter_by(StudentNum=current_user.StudentNum, ApplicationQuestionId=str(generalquestions_id[i])).first()
                 rowgeneral = db.session.execute(generalquestiontobeupdated)
                 if rowgeneral and generalquestionupdate:
                     generalquestionupdate.Answer = answer_generalquestion
@@ -99,7 +99,7 @@ def save_submit_application(ClubId, StudentNum):
                     except:
                         return redirect(url_for('get_application', ClubId=str(ClubId), StudentNum=current_user.StudentNum) + '?mode=view#nav-generalquestionanswers')
                 else:
-                    new_application_save = QuestionAnswers(AnswerId=generate_UUID(), StudentNum=current_user.StudentNum, ClubId=str(ClubId), Grade=current_user.Grade, Status=status, QuestionId=generalquestions_id[i], Answer=answer_generalquestion)
+                    new_application_save = QuestionAnswers(QuestionAnswerId=generate_UUID(), StudentNum=current_user.StudentNum, ClubId=str(ClubId), Grade=current_user.Grade, Status=status, ApplicationQuestionId=generalquestions_id[i], Answer=answer_generalquestion)
                     db.session.add(new_application_save)
                     db.session.commit()
                     try:
@@ -110,8 +110,8 @@ def save_submit_application(ClubId, StudentNum):
             answer_rolespecificquestion = request.form[str(rolespecificquestions_id[i]) + 'RoleSpecificQuestionAnswers']
             roleid = ClubRoles.query.filter_by(RoleId=rolespecificquestions_id[i]).first()
             if answer_rolespecificquestion.strip != '':
-                rolespecificquestiontobeupdated = select(QuestionAnswers).where(QuestionAnswers.StudentNum == current_user.StudentNum, QuestionAnswers.QuestionId == str(rolespecificquestions_id[i]))
-                rolespecificquestionupdate = QuestionAnswers.query.filter_by(StudentNum=current_user.StudentNum, QuestionId=str(rolespecificquestions_id[i])).first()
+                rolespecificquestiontobeupdated = select(QuestionAnswers).where(QuestionAnswers.StudentNum == current_user.StudentNum, QuestionAnswers.ApplicationQuestionId == str(rolespecificquestions_id[i]))
+                rolespecificquestionupdate = QuestionAnswers.query.filter_by(StudentNum=current_user.StudentNum, ApplicationQuestionId=str(rolespecificquestions_id[i])).first()
                 rowrolespecfic = db.session.execute(rolespecificquestiontobeupdated)
                 if rowrolespecfic and rolespecificquestionupdate:
                     rolespecificquestionupdate.Answer = answer_rolespecificquestion
@@ -121,7 +121,7 @@ def save_submit_application(ClubId, StudentNum):
                     except:
                         return redirect(url_for('get_application', ClubId=str(ClubId), StudentNum=current_user.StudentNum) + '?mode=view#nav-generalquestionanswers')
                 else:
-                    new_application_save = QuestionAnswers(AnswerId=generate_UUID(), StudentNum=current_user.StudentNum, ClubId=str(ClubId), Grade=current_user.Grade, Status=status, RoleId=str(selectedrole_id), QuestionId=rolespecificquestions_id[i], Answer=answer_rolespecificquestion)
+                    new_application_save = QuestionAnswers(QuestionAnswerId=generate_UUID(), StudentNum=current_user.StudentNum, ClubId=str(ClubId), Grade=current_user.Grade, Status=status, RoleId=str(selectedrole_id), ApplicationQuestionId=rolespecificquestions_id[i], Answer=answer_rolespecificquestion)
                     db.session.add(new_application_save)
                     db.session.commit()
         return redirect(url_for('get_application', ClubId=str(ClubId), StudentNum=current_user.StudentNum) + '?mode=view#nav-generalquestionanswers')

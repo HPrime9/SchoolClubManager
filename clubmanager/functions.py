@@ -30,7 +30,7 @@ def rolespecificquestions(RoleId):
     for row in rolespecificquestions_db:
         if row.Question != None:
             rolespecificquestions.append(row.Question)
-            rolespecificquestions_ids.append(row.QuestionId)
+            rolespecificquestions_ids.append(row.ApplicationQuestionId)
     return rolespecificquestions, rolespecificquestions_ids
 
 def rolespecificquestion_maxlength(RoleId):
@@ -46,7 +46,7 @@ def generalquestions(ClubId):
     generalquestions_ids = []
     for row in db_query:
         generalquestions.append(row.Question)
-        generalquestions_ids.append(row.QuestionId)
+        generalquestions_ids.append(row.ApplicationQuestionId)
     return generalquestions, generalquestions_ids
 
 def generalquestions_maxlength(ClubId):

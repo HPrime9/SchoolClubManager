@@ -29,7 +29,7 @@ def create_update_delete_generalquestions(ClubId = '', QuestionId=''):
     if mode == 'new':
         for i in range(len(GeneralQuestions)):
             if GeneralQuestions[i].strip() != '' and GeneralQuestionsLengthOfResponse[i].strip() != '' and GeneralQuestionOrderNumbers[i].strip() != '':
-                new_general_question = ApplicationQuestions(QuestionId=generate_UUID(), ClubId=str(ClubId), Question=GeneralQuestions[i], LengthOfResponse=GeneralQuestionsLengthOfResponse[i], OrderNumber=GeneralQuestionOrderNumbers[i])
+                new_general_question = ApplicationQuestions(ApplicationQuestionId=generate_UUID(), ClubId=str(ClubId), Question=GeneralQuestions[i], LengthOfResponse=GeneralQuestionsLengthOfResponse[i], OrderNumber=GeneralQuestionOrderNumbers[i])
                 db.session.add(new_general_question)
                 try:
                     db.session.commit()
@@ -49,7 +49,7 @@ def create_update_delete_generalquestions(ClubId = '', QuestionId=''):
     
     # delete the already existing entry in the table if a general question is being deleted
     elif mode == 'delete':
-        question_to_del = ApplicationQuestions.query.filter_by(QuestionId=str(QuestionId)).first()
+        question_to_del = ApplicationQuestions.query.filter_by(ApplicationQuestionId=str(QuestionId)).first()
         db.session.delete(question_to_del)
         try:
             db.session.commit()

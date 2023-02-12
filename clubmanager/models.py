@@ -39,7 +39,7 @@ class ClubStudentMaps(UserMixin, db.Model):
 
 # Create question data tables
 class ApplicationQuestions(UserMixin, db.Model):
-    QuestionId = db.Column(db.String(36), primary_key=True)
+    ApplicationQuestionId = db.Column(db.String(36), primary_key=True)
     ClubId = db.Column(db.String(36), nullable=True)
     RoleId = db.Column(db.String(36), nullable=True)
     OrderNumber = db.Column(db.Integer, nullable=True)
@@ -49,12 +49,12 @@ class ApplicationQuestions(UserMixin, db.Model):
 
 # Create answer data table
 class QuestionAnswers(UserMixin, db.Model):
-    AnswerId = db.Column(db.String(36), primary_key=True)
+    QuestionAnswerId = db.Column(db.String(36), primary_key=True)
     StudentNum = db.Column(db.Integer, nullable=False)
     Grade = db.Column(db.Integer, nullable=False)
     ClubId = db.Column(db.String(36), nullable=True)
     RoleId = db.Column(db.String(36))
-    QuestionId = db.Column(db.String(36))
+    ApplicationQuestionId = db.Column(db.String(36))
     Answer = db.Column(db.String(5000), nullable=True)
     Status = db.Column(db.String(100), nullable=False)
     Date_Answer_Created = db.Column(db.Date, default=datetime.utcnow)
@@ -75,5 +75,17 @@ class Announcements(UserMixin, db.Model):
     Message = db.Column(db.String(2000), nullable=False)
 
 # Create applicants table
-# class Applicants(UserMixin, db.Model):
+# class Applications(UserMixin, db.Model):
+#     ApplicationId = db.Column(db.String(36), primary_key=True)
+#     StudentId = db.Column(db.String(36), nullable=False)
+#     ClubId = db.Column(db.String(36), nullable=False)
+#     RoleId = db.Column(db.String(36), nullable=False)
+#     ApplicationState = db.Column(db.String(100), nullable=False)
+
+
+
+# 	ApplicationState (draft, submitted)
+# 	RoleId (role for which an applicant is selected. Null if applicant is not selected)
+# 	ClubOwnerNotes
+# 	EmailSent? (yes/no) Default value = No. Not Null
 
