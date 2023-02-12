@@ -101,7 +101,7 @@
             <div class="tab-pane fade" id="nav-selectrole">
                 <div class='row'>
                     <h1>Select Role</h1>
-                    <form action='/clubs/{{ ClubId }}/applications/{{  StudentId }}?mode=selectrole' method='POST'>
+                    <form action='/clubs/{{ ClubId }}/applications/{{ StudentId }}?mode=selectrole' method='POST'>
                         {{ form.hidden_tag() }}
                         {% if role_options_descriptions_ids %}
                         <table class='row table table-borderless'>

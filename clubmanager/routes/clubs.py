@@ -56,7 +56,7 @@ def get_club(ClubId = ''):
             checkapplicationstartdate = 'disabled'
             applicationstatetext = 'Applications are closed!'
         if club_to_display:
-            return render_template('clubpage.html', applicationstatetext=applicationstatetext, applicationbttnstate=applicationbttnstate, club_to_display=club_to_display, Announcements=Announcements_var)
+            return render_template('clubpage.html', StudentId=str(current_user.id), applicationstatetext=applicationstatetext, applicationbttnstate=applicationbttnstate, club_to_display=club_to_display, Announcements=Announcements_var)
     else:
         return redirect(url_for('dashboard'))
 

@@ -78,8 +78,8 @@ class Applications(UserMixin, db.Model):
     StudentId = db.Column(db.String(36), nullable=False)
     ClubId = db.Column(db.String(36), nullable=False)
     RoleIdApplyingFor = db.Column(db.String(36), nullable=False)
-    ApplicationState = db.Column(db.String(100), nullable=False) #draft submitted, accepted
+    ApplicationState = db.Column(db.String(100), nullable=True) #draft submitted, accepted
     RoleIdSelectedFor = db.Column(db.String(36), nullable=True)
-    ClubOwnerNotes = db.Column(db.String(500), nullable=False)
+    ClubOwnerNotes = db.Column(db.String(500), nullable=True)
     EmailSent = db.Column(db.String(5), nullable=False)
 

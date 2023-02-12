@@ -25,7 +25,15 @@ def get_application(ClubId, StudentId = ''):
         userClubCatalogue = getUserOwnedClubs(current_user.id)
         return render_template('responseoverview.html', userClubCatalogue=userClubCatalogue, ClubId=ClubId)
     elif mode == 'view' or mode == 'selectrole':
-        if current_user.id == str(StudentId):
+        if Applications.query.filter_by(StudentId=str(StudentId)).first() == None:
+            selectedrole_id = ''
+            selectedrole_str = ''
+        else:
+            selectedrole_id = Applications.query.filter_by(StudentId=str(StudentId)).first().RoleIdApplyingFor
+            selectedrole_str = ClubRoles.query.filter_by(RoleId=str(selectedrole_id)).first()
+            selectedrole_str = selectedrole_str.Role
+
+        if str(current_user.id) == str(StudentId):
             checkapplicationstartdate = Clubs.query.filter_by(ClubId=str(ClubId)).first().AppStartDate
             checkapplicationenddate = Clubs.query.filter_by(ClubId=str(ClubId)).first().AppEndDate
             if datetime.now().date() >= checkapplicationstartdate and datetime.now().date() <= checkapplicationenddate:
@@ -57,7 +65,7 @@ def get_application(ClubId, StudentId = ''):
                         all_rolespecificquestion_answers.append(rolespecificquestion_ans_query.Answer)
 
                 
-                checkifsubmitted = Applications.query.filter_by(StudentId=str(StudentId), ApplicationState='submitted').first()
+                checkifsubmitted = Applications.query.filter_by(ClubId=str(ClubId), StudentId=str(StudentId), ApplicationState='submitted').first()
                 rolespecificquestion_maxlengths = rolespecificquestion_maxlength(selectedrole_id)
                 application_state = ''
                 selectroletabvisibility = ''
@@ -67,35 +75,39 @@ def get_application(ClubId, StudentId = ''):
                     application_state_checked = 'checked'
                     selectroletabvisibility = 'hidden'
 
-                return render_template('application.html', all_rolespecificquestion_answers=all_rolespecificquestion_answers, StudentId=str(StudentId), form=form, selectedrole_str=selectedrole_str, role_options_descriptions_ids=role_options_descriptions_ids, ClubId=str(ClubId), rolespecificquestions_ids=rolespecificquestions_ids, rolespecificquestion_maxlengths=rolespecificquestion_maxlengths, rolespecificquestions_to_display=rolespecificquestions_to_display, length_rolespecificquestions_to_display=length_rolespecificquestions_to_display, SelectedRole=selectedrole_str, all_generalquestion_answers=all_generalquestion_answers, application_state=application_state, generalquestions_ids=generalquestions_ids, generalquestions_maxlengths=generalquestions_maxlengths, generalquestions=generalquestions_to_display, length_general=length_general)
-            else:
-                return redirect(url_for('get_club', ClubId=str(ClubId)) + '?mode=view')
-    #             Applications(UserMixin, db.Model):
-    # ApplicationId = db.Column(db.String(36), primary_key=True)
-    # StudentId = db.Column(db.String(36), nullable=False)
-    # ClubId = db.Column(db.String(36), nullable=False)
-    # RoleIdApplyingFor = db.Column(db.String(36), nullable=False)
-    # ApplicationState = db.Column(db.String(100), nullable=False) #draft submitted, accepted
-    # RoleIdSelectedFor = db.Column(db.String(36), nullable=True)
-    # ClubOwnerNotes = db.Column(db.String(500), nullable=False)
-    # EmailSent = db.Column(db.String(5), nullable=False)
-    else:
-        return 'error in application'
+                return render_template('application.html', application_state_checked=application_state_checked, all_rolespecificquestion_answers=all_rolespecificquestion_answers, StudentId=str(StudentId), form=form, selectedrole_str=selectedrole_str, role_options_descriptions_ids=role_options_descriptions_ids, ClubId=str(ClubId), rolespecificquestions_ids=rolespecificquestions_ids, rolespecificquestion_maxlengths=rolespecificquestion_maxlengths, rolespecificquestions_to_display=rolespecificquestions_to_display, length_rolespecificquestions_to_display=length_rolespecificquestions_to_display, SelectedRole=selectedrole_str, all_generalquestion_answers=all_generalquestion_answers, application_state=application_state, generalquestions_ids=generalquestions_ids, generalquestions_maxlengths=generalquestions_maxlengths, generalquestions=generalquestions_to_display, length_general=length_general)
+    return redirect(url_for('get_club', ClubId=str(ClubId)) + '?mode=view')
+
 
 @app.route('/clubs/<uuid:ClubId>/applications/<uuid:StudentId>', methods=['POST'])
 @login_required
 def save_submit_application(ClubId, StudentId):
     mode = request.args.get('mode')
     global selectedrole_str, selectedrole_id
-    generalquestions_maxlengths = generalquestions_maxlength(ClubId)
+    state_of_application = ''
     if mode == 'save':
         form = ClubApplicationForm()
         general_questions, generalquestions_id = generalquestions(ClubId)
         rolespecificquestions_to_display, rolespecificquestions_id = rolespecificquestions(str(selectedrole_id))
         if request.form.get('SubmitApplication') == 'submitapplication':
-            status = 'submitted'
+            state_of_application = 'submitted'
         else:
-            status = 'draft'
+            state_of_application = 'draft'
+        
+        applicantexists = Applications.query.filter_by(ClubId=str(ClubId), StudentId=str(StudentId)).first()
+        if applicantexists == None:
+            new_application = Applications(ApplicationId=generate_UUID(), StudentId=str(StudentId), ClubId=str(ClubId), RoleIdApplyingFor=str(selectedrole_id), ApplicationState=state_of_application, EmailSent='No')
+            db.session.add(new_application)
+            try:
+                db.session.commit()
+            except:
+                print()
+        else:
+            updApplicationInfo = applicantexists
+            updApplicationInfo.RoleIdApplyingFor = str(selectedrole_id)
+            updApplicationInfo.ApplicationState = state_of_application
+
+
         for i in range(len(general_questions)):
             answer_generalquestion = request.form[str(generalquestions_id[i]) + 'GeneralQuestionAnswers']
             if answer_generalquestion.strip != '':
@@ -104,7 +116,6 @@ def save_submit_application(ClubId, StudentId):
                 rowgeneral = db.session.execute(generalquestiontobeupdated)
                 if rowgeneral and generalquestionupdate:
                     generalquestionupdate.Answer = answer_generalquestion
-                    generalquestionupdate.Status = status
                     try:
                         db.session.commit()
                     except:
@@ -112,7 +123,6 @@ def save_submit_application(ClubId, StudentId):
                 else:
                     new_application_save = QuestionAnswers(QuestionAnswerId=generate_UUID(), StudentId=current_user.id, ClubId=str(ClubId), ApplicationQuestionId=generalquestions_id[i], Answer=answer_generalquestion)
                     db.session.add(new_application_save)
-                    db.session.commit()
                     try:
                         db.session.commit()
                     except:
@@ -126,7 +136,6 @@ def save_submit_application(ClubId, StudentId):
                 rowrolespecfic = db.session.execute(rolespecificquestiontobeupdated)
                 if rowrolespecfic and rolespecificquestionupdate:
                     rolespecificquestionupdate.Answer = answer_rolespecificquestion
-                    rolespecificquestionupdate.Status = status
                     try:
                         db.session.commit()
                     except:
@@ -141,7 +150,25 @@ def save_submit_application(ClubId, StudentId):
         selectedrole_id = form.SelectRole.data
         selectedrole_str = ClubRoles.query.filter_by(RoleId=str(selectedrole_id)).first()
         selectedrole_str = selectedrole_str.Role
-        return redirect(url_for('get_application', ClubId=str(ClubId), StudentId=current_user.id) + '?mode=view#nav-rolespecificquestionsanswers')
+        if Applications.query.filter_by(StudentId=str(StudentId)).first() == None:
+            new_application = Applications(ApplicationId=generate_UUID(), StudentId=str(StudentId), ClubId=str(ClubId), RoleIdApplyingFor=str(selectedrole_id), EmailSent='No')
+            db.session.add(new_application)
+            try:
+                db.session.commit()
+            except:
+                return redirect(url_for('get_application', ClubId=str(ClubId), StudentId=current_user.id) + '?mode=view#nav-generalquestionanswers')
+        else:
+            print(67)
+            updApplicationInfo = Applications.query.filter_by(ClubId=str(ClubId), StudentId=str(StudentId)).first()
+            print(selectedrole_id)
+            print(updApplicationInfo.RoleIdApplyingFor)
+            updApplicationInfo.RoleIdApplyingFor = str(selectedrole_id)
+            try:
+                db.session.commit()
+            except:
+                return redirect(url_for('get_application', ClubId=str(ClubId), StudentId=str(current_user.id)) + '?mode=view#nav-rolespecificquestionsanswers')
+        return redirect(url_for('get_application', ClubId=str(ClubId), StudentId=str(current_user.id)) + '?mode=view#nav-rolespecificquestionsanswers')
+    return redirect(url_for('get_club', ClubId=str(ClubId)) + '?mode=view')
     
 # Global variables
 selectedrole_id = ''
