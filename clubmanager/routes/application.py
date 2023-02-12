@@ -47,6 +47,16 @@ def get_application(ClubId, StudentId = ''):
                     else:
                         all_generalquestion_answers.append(general_question_ans_query.Answer)
                 
+                all_rolespecificquestion_answers = []
+                for row in rolespecificquestions_to_display_and_ids:
+                    rolespecificquestion_id = str(row.ApplicationQuestionId)
+                    rolespecificquestion_ans_query = QuestionAnswers.query.filter_by(StudentId=str(StudentId), ApplicationQuestionId=rolespecificquestion_id).first()
+                    if rolespecificquestion_ans_query == None:
+                        all_rolespecificquestion_answers.append('')
+                    else:
+                        all_rolespecificquestion_answers.append(rolespecificquestion_ans_query.Answer)
+
+                
                 checkifsubmitted = Applications.query.filter_by(StudentId=str(StudentId), ApplicationState='submitted').first()
                 rolespecificquestion_maxlengths = rolespecificquestion_maxlength(selectedrole_id)
                 application_state = ''
@@ -56,8 +66,8 @@ def get_application(ClubId, StudentId = ''):
                     application_state = 'disabled'
                     application_state_checked = 'checked'
                     selectroletabvisibility = 'hidden'
-                all_rolespecificquestion_answers = 0
-                return render_template('application.html', StudentId=str(StudentId), form=form, selectedrole_str=selectedrole_str, role_options_descriptions_ids=role_options_descriptions_ids, ClubId=str(ClubId), all_rolespecificquestion_answers=all_rolespecificquestion_answers, rolespecificquestions_ids=rolespecificquestions_ids, rolespecificquestion_maxlengths=rolespecificquestion_maxlengths, rolespecificquestions_to_display=rolespecificquestions_to_display, length_rolespecificquestions_to_display=length_rolespecificquestions_to_display, SelectedRole=selectedrole_str, all_generalquestion_answers=all_generalquestion_answers, application_state=application_state, generalquestions_ids=generalquestions_ids, generalquestions_maxlengths=generalquestions_maxlengths, generalquestions=generalquestions_to_display, length_general=length_general)
+
+                return render_template('application.html', all_rolespecificquestion_answers=all_rolespecificquestion_answers, StudentId=str(StudentId), form=form, selectedrole_str=selectedrole_str, role_options_descriptions_ids=role_options_descriptions_ids, ClubId=str(ClubId), rolespecificquestions_ids=rolespecificquestions_ids, rolespecificquestion_maxlengths=rolespecificquestion_maxlengths, rolespecificquestions_to_display=rolespecificquestions_to_display, length_rolespecificquestions_to_display=length_rolespecificquestions_to_display, SelectedRole=selectedrole_str, all_generalquestion_answers=all_generalquestion_answers, application_state=application_state, generalquestions_ids=generalquestions_ids, generalquestions_maxlengths=generalquestions_maxlengths, generalquestions=generalquestions_to_display, length_general=length_general)
             else:
                 return redirect(url_for('get_club', ClubId=str(ClubId)) + '?mode=view')
     #             Applications(UserMixin, db.Model):
@@ -100,7 +110,7 @@ def save_submit_application(ClubId, StudentId):
                     except:
                         return redirect(url_for('get_application', ClubId=str(ClubId), StudentId=current_user.id) + '?mode=view#nav-generalquestionanswers')
                 else:
-                    new_application_save = QuestionAnswers(QuestionAnswerId=generate_UUID(), StudentId=current_user.id, ClubId=str(ClubId), Grade=current_user.Grade, Status=status, ApplicationQuestionId=generalquestions_id[i], Answer=answer_generalquestion)
+                    new_application_save = QuestionAnswers(QuestionAnswerId=generate_UUID(), StudentId=current_user.id, ClubId=str(ClubId), ApplicationQuestionId=generalquestions_id[i], Answer=answer_generalquestion)
                     db.session.add(new_application_save)
                     db.session.commit()
                     try:
@@ -122,7 +132,7 @@ def save_submit_application(ClubId, StudentId):
                     except:
                         return redirect(url_for('get_application', ClubId=str(ClubId), StudentId=current_user.id) + '?mode=view#nav-generalquestionanswers')
                 else:
-                    new_application_save = QuestionAnswers(QuestionAnswerId=generate_UUID(), StudentId=current_user.id, ClubId=str(ClubId), Grade=current_user.Grade, Status=status, RoleId=str(selectedrole_id), ApplicationQuestionId=rolespecificquestions_id[i], Answer=answer_rolespecificquestion)
+                    new_application_save = QuestionAnswers(QuestionAnswerId=generate_UUID(), StudentId=current_user.id, ClubId=str(ClubId), RoleId=str(selectedrole_id), ApplicationQuestionId=rolespecificquestions_id[i], Answer=answer_rolespecificquestion)
                     db.session.add(new_application_save)
                     db.session.commit()
         return redirect(url_for('get_application', ClubId=str(ClubId), StudentId=current_user.id) + '?mode=view#nav-generalquestionanswers')
