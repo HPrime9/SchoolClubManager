@@ -75,8 +75,8 @@
                 {% endif %}
 
                 <li class='nav-item'>
-                    <a class="nav-link" id="nav-announcements-tab" data-bs-toggle="tab"
-                        data-bs-target="#nav-announcements" href='#nav-announcements'>Announcements</a>
+                    <a href='#nav-announcements'><button class="nav-link" id="nav-announcements-tab" data-bs-toggle="tab"
+                        data-bs-target="#nav-announcements" >Announcements</button></a>
                 </li>
             </ul>
         </nav>
@@ -551,7 +551,7 @@
                                         </div>
                                         <div class="modal-footer">
                                             <form method='POST'
-                                                action='/clubs/{{ ClubId }}/announcements/{{ Announcements.AnnouncementId }}?mode=delete'>
+                                                action='/clubs/{{ ClubId }}/announcements/{{ announcement.AnnouncementId }}?mode=delete'>
                                                 <button type="submit" class="btn btn-danger">
                                                     Delete
                                                 </button>

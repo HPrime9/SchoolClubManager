@@ -55,6 +55,5 @@ def create_update_delete_generalquestions(ClubId = '', QuestionId=''):
             db.session.commit()
         except:
             return redirect(url_for('get_club', ClubId=str(ClubId)) + '?mode=update#nav-generalquestions')
-    
     # load the same page again
     return redirect(url_for('get_club', ClubId=str(ClubId)) + '?mode=update#nav-generalquestions')
