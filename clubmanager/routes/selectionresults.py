@@ -1,19 +1,17 @@
 # Import libraries
-from flask import render_template, request, url_for, redirect
-from flask_wtf import FlaskForm
-from wtforms import StringField
-from wtforms.validators import InputRequired, Length
-from flask_login import login_required, current_user
-from sqlalchemy import select
-from datetime import datetime
+from flask import request, url_for, redirect
+from flask_login import login_required
+import os
+from sendgrid import SendGridAPIClient
+from sendgrid.helpers.mail import Mail
 
 # import custom models
 from clubmanager import app, db
-from clubmanager.models import Applications
-from clubmanager.functions import generate_UUID, uniqueRoles, rolespecificquestions, generalquestions, getUserOwnedClubs, generalquestions_maxlength, rolespecificquestion_maxlength
+from clubmanager.models import Applications, ClubRoles, Clubs
 from clubmanager.flaskforms import ApplicationSelectForm
 
 @app.route('/clubs/<uuid:ClubId>/selectionresults', methods=['POST'])
+@login_required
 def sendresults(ClubId):
     form = ApplicationSelectForm()
     mode = request.args.get('mode')
@@ -22,7 +20,8 @@ def sendresults(ClubId):
         AllApplicationIds = request.form.getlist('ApplicationId')
         RoleIdsSelectedFor = request.form.getlist('RoleIdSelectedFor')
         AllClubOwnerNotes = request.form.getlist('ClubOwnerNotes')
-        print(AllClubOwnerNotes)
+        AllApplicantEmails = request.form.getlist('ApplicantEmail')
+        print(AllApplicantEmails)
         for i in range(len(AllApplicationIds)):
             unique_applicant = Applications.query.filter_by(ApplicationId=str(AllApplicationIds[i])).first()
             unique_applicant.ClubOwnerNotes = AllClubOwnerNotes[i]
@@ -32,23 +31,20 @@ def sendresults(ClubId):
             else:
                 unique_applicant.RoleIdSelectedFor = str(RoleIdsSelectedFor[i])
                 if unique_applicant.EmailSent == 'No':
-                    sendemaillist.append(str(AllApplicationIds[i]))
+                    sendemaillist.append(AllApplicantEmails[i])
                     unique_applicant.EmailSent = 'Yes'
             try:
                 db.session.commit()
             except:
                 return redirect(url_for('get_application', ClubId=str(ClubId)) + '?mode=viewall')
-        print(sendemaillist)
+        # Set email message for users that are in the club
+        for i in range(len(sendemaillist)):
+            RoleNameSelectedFor = ClubRoles.query.filter_by(RoleId=str(RoleIdsSelectedFor[i])).first().Role
+            ClubNameInEmail = Clubs.query.filter_by(ClubId=str(ClubId)).first().ClubName
+            congratulations_message = Mail(from_email='hetav.j.patel@gmail.com', to_emails='hetav.j.patel@gmail.com', subject='Congratulations you have been selected as a ' + RoleNameSelectedFor + ' in ' + ClubNameInEmail + '.', plain_text_content='Future Link here', html_content='<strong>CONGRATS!!</strong>' )
+            try:
+                sg = SendGridAPIClient(os.environ['SENDGRID_API_KEY'])
+                response = sg.send(congratulations_message)
+            except:
+                return redirect(url_for('get_application', ClubId=str(ClubId)) + '?mode=viewall')
         return redirect(url_for('get_application', ClubId=str(ClubId)) + '?mode=viewall')
-
-
-
-                
-# # RoleIdApplyingFor = db.Column(db.String(36), nullable=False)
-# # ApplicationState = db.Column(db.String(100), nullable=True) #draft submitted, accepted
-# # RoleIdSelectedFor = db.Column(db.String(36), nullable=True)
-# # ClubOwnerNotes = db.Column(db.String(500), nullable=True)
-# # EmailSent = db.Column(db.String(5), nullable=False)
-#         return stuff 
-#     else:
-#         return 'wrong mode'

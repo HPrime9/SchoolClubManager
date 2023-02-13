@@ -76,15 +76,21 @@
                         {% for row in data %}
                         <tr>
                             <input type='hidden' value='{{ row.ApplicationId }}' name='ApplicationId'>
+                            <input type='hidden' value='{{ row.Email }}' name='ApplicantEmail'>
                             <td>{{ row.FirstName }} {{ row.LastName }}</td>
                             <td>{{ row.StudentNum }}</td>
                             <td>{{ row.Grade }}</td>
                             <td><a href='/clubs/{{ ClubId }}/applications/{{ row.id }}?mode=view' target='_blank'>Full
                                     Application</a></td>
-                            <td><input type='text' class='form-control' name='ClubOwnerNotes' value='{{ row.ClubOwnerNotes }}'>
+                            <td>
+                                {% if row.ClubOwnerNotes != None %}
+                                <input type='text' class='form-control' name='ClubOwnerNotes' value='{{ row.ClubOwnerNotes }}'>
+                                {% else %}
+                                <input type='text' class='form-control' name='ClubOwnerNotes'>
+                                {% endif %}
                             </td>
                             <td><select name='RoleIdSelectedFor' class="form-select">
-                            {% if row.RoleIdSelectedFor != 'None' %}
+                            {% if row.RoleIdSelectedFor %}
                             <option value='None'>None</option>
                             <option value='{{ row.RoleIdApplyingFor }}' selected>{{ row.Role }}</option>
                             {% else %}

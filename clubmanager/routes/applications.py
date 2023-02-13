@@ -34,12 +34,12 @@ def get_application(ClubId, StudentId = ''):
         showsendresultsbttn = True
 
         stmt = select(Applications.ApplicationId, Applications.RoleIdApplyingFor, Applications.RoleIdSelectedFor, Applications.EmailSent, Applications.ClubOwnerNotes, Students.id, Students.FirstName, \
-            Students.LastName, Students.StudentNum, Students.Grade, \
+            Students.LastName, Students.StudentNum, Students.Email, Students.Grade, \
             ClubRoles.Role)\
                 .select_from(Applications)\
                 .join(Students, Applications.StudentId == Students.id)\
                 .join(ClubRoles, Applications.RoleIdApplyingFor == ClubRoles.RoleId) \
-                .where(Applications.ApplicationState == 'submitted')
+                .where(Applications.ApplicationState == 'submitted', Applications.ClubId == str(ClubId))
         data = db.session.execute(stmt)
         ClubName_to_display = Clubs.query.filter_by(ClubId=str(ClubId)).first().ClubName
         return render_template('responseoverview.html', ClubName_to_display=ClubName_to_display, data=data, showsendresultsbttn=showsendresultsbttn, form=form, userClubCatalogue=userClubCatalogue, ClubId=ClubId)

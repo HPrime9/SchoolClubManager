@@ -57,3 +57,4 @@ class ApplicationSelectForm(FlaskForm):
     ApplicationId = HiddenField('Application Id', validators=[InputRequired(), Length(max=36)])
     ClubOwnerNotes = TextAreaField('Club Owner Notes', validators=[Length(max=100)])
     RoleIdSelectedFor = StringField('Role Id', validators=[InputRequired(), Length(max=36)])
+    ApplicantEmail = HiddenField('Applicant Email', validators=[InputRequired(), Length(max=75)])
