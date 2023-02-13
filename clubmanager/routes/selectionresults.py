@@ -42,9 +42,9 @@ def sendresults(ClubId):
             ClubNameInEmail = Clubs.query.filter_by(ClubId=str(ClubId)).first().ClubName
             ClubEmail_sender = Clubs.query.filter_by(ClubId=str(ClubId)).first().ClubContactEmail
             congratulations_message = Mail(from_email=ClubEmail_sender, to_emails=sendemaillist[i], subject='Congratulations you have been selected as a ' + RoleNameSelectedFor + ' in ' + ClubNameInEmail + '.', plain_text_content='Future Link here', html_content='<strong>CONGRATS!!</strong>' )
-            # try:
-            #     sg = SendGridAPIClient(os.environ['SENDGRID_API_KEY'])
-            #     response = sg.send(congratulations_message)
-            # except:
-            #     return redirect(url_for('get_application', ClubId=str(ClubId)) + '?mode=viewall')
+            try:
+                sg = SendGridAPIClient(os.environ['SENDGRID_API_KEY'])
+                response = sg.send(congratulations_message)
+            except:
+                return redirect(url_for('get_application', ClubId=str(ClubId)) + '?mode=viewall')
         return redirect(url_for('get_application', ClubId=str(ClubId)) + '?mode=viewall')
