@@ -47,10 +47,10 @@
         </div>
     </header>
     <br><br><br><br><br>
-    <main class='container'>
+    <main style='background-color: aliceblue;' class='container'>
         <div class='row'>
             {% if data %}
-            <h2 style='text-align:center;'>{{ ClubName_to_display }}</h2>
+            <h2 style='text-align:center;'>Applications for {{ ClubName_to_display }}</h2>
             {% endif %}
             <form method='POST' action='/clubs/{{ ClubId }}/selectionresults?mode=sendall'>
                 {{ form.csrf_token }}
@@ -84,20 +84,21 @@
                                     Application</a></td>
                             <td>
                                 {% if row.ClubOwnerNotes != None %}
-                                <input type='text' class='form-control' name='ClubOwnerNotes' value='{{ row.ClubOwnerNotes }}'>
+                                <input type='text' class='form-control' name='ClubOwnerNotes'
+                                    value='{{ row.ClubOwnerNotes }}'>
                                 {% else %}
                                 <input type='text' class='form-control' name='ClubOwnerNotes'>
                                 {% endif %}
                             </td>
                             <td><select name='RoleIdSelectedFor' class="form-select">
-                            {% if row.EmailSent == 'Yes' %}
-                            <option value='None'>None</option>
-                            <option value='{{ row.RoleIdApplyingFor }}' selected>{{ row.Role }}</option>
-                            {% else %}
-                            <option value='None' selected>None</option>
-                            <option value='{{ row.RoleIdApplyingFor }}'>{{ row.Role }}</option>
-                            {% endif %}
-                            </select></td>
+                                    {% if row.EmailSent == 'Yes' %}
+                                    <option value='None'>None</option>
+                                    <option value='{{ row.RoleIdApplyingFor }}' selected>{{ row.Role }}</option>
+                                    {% else %}
+                                    <option value='None' selected>None</option>
+                                    <option value='{{ row.RoleIdApplyingFor }}'>{{ row.Role }}</option>
+                                    {% endif %}
+                                </select></td>
                             <td>{{ row.EmailSent }}</td>
                         </tr>
                         {% endfor %}

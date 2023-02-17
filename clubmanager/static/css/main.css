@@ -90,3 +90,7 @@ a {
     border: 2px solid;
     margin: 12px;
 }
+
+.inline {
+    display: inline-block;
+}

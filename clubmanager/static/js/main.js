@@ -60,9 +60,8 @@ function AddGeneralQuestion() {
     `)
 }
 function OnAddRoleSpecificQuestion(button) {
-    z = button.parentElement.parentElement.parentElement.parentElement.children
-    x = z[2].children
-    y = x[0]
+    z = button.parentElement.children
+    y = z[5]
     y.insertAdjacentHTML('afterbegin', `
     <div class='row mb-2'>
         <div class='col-4'>

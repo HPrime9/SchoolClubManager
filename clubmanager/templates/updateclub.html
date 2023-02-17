@@ -9,7 +9,7 @@
 
 {% block body %}
 
-<body class='container form'>
+<body class='container form' style='background-color: aliceblue;'>
     <header id='header' class='fixed-top d-flex align-items-center'>
         <div class="container d-flex align-items-center justify-content-between">
             <h2><a href='/'>School Club Manager</a></h2>
@@ -65,8 +65,9 @@
                         aria-expanded="false">Create Role Specific Questions</a>
                     <ul class="dropdown-menu">
                         {% for i in range(length) %}
-                        <a href='#nav-rolespecificquestions{{ RoleId[i] }}'><button class="nav-link dropdown-item" id="nav-rolespecificquestions{{ RoleId[i] }}-tab"
-                                data-bs-toggle="tab" data-bs-target="#nav-rolespecificquestions{{ RoleId[i] }}" type="button">{{
+                        <a href='#nav-rolespecificquestions{{ RoleId[i] }}'><button class="nav-link dropdown-item"
+                                id="nav-rolespecificquestions{{ RoleId[i] }}-tab" data-bs-toggle="tab"
+                                data-bs-target="#nav-rolespecificquestions{{ RoleId[i] }}" type="button">{{
                                 roles[i] }}</button></a>
                         {% endfor %}
                     </ul>
@@ -119,10 +120,11 @@
 
 
             <div class="tab-pane fade" id="nav-generalquestions" role="tabpanel" tabindex="0">
+                <h1>General Questions</h1>
                 <br>
                 {% if questions_to_display %}
-                <div class='row table table-striped'>
-                    <table>
+                <div>
+                    <table class='table table-striped'>
                         <thead>
                             <tr>
                                 <th>Question Order</th>
@@ -155,7 +157,8 @@
                                         data-bs-target="#exampleModalDelete{{ question.ApplicationQuestionId }}"
                                         class='btn btn-danger'>Delete</button>
                                     <aside>
-                                        <div class="modal fade" id="staticBackdropUpdate{{ question.ApplicationQuestionId }}"
+                                        <div class="modal fade"
+                                            id="staticBackdropUpdate{{ question.ApplicationQuestionId }}"
                                             data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
                                             aria-labelledby="staticBackdropLabel" aria-hidden="true">
                                             <div style='background-color: rgb(77, 171, 169)' class="modal-dialog">
@@ -206,8 +209,9 @@
 
 
 
-                                        <div class="modal fade" id="exampleModalDelete{{ question.ApplicationQuestionId }}"
-                                            tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                        <div class="modal fade"
+                                            id="exampleModalDelete{{ question.ApplicationQuestionId }}" tabindex="-1"
+                                            aria-labelledby="exampleModalLabel" aria-hidden="true">
                                             <div class="modal-dialog">
                                                 <div class="modal-content">
                                                     <div class="modal-header">
@@ -240,30 +244,24 @@
                     </table>
                 </div>
                 {% endif %}
-                <div class='row'>
-                    <div class='col-2'>
-                        <label class='exampleFormControlInput1'>General
-                            Questions</label>
-                    </div>
-                    <div class='col-10'>
-                        <button id='addgeneralquestion' class='btn btn-success' type='button'>Add general
-                            question</button>
-                    </div>
-                </div>
                 <form action='/clubs/{{ ClubId }}/generalquestions?mode=new' method='POST'>
+                    <button id='addgeneralquestion' class='inline btn btn-success' type='button'>Add General
+                        Question</button>
+                    <input class='inline btn btn-primary' type='submit' value='Save'>
+                    <br><br><br>
                     <div class='row' id='generalquestions'>
                     </div>
-                    <input class='btn btn-primary' type='submit' value='Save'>
                 </form>
             </div>
 
 
 
             <div class="tab-pane fade" id="nav-roles">
+                <h1>Roles</h1>
                 <br>
                 {% if roles %}
-                <div class='row table table-striped'>
-                    <table>
+                <div>
+                    <table class='table table-striped'>
                         <thead>
                             <tr>
                                 <th>Role</th>
@@ -359,17 +357,11 @@
                     </table>
                 </div>
                 {% endif %}
-                <div class='row'>
-                    <div class='col-2'>
-                        <label class='exampleFormControlInput1'>Add Roles</label>
-                    </div>
-                    <div class='col-10'>
-                        <button id='addrole' class='btn btn-success' type='button'>Add role</button>
-                    </div>
-                </div>
                 <form action='/clubs/{{ ClubId }}/roles?mode=new' method='POST'>
+                    <button id='addrole' class='inline btn btn-success' type='button'>Add Role</button>
+                    <input class='inline btn btn-primary' type='submit' value='Save'>
+                    <br><br><br>
                     <div class='mb-3' id='roles'></div>
-                    <input class='btn btn-primary' type='submit' value='Save'>
                 </form>
             </div>
 
@@ -377,22 +369,11 @@
 
             {% for i in range(length) %}
             <div class="tab-pane fade" id="nav-rolespecificquestions{{ RoleId[i] }}">
-                <div>
-                    <div class='row'>
-                        <div class='col-2'>
-                            <label class='exampleFormControlInput1'>Create your role specific questions</label>
-                        </div>
-                        <div class='col-10'>
-                            <button onclick='OnAddRoleSpecificQuestion(this)' class='btn btn-success' type='button'>Add
-                                question</button>
-                        </div>
-                    </div>
-                    <br>
-                </div>
+                <h1>Role Specific Questions</h1>
                 {% if all_role_specific_questions_to_display[i] != None %}
                 {% set role_specific_questions_to_display = all_role_specific_questions_to_display[i] %}
-                <div class='row table table-striped'>
-                    <table>
+                <div>
+                    <table class='table table-striped'>
                         <thead>
                             <tr>
                                 <th>Role Specific Question Order</th>
@@ -421,7 +402,8 @@
                                     <button class='btn btn-danger' type="button" data-bs-toggle="modal"
                                         data-bs-target="#exampleModalDelete{{ question.ApplicationQuestionId }}">Delete</button>
                                     <aside>
-                                        <div class="modal fade" id="staticBackdropUpdate{{ question.ApplicationQuestionId }}"
+                                        <div class="modal fade"
+                                            id="staticBackdropUpdate{{ question.ApplicationQuestionId }}"
                                             data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
                                             aria-labelledby="staticBackdropLabel" aria-hidden="true">
                                             <div style='background-color: rgb(77, 171, 169)' class="modal-dialog">
@@ -469,8 +451,9 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="modal fade" id="exampleModalDelete{{ question.ApplicationQuestionId }}"
-                                            tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                        <div class="modal fade"
+                                            id="exampleModalDelete{{ question.ApplicationQuestionId }}" tabindex="-1"
+                                            aria-labelledby="exampleModalLabel" aria-hidden="true">
                                             <div class="modal-dialog">
                                                 <div class="modal-content">
                                                     <div class="modal-header">
@@ -503,8 +486,11 @@
                 </div>
                 {% endif %}
                 <form action='/clubs/{{ ClubId }}/roles/{{ RoleId[i] }}/rolespecificquestions?mode=new' method='POST'>
-                    <div class='row' id='insertrolespecificquestionshere'></div>
+                    <button onclick='OnAddRoleSpecificQuestion(this)' class='btn btn-success' type='button'>Add Role Specific Question</button>
                     <input class='btn btn-primary' type='submit' value='Save'>
+                    <br><br><br>
+                    <div class='row' id='insertrolespecificquestionshere'>
+                    </div>
                 </form>
             </div>
             {% endfor %}
@@ -512,7 +498,7 @@
 
             <div class="tab-pane fade" id="nav-announcements">
                 <div class='row'>
-                    <h1 class='text-dark-emphasis'>Announce</h1>
+                    <h1 style='color: black;'>Announce</h1>
                 </div>
                 <form action='/clubs/{{ ClubId }}/announcements?mode=new' method='POST'>
                     <div class='row mb-3'>
