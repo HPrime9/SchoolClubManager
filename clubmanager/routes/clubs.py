@@ -32,7 +32,11 @@ def get_club(ClubId = ''):
             all_role_specific_questions_to_display.append(db_query_application_questions)
         length = len(roles)
         updClubInfo = Clubs.query.get_or_404(str(ClubId))  
-        questions_to_display = ApplicationQuestions.query.filter(ApplicationQuestions.ClubId==str(ClubId)) 
+        questions_to_display = ApplicationQuestions.query.filter(ApplicationQuestions.ClubId==str(ClubId), ApplicationQuestions.RoleId==None).all()
+        if questions_to_display:
+            print(True)
+        else:
+            print(False)
         Announcements_var = Announcements.query.filter(Announcements.ClubId==str(ClubId)).all() 
         return render_template('updateclub.html', formAnnouncement=formAnnouncement, formCreateGeneralQuestions=formCreateGeneralQuestions, formClubCreationForm=formClubCreationForm, RoleId=RoleId, ClubId=str(ClubId), length=length, roles=roles, \
             role_descriptions=role_descriptions, errors_in_clubcreation=errors_in_clubcreation, all_role_specific_questions_to_display=all_role_specific_questions_to_display, Announcements=Announcements_var, updClubInfo=updClubInfo,questions_to_display=questions_to_display)

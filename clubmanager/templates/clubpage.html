@@ -9,7 +9,7 @@
 
 {% block body %}
 
-<body id='top' class='container-fluid' style='background-color: aliceblue;'>
+<body id='top' class='container-fluid' style='background-color: aliceblue; color:#EDF7F6'>
     <div class='row'>
         <header id='header' class='fixed-top d-flex align-items-center'>
             <div class="container d-flex align-items-center justify-content-between">
@@ -40,100 +40,88 @@
             <div class="n-flex flex-column">
                 <div class='profile'>
                     <br><br><br>
-                    <h1 class='text-light'>Page Navigation</h1>
+                    <h1 class='text-light'>Important Dates</h1>
+                    <nav id='navbar2' class="nav-menu navbar2">
+                        <ul>
+                            <a class='nav-link2 scrollto'>Application Start Date: {{ club_to_display.AppStartDate }}</a>
+                            <a class='nav-link2 scrollto'>Application Due Date: {{ club_to_display.AppEndDate }}</a>
+                        </ul>
+                    </nav>
                 </div>
-                <nav id='navbar2' class="nav-menu navbar2">
-                    <ul>
-                        <a class='nav-link2 scrollto' href='#Top'>Top</a>
-                        <a class='nav-link2 scrollto' href='#Announcements'>Announcements</a>
-                        <a class='nav-link2 scrollto' href='#Application'>Application</a>
-                        <a class='nav-link2 scrollto' href='#Contact'>Contact</a>
-                    </ul>
-                </nav>
+                <br><br><br><br><br>
+                <div class='profile'>
+                    <br><br><br>
+                    <h1 class='text-light'>Contact</h1>
+                    <nav id='navbar2' class="nav-menu navbar2">
+                        <ul>
+                            <a class='nav-link2 scrollto'>Email: {{ club_to_display.ClubContactEmail }}</a>
+                        </ul>
+                    </nav>
+                </div>
             </div>
         </header>
     </div>
     <main class='container' id='Top'>
         <br><br>
         <div class='row'>
+            <div class='col'></div>
+            <div class='col'></div>
             <div class='col'>
-                <h1 id='clubname' style='text-align:center; margin: 80px auto;'>{{ club_to_display.ClubName }}</h1>
+                <h1 id='clubname' style='margin: 80px auto;'>{{ club_to_display.ClubName }}</h1>
             </div>
+            <div class='col'></div>
         </div>
-        <div class='container'>
-            <div class='row'>
-                <div class='col'></div>
-                <div class='col-5'>
-                    <h2>Description</h2>
-                    <p>{{ club_to_display.ClubDescription }}</p>
-                </div>
-                <div class='col'></div>
 
-                <div class='col'>
-                    <h5>Application Start Date</h5>
-                    <p>{{ club_to_display.AppStartDate }}</p>
-                    <h5>Application End Date</h5>
-                    <p>{{ club_to_display.AppEndDate }}</p>
+
+
+
+        <div class="container text-center">
+            <div class="row">
+                <div class="col-6 col-md-1">
+                </div>
+                <div class="col-md-6">
+                    <div class='rounded-4 description'>
+                        <h2>Description</h2>
+                        <p>{{ club_to_display.ClubDescription }}</p>
+                    </div>
+                </div>
+                <div class="col-6 col-md-5">
                 </div>
             </div>
-            <div class='container'>
-                <div class='row'>
-                    <div class='col'></div>
-                    <div class='col'></div>
-                    <div class='col'></div>
-                    <div class='col'></div>
+            <br><br><br><br><br><br><br><br><br>
+            <div class="row">
+                <div class="col-6 col-md-1">
                 </div>
-                <br><br>
-                <div class='row'>
-                    <div class='col'></div>
-                    <div class='col'></div>
-                    <div class='col'></div>
-                    <div class='col-9' id='Announcements'>
-                        <div class='announcebackground'>
-                            {% if Announcements %}
-                            <div id='annoucementarea'>
-                                {% for announcement in Announcements %}
-                                <div
-                                    class='p-3 bg-info bg-opacity-10 border border-info border-start-0 rounded-end border rounded-pill'>
-                                    <h1>{{ announcement.Header }}</h1>
-                                    <p>{{ announcement.Message }}</p>
-                                </div>
-                                {% endfor %}
-
-                            </div>
-                            {% else %}
-                            {% endif %}
-                        </div>
-                    </div>
-                    <div class='col'></div>
-                </div>
-                <br><br><br>
-                <div class='row'>
-                    <div class='col'></div>
-                    <div class='col-3'>
+                <div class="col-md-6">
+                    <div class='rounded-4 description'>
                         <h2 id='Application'>Application</h2>
                         <p class='applicationinline'>{{ applicationstatetext }}</p><button
-                            class='applicationinline btn btn-primary' {{applicationbttnstate}}><a style='color:rgb(255, 255, 255);'
+                            class='applicationinline btn btn-primary' {{applicationbttnstate}}><a
+                                style='color:rgb(255, 255, 255);'
                                 href='/clubs/{{ club_to_display.ClubId }}/applications/{{ StudentId }}?mode=view'>Click
                                 to
                                 Apply</a></button>
                     </div>
-                    <div class='col'></div>
-                    <div class='col'></div>
-                    <div class='col'></div>
                 </div>
-                <br><br>
-                <div class='row'>
-                    <div class='col'></div>
-                    <div class='col-3'>
-                        <h4 id='Contact'>Contact</h4>
-                        <p>{{ club_to_display.ClubContactEmail }}</p>
-                    </div>
-                    <div class='col'></div>
-                    <div class='col'></div>
-                    <div class='col'></div>
+                <div class="col-6 col-md-5">
                 </div>
             </div>
+        </div>
+        {% if Announcements %}
+        <div class='container' id='announceposition'>
+            <!-- <h2 style='position:relative ;left:13rem;background-color: #78BCC4;width: 15rem;'>Announcements</h2> -->
+            <div class='announcebackground'>
+                {% for announcement in Announcements %}
+                <div
+                    class='p-3 bg-opacity-10 rounded-end rounded-pill' style='background-color:#8AC8FF;border:1px solid black;'>
+                    <h1>{{ announcement.Header }}</h1>
+                    <p>{{ announcement.Message }}</p>
+                </div>
+                <br>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
     </main>
 </body>
 {% endblock %}

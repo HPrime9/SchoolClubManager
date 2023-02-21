@@ -66,7 +66,41 @@ a {
 
 .announcebackground {
     overflow: auto;
-    height: 20rem;
+    height: 32rem;
+    width: 33rem;
+}
+
+#announceposition {
+    position: relative;
+    bottom: 34rem;
+    left: 835px;
+}
+
+/* Designing for scroll-bar */
+::-webkit-scrollbar {
+    width: 5px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+    background: gainsboro;
+    border-radius: 5px;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: black;
+    border-radius: 5px;
+}
+
+
+.description {
+    border: 2px groove black;
+    box-shadow: 10px 10px #A3D4FF;
+    opacity: 50;
+    color: #EDF7F6;
+    background-color: #8AC8FF;
+    height: 10rem;
 }
 
 .applicationinline {

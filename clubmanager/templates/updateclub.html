@@ -370,7 +370,7 @@
             {% for i in range(length) %}
             <div class="tab-pane fade" id="nav-rolespecificquestions{{ RoleId[i] }}">
                 <h1>Role Specific Questions</h1>
-                {% if all_role_specific_questions_to_display[i] != None %}
+                {% if all_role_specific_questions_to_display[i] %}
                 {% set role_specific_questions_to_display = all_role_specific_questions_to_display[i] %}
                 <div>
                     <table class='table table-striped'>

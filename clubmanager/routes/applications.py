@@ -44,11 +44,11 @@ def get_application(ClubId, StudentId = ''):
         ClubName_to_display = Clubs.query.filter_by(ClubId=str(ClubId)).first().ClubName
         return render_template('responseoverview.html', ClubName_to_display=ClubName_to_display, data=data, showsendresultsbttn=showsendresultsbttn, form=form, userClubCatalogue=userClubCatalogue, ClubId=ClubId)
     elif mode == 'view' or mode == 'selectrole':
-        if Applications.query.filter_by(StudentId=str(StudentId)).first() == None:
+        if Applications.query.filter_by(ClubId=str(ClubId), StudentId=str(StudentId)).first() == None:
             selectedrole_id = ''
             selectedrole_str = ''
         else:
-            selectedrole_id = Applications.query.filter_by(StudentId=str(StudentId)).first().RoleIdApplyingFor
+            selectedrole_id = Applications.query.filter_by(ClubId=str(ClubId), StudentId=str(StudentId)).first().RoleIdApplyingFor
             selectedrole_str = ClubRoles.query.filter_by(RoleId=str(selectedrole_id)).first()
             selectedrole_str = selectedrole_str.Role
 
@@ -178,7 +178,7 @@ def save_submit_application(ClubId, StudentId):
         selectedrole_id = form.SelectRole.data
         selectedrole_str = ClubRoles.query.filter_by(RoleId=str(selectedrole_id)).first()
         selectedrole_str = selectedrole_str.Role
-        if Applications.query.filter_by(StudentId=str(StudentId)).first() == None:
+        if Applications.query.filter_by(ClubId=str(ClubId), StudentId=str(StudentId)).first() == None:
             new_application = Applications(ApplicationId=generate_UUID(), StudentId=str(StudentId), ClubId=str(ClubId), RoleIdApplyingFor=str(selectedrole_id), EmailSent='No')
             db.session.add(new_application)
             try:
@@ -188,8 +188,7 @@ def save_submit_application(ClubId, StudentId):
         else:
             print(67)
             updApplicationInfo = Applications.query.filter_by(ClubId=str(ClubId), StudentId=str(StudentId)).first()
-            print(selectedrole_id)
-            print(updApplicationInfo.RoleIdApplyingFor)
+
             updApplicationInfo.RoleIdApplyingFor = str(selectedrole_id)
             try:
                 db.session.commit()
