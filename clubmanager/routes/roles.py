@@ -57,20 +57,3 @@ def create_update_delete_roles(ClubId, RoleId = ''):
     
     # load the same page again
     return redirect(url_for('get_club', ClubId=str(ClubId)) + '?mode=update#nav-roles')
-
-
-
-
-
-
-
-
-
-    # stmt = select(ApplicationQuestions).where(ApplicationQuestions.ClubId == str(ClubId), ApplicationQuestions.Role == Role)
-    # print(stmt)
-    # rows = db.session.execute(stmt)
-    # for row in rows:
-    #     print(row)
-
-
-        ################################# Check if roleid in update corresponds to actual role or find better method

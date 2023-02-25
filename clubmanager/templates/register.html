@@ -39,8 +39,7 @@
             <div class='row'></div>
             {{ form.Password.label }}
             {{ form.Password(class_='form-control', title='Must contain at least one
-            number and one uppercase and lowercase letter and at least 8 characters') }}
-            <!-- pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*_=+-]).{8,}" -->
+            number, one uppercase, lowercase letter and symbol and at least 8 characters', pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*_=+-]).{8,}") }}
             <div class='row'></div>
             <div class='row g-3'>
                 <div class='col'>

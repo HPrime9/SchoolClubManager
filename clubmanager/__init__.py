@@ -5,7 +5,7 @@ from flask_bootstrap import Bootstrap
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'Secretshhh'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///C:\\Users\\Hetav\\Documents\\SchoolClubManager\\clubmanager.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///C:\\Users\\Hetav\\Documents\\SchoolClubManager\\schoolclubmanager.db'
 Bootstrap(app)
 db = SQLAlchemy(app)
 

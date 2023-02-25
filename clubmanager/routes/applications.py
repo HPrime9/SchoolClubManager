@@ -1,8 +1,5 @@
 # Import libraries
 from flask import render_template, request, url_for, redirect
-from flask_wtf import FlaskForm
-from wtforms import StringField
-from wtforms.validators import InputRequired, Length
 from flask_login import login_required, current_user
 from sqlalchemy import select
 from datetime import datetime
@@ -13,18 +10,29 @@ from clubmanager.models import Clubs, ClubRoles, QuestionAnswers, Applications, 
 from clubmanager.functions import generate_UUID, uniqueRoles, rolespecificquestions, generalquestions, getUserOwnedClubs, generalquestions_maxlength, rolespecificquestion_maxlength
 from clubmanager.flaskforms import ClubApplicationForm, ApplicationSelectForm
 
+# Create app routes
+
 @app.route('/clubs/<uuid:ClubId>/applications', methods=['GET'])
 @app.route('/clubs/<uuid:ClubId>/applications/<uuid:StudentId>', methods=['GET'])
 @login_required
 def get_application(ClubId, StudentId = ''):
+    # get mode
     mode = request.args.get('mode')
+
+    # call on global variables that give user's selected role name and id
     global selectedrole_str, selectedrole_id
+
+    # get the information needed to display the general questions
     generalquestions_to_display = []
     generalquestions_maxlengths = generalquestions_maxlength(ClubId) 
     if mode == 'viewall':
+        # get user owned clubs to show on response page
         userClubCatalogue = getUserOwnedClubs(current_user.id)
-        all_club_applications = Applications.query.filter_by(ClubId=str(ClubId)).all()
+
+        # initialize form
         form = ApplicationSelectForm()
+
+        # COMMENTED TO SHOW FEATURES AS IF TURNED ON THE SUBMIT RESULTS BUTTON WOULD ONLY SHOW UP WHEN APPLICATION DATE IS OVER
         # checkapplicationenddate = Clubs.query.filter_by(ClubId=str(ClubId)).first().AppEndDate
         # showsendresultsbttn = False
         # if datetime.now().date() > checkapplicationenddate:
@@ -33,6 +41,7 @@ def get_application(ClubId, StudentId = ''):
         #     showsendresultsbttn = False  CHANGE THIS AFTER TO SHOW or not BUTTON
         showsendresultsbttn = True
 
+        # get unique applicants
         stmt = select(Applications.ApplicationId, Applications.RoleIdApplyingFor, Applications.RoleIdSelectedFor, Applications.EmailSent, Applications.ClubOwnerNotes, Students.id, Students.FirstName, \
             Students.LastName, Students.StudentNum, Students.Email, Students.Grade, \
             ClubRoles.Role)\
@@ -42,8 +51,11 @@ def get_application(ClubId, StudentId = ''):
                 .where(Applications.ApplicationState == 'submitted', Applications.ClubId == str(ClubId))
         data = db.session.execute(stmt)
         ClubName_to_display = Clubs.query.filter_by(ClubId=str(ClubId)).first().ClubName
+
+        # render the page
         return render_template('responseoverview.html', ClubName_to_display=ClubName_to_display, data=data, showsendresultsbttn=showsendresultsbttn, form=form, userClubCatalogue=userClubCatalogue, ClubId=ClubId)
     elif mode == 'view' or mode == 'selectrole':
+        # get the role and id
         if Applications.query.filter_by(ClubId=str(ClubId), StudentId=str(StudentId)).first() == None:
             selectedrole_id = ''
             selectedrole_str = ''
@@ -55,6 +67,7 @@ def get_application(ClubId, StudentId = ''):
         checkapplicationstartdate = Clubs.query.filter_by(ClubId=str(ClubId)).first().AppStartDate
         checkapplicationenddate = Clubs.query.filter_by(ClubId=str(ClubId)).first().AppEndDate
         
+        # part of creating the condition
         query = ClubStudentMaps.query.filter_by(StudentId=str(current_user.id), ClubId=str(ClubId)).first()
         if query == None:
             query = None
@@ -63,8 +76,11 @@ def get_application(ClubId, StudentId = ''):
 
         condition = datetime.now().date() > checkapplicationenddate and str(current_user.id) == query
 
+        # if condition is true then applicant application is visible as only applicants can see their own application and club owners can see it only after the application deadline
         if str(current_user.id) == str(StudentId) or condition:
             if datetime.now().date() >= checkapplicationstartdate and datetime.now().date() <= checkapplicationenddate:
+
+                # get the information needed to display the application
                 form = ClubApplicationForm()
                 generalquestions_to_display, generalquestions_ids = generalquestions(ClubId)
                 generalquestions_to_display_and_ids = ApplicationQuestions.query.filter_by(ClubId=str(ClubId), RoleId=None)
@@ -98,11 +114,14 @@ def get_application(ClubId, StudentId = ''):
                 application_state = ''
                 selectroletabvisibility = ''
                 application_state_checked = ''
+
+                # if everyting is already submitted then prevent anyone from editing the application
                 if checkifsubmitted != None:
                     application_state = 'disabled'
                     application_state_checked = 'checked'
                     selectroletabvisibility = 'hidden'
 
+                # render the page
                 return render_template('application.html', application_state_checked=application_state_checked, all_rolespecificquestion_answers=all_rolespecificquestion_answers, StudentId=str(StudentId), form=form, selectedrole_str=selectedrole_str, role_options_descriptions_ids=role_options_descriptions_ids, ClubId=str(ClubId), rolespecificquestions_ids=rolespecificquestions_ids, rolespecificquestion_maxlengths=rolespecificquestion_maxlengths, rolespecificquestions_to_display=rolespecificquestions_to_display, length_rolespecificquestions_to_display=length_rolespecificquestions_to_display, SelectedRole=selectedrole_str, all_generalquestion_answers=all_generalquestion_answers, application_state=application_state, generalquestions_ids=generalquestions_ids, generalquestions_maxlengths=generalquestions_maxlengths, generalquestions=generalquestions_to_display, length_general=length_general)
     return redirect(url_for('get_club', ClubId=str(ClubId)) + '?mode=view')
 
@@ -110,9 +129,17 @@ def get_application(ClubId, StudentId = ''):
 @app.route('/clubs/<uuid:ClubId>/applications/<uuid:StudentId>', methods=['POST'])
 @login_required
 def save_submit_application(ClubId, StudentId):
+    # get the mode
     mode = request.args.get('mode')
+
+    # call on global variables to get the role name and id
     global selectedrole_str, selectedrole_id
+
+    # initialize local variables
     state_of_application = ''
+
+    # if mode is save then save the application in the database correspondingly as if they are a returning applicant then the database
+    # should update instead of creating a new row
     if mode == 'save':
         form = ClubApplicationForm()
         general_questions, generalquestions_id = generalquestions(ClubId)
@@ -121,7 +148,7 @@ def save_submit_application(ClubId, StudentId):
             state_of_application = 'submitted'
         else:
             state_of_application = 'draft'
-        
+
         applicantexists = Applications.query.filter_by(ClubId=str(ClubId), StudentId=str(StudentId)).first()
         if applicantexists == None:
             new_application = Applications(ApplicationId=generate_UUID(), StudentId=str(StudentId), ClubId=str(ClubId), RoleIdApplyingFor=str(selectedrole_id), ApplicationState=state_of_application, EmailSent='No')
@@ -186,7 +213,6 @@ def save_submit_application(ClubId, StudentId):
             except:
                 return redirect(url_for('get_application', ClubId=str(ClubId), StudentId=current_user.id) + '?mode=view#nav-generalquestionanswers')
         else:
-            print(67)
             updApplicationInfo = Applications.query.filter_by(ClubId=str(ClubId), StudentId=str(StudentId)).first()
 
             updApplicationInfo.RoleIdApplyingFor = str(selectedrole_id)

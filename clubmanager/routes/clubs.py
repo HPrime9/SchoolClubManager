@@ -16,13 +16,18 @@ from clubmanager.flaskforms import ClubCreationForm, ClubGeneralQuestionForm, Cl
 @app.route('/clubs/<uuid:ClubId>', methods=['GET'])
 @login_required
 def get_club(ClubId = ''):
+    # initialize variables
     mode = request.args.get('mode')
     formClubCreationForm = ClubCreationForm()
     formCreateGeneralQuestions = ClubGeneralQuestionForm()
     formAnnouncement = AnnouncementForm()
+
+    # if mode is new then just render the create a club page
     if mode == 'new':  
         errors_in_clubcreation = ['', '']
         return render_template('club.html', formClubCreationForm=formClubCreationForm, errors_in_clubcreation=errors_in_clubcreation)
+    
+    # if mode is update then render the previously filled information and the update.html page
     elif mode == 'update':
         errors_in_clubcreation = ['', '']
         all_role_specific_questions_to_display = []
@@ -40,12 +45,16 @@ def get_club(ClubId = ''):
         Announcements_var = Announcements.query.filter(Announcements.ClubId==str(ClubId)).all() 
         return render_template('updateclub.html', formAnnouncement=formAnnouncement, formCreateGeneralQuestions=formCreateGeneralQuestions, formClubCreationForm=formClubCreationForm, RoleId=RoleId, ClubId=str(ClubId), length=length, roles=roles, \
             role_descriptions=role_descriptions, errors_in_clubcreation=errors_in_clubcreation, all_role_specific_questions_to_display=all_role_specific_questions_to_display, Announcements=Announcements_var, updClubInfo=updClubInfo,questions_to_display=questions_to_display)
+    
+    # if mode is viewall then show all the clubs at the school
     elif mode == 'viewall':
         clubs = Clubs.query.filter(Clubs.School == current_user.School).all()
         truthy = True
         if clubs:
             truthy = False
         return render_template('viewclubs.html', School=current_user.School, truthy=truthy, ClubCatalogue=clubs)
+
+    # if mode is view then show the club page and the announcements
     elif mode == 'view':
         club_to_display = Clubs.query.get_or_404(str(ClubId))
         Announcements_var = Announcements.query.filter(Announcements.ClubId==str(ClubId)).all() 
@@ -72,6 +81,8 @@ def create_update_delete_club(ClubId = ''):
     mode = request.args.get('mode')  
     form = ClubCreationForm()
     errors_in_clubcreation = ['', '']
+
+    # if the mode is new then add the new club to the database after the information entered is valid
     if mode == 'new': 
         errors_in_clubcreation, condition_1_for_date, condition_2_for_date, condition_3_for_email = validate_club_creation(form)
         if form.validate_on_submit():
@@ -87,6 +98,8 @@ def create_update_delete_club(ClubId = ''):
                     return redirect(url_for('dashboard'))
                 return redirect(url_for('dashboard'))
         return render_template('club.html', formClubCreationForm=form, errors_in_clubcreation=errors_in_clubcreation)
+    
+    # if the mode is update then update the club's information
     elif mode == 'update':
         updClubInfo = Clubs.query.get_or_404(str(ClubId))
         clubappstartdate = Clubs.query.filter_by(ClubId=str(ClubId)).first().AppStartDate
@@ -119,6 +132,8 @@ def create_update_delete_club(ClubId = ''):
                     except:
                         return redirect(url_for('get_club', ClubId=str(ClubId)) + '?mode=update#nav-generaldetails')
         return redirect(url_for('get_club', ClubId=str(ClubId)) + '?mode=update#nav-generaldetails')
+    
+    # if the mode is delete then delete the club from the database
     elif mode == 'delete':
         club_to_del = Clubs.query.get_or_404(str(ClubId))
         club_to_del_from_cs_map = ClubStudentMaps.query.filter_by(ClubId=str(ClubId)).first()

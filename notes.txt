@@ -6,6 +6,7 @@ sqlite3
 .show
 .header on
 .mode column
+DROP DATABASE databasename;
 
 
 3 + 3 + 2 + 2

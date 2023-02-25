@@ -13,8 +13,12 @@ from clubmanager.flaskforms import ApplicationSelectForm
 @app.route('/clubs/<uuid:ClubId>/selectionresults', methods=['POST'])
 @login_required
 def sendresults(ClubId):
+    
+    # initialize variables
     form = ApplicationSelectForm()
     mode = request.args.get('mode')
+
+    # check if mode is sendall and save all the information on the response page
     if mode == 'sendall':
         sendemaillist = []
         AllApplicationIds = request.form.getlist('ApplicationId')
@@ -36,6 +40,7 @@ def sendresults(ClubId):
                 db.session.commit()
             except:
                 return redirect(url_for('get_application', ClubId=str(ClubId)) + '?mode=viewall')
+            
         # Set email message for users that are in the club
         for i in range(len(sendemaillist)):
             RoleNameSelectedFor = ClubRoles.query.filter_by(RoleId=str(RoleIdsSelectedFor[i])).first().Role

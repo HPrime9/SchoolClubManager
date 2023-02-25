@@ -15,7 +15,7 @@ class RegisterForm(FlaskForm):
     Username = StringField('Username', validators=[InputRequired(), Length(min=3, max=36)])
     StudentNum = IntegerField('Student Number', validators=[InputRequired(), NumberRange(min=0)])
     Email = EmailField('Email', validators=[InputRequired(), Email(), Length(max=75)])
-    Password = PasswordField('Password', validators=[InputRequired(), Length(min=1, max=80)]) # remeber to change min to 8
+    Password = PasswordField('Password', validators=[InputRequired(), Length(min=8, max=80)]) 
     Grade = SelectField('Select Grade', choices=['3', '4', '5', '6', '7', '8', '9', '10', '11', '12'])
     School = SelectField('Select School', choices=['Turner Fenton Secondary School', 'Roberta Bondar Public School', 'T. L. Kennedy Secondary School'])
 
